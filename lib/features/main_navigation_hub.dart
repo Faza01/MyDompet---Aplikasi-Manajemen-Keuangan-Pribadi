@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'transactions/home_screen.dart';
 import 'budgeting/budgeting_screen.dart';
@@ -38,6 +39,7 @@ class _MainNavigationHubState extends State<MainNavigationHub> {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
+      extendBody: true,
       body: IndexedStack(
         index: _currentIndex,
         children: _screens,
@@ -48,29 +50,39 @@ class _MainNavigationHubState extends State<MainNavigationHub> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                width: 280.0,
-                height: 64.0,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF2C2C2C), // Charcoal gray navbar
-                  borderRadius: BorderRadius.circular(16.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(isDarkMode ? 0.3 : 0.15),
-                      blurRadius: 16.0,
-                      offset: const Offset(0, 8),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16.0),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                  child: Container(
+                    width: 280.0,
+                    height: 64.0,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF2C2C2C).withOpacity(isDarkMode ? 0.75 : 0.85),
+                      borderRadius: BorderRadius.circular(16.0),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(isDarkMode ? 0.08 : 0.05),
+                        width: 1.0,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(isDarkMode ? 0.3 : 0.15),
+                          blurRadius: 16.0,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildNavItem(0, Icons.home_outlined),
-                    _buildNavItem(1, Icons.pie_chart_outline),
-                    _buildCenterPlusButton(),
-                    _buildNavItem(3, Icons.analytics_outlined),
-                    _buildNavItem(4, Icons.settings_outlined),
-                  ],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildNavItem(0, Icons.home_outlined),
+                        _buildNavItem(1, Icons.pie_chart_outline),
+                        _buildCenterPlusButton(),
+                        _buildNavItem(3, Icons.analytics_outlined),
+                        _buildNavItem(4, Icons.settings_outlined),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],
