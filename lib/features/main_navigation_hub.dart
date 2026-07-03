@@ -49,60 +49,87 @@ class _MainNavigationHubState extends State<MainNavigationHub> {
           height: 120.0,
           child: Stack(
             children: [
-              // 1. Gradient Blur Background Layer (Impeller-Safe Stacked Bands)
+              // 1. Gradient Blur Background Layer (Impeller-Safe 8 Stacked Bands)
               Positioned.fill(
                 child: Column(
                   children: [
-                    // Band 1: y = 0 to 24, Blur = 1.5
+                    // Band 1: y = 0 to 15, Blur = 0.0 (No blur at the top)
+                    const SizedBox(
+                      height: 15.0,
+                      width: double.infinity,
+                    ),
+                    // Band 2: y = 15 to 30, Blur = 1.0
                     ClipRect(
                       child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 1.5, sigmaY: 1.5),
+                        filter: ImageFilter.blur(sigmaX: 1.0, sigmaY: 1.0),
                         child: SizedBox(
-                          height: 24.0,
+                          height: 15.0,
                           width: double.infinity,
                           child: Container(color: Colors.transparent),
                         ),
                       ),
                     ),
-                    // Band 2: y = 24 to 48, Blur = 3.5
+                    // Band 3: y = 30 to 45, Blur = 2.0
+                    ClipRect(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
+                        child: SizedBox(
+                          height: 15.0,
+                          width: double.infinity,
+                          child: Container(color: Colors.transparent),
+                        ),
+                      ),
+                    ),
+                    // Band 4: y = 45 to 60, Blur = 3.5
                     ClipRect(
                       child: BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 3.5, sigmaY: 3.5),
                         child: SizedBox(
-                          height: 24.0,
+                          height: 15.0,
                           width: double.infinity,
                           child: Container(color: Colors.transparent),
                         ),
                       ),
                     ),
-                    // Band 3: y = 48 to 72, Blur = 6.0
+                    // Band 5: y = 60 to 75, Blur = 5.5
                     ClipRect(
                       child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 6.0, sigmaY: 6.0),
+                        filter: ImageFilter.blur(sigmaX: 5.5, sigmaY: 5.5),
                         child: SizedBox(
-                          height: 24.0,
+                          height: 15.0,
                           width: double.infinity,
                           child: Container(color: Colors.transparent),
                         ),
                       ),
                     ),
-                    // Band 4: y = 72 to 96, Blur = 9.0
+                    // Band 6: y = 75 to 90, Blur = 8.0
                     ClipRect(
                       child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 9.0, sigmaY: 9.0),
+                        filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
                         child: SizedBox(
-                          height: 24.0,
+                          height: 15.0,
                           width: double.infinity,
                           child: Container(color: Colors.transparent),
                         ),
                       ),
                     ),
-                    // Band 5: y = 96 to 120, Blur = 13.0
+                    // Band 7: y = 90 to 105, Blur = 10.5
                     ClipRect(
                       child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 13.0, sigmaY: 13.0),
+                        filter: ImageFilter.blur(sigmaX: 10.5, sigmaY: 10.5),
                         child: SizedBox(
-                          height: 24.0,
+                          height: 15.0,
+                          width: double.infinity,
+                          child: Container(color: Colors.transparent),
+                        ),
+                      ),
+                    ),
+                    // Band 8: y = 105 to 120, Blur = 13.5
+                    ClipRect(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 13.5, sigmaY: 13.5),
+                        child: SizedBox(
+                          height: 15.0,
                           width: double.infinity,
                           child: Container(color: Colors.transparent),
                         ),
