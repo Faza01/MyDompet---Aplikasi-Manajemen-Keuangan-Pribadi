@@ -10,7 +10,8 @@ import '../budgeting/categories_provider.dart';
 import '../transactions/transactions_provider.dart';
 
 class QuickInputDialog extends ConsumerStatefulWidget {
-  const QuickInputDialog({super.key});
+  final bool startListeningImmediately;
+  const QuickInputDialog({super.key, this.startListeningImmediately = false});
 
   @override
   ConsumerState<QuickInputDialog> createState() => _QuickInputDialogState();
@@ -87,6 +88,9 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
         setState(() {
           _speechAvailable = available;
         });
+        if (available && widget.startListeningImmediately) {
+          _startListening();
+        }
       }
     } catch (e) {
       debugPrint('Speech initialization failed: $e');

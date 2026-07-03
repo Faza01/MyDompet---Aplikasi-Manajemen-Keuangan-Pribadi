@@ -23,11 +23,13 @@ class _MainNavigationHubState extends State<MainNavigationHub> {
     SettingsScreen(),
   ];
 
-  void _openQuickInput() {
+  void _openQuickInput({bool startListeningImmediately = false}) {
     showDialog(
       context: context,
       barrierDismissible: true,
-      builder: (context) => const QuickInputDialog(),
+      builder: (context) => QuickInputDialog(
+        startListeningImmediately: startListeningImmediately,
+      ),
     );
   }
 
@@ -107,6 +109,7 @@ class _MainNavigationHubState extends State<MainNavigationHub> {
   Widget _buildCenterPlusButton() {
     return GestureDetector(
       onTap: _openQuickInput,
+      onLongPress: () => _openQuickInput(startListeningImmediately: true),
       child: Container(
         width: 46.0,
         height: 46.0,
