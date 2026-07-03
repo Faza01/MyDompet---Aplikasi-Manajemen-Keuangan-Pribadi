@@ -126,6 +126,7 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       body: SafeArea(
+        bottom: false,
         child: RefreshIndicator(
           onRefresh: () async {
             ref.invalidate(accountsNotifierProvider);

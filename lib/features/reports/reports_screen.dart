@@ -52,6 +52,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
         backgroundColor: Colors.transparent,
       ),
       body: SafeArea(
+        bottom: false,
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0, bottom: 100.0),

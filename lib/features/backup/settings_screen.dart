@@ -21,6 +21,7 @@ class SettingsScreen extends ConsumerWidget {
         backgroundColor: Colors.transparent,
       ),
       body: SafeArea(
+        bottom: false,
         child: ListView(
           padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0, bottom: 100.0),
           children: [
