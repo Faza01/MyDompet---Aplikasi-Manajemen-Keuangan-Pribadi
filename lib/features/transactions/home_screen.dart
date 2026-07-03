@@ -681,6 +681,9 @@ class HomeScreen extends ConsumerWidget {
                 loading: () => const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator())),
                 error: (err, st) => SliverToBoxAdapter(child: Text('Error: $err')),
               ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 100.0),
+              ),
             ],
           ),
         ),

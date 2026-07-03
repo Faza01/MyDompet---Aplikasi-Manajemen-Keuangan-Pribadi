@@ -22,7 +22,7 @@ class SettingsScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0, bottom: 100.0),
           children: [
             // Section 1: Accounts Management
             _buildSectionHeader('Akun & Dompet', isDarkMode),

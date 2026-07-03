@@ -58,7 +58,7 @@ class _MainNavigationHubState extends State<MainNavigationHub> {
                     width: 280.0,
                     height: 64.0,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF2C2C2C).withOpacity(isDarkMode ? 0.75 : 0.85),
+                      color: const Color(0xFF2C2C2C).withOpacity(isDarkMode ? 0.4 : 0.55),
                       borderRadius: BorderRadius.circular(16.0),
                       border: Border.all(
                         color: Colors.white.withOpacity(isDarkMode ? 0.08 : 0.05),
