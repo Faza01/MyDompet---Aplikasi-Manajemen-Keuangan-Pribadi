@@ -54,7 +54,7 @@ class _MainNavigationHubState extends State<MainNavigationHub> {
               child: ClipRect(
                 child: Inspire.backdropBlur(
                   config: InspireBlurConfig.bottomToTop(
-                    sigma: 20.0,
+                    sigmaY: 12.0,
                     fadeCurve: Curves.easeInSine,
                   ),
                 ),
