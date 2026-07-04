@@ -684,7 +684,7 @@ class HomeScreen extends ConsumerWidget {
                                         Center(
                                           child: TextButton.icon(
                                             onPressed: () {
-                                              ref.read(navigationIndexProvider.notifier).setIndex(3);
+                                              _showAllTransactionsSheet(context, ref, transactions, categories, now);
                                             },
                                             icon: const Icon(Icons.arrow_forward_outlined, size: 16.0, color: Color(0xFFFC8A40)),
                                             label: const Text(
@@ -865,6 +865,214 @@ class HomeScreen extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void _showAllTransactionsSheet(
+    BuildContext context,
+    WidgetRef ref,
+    List<TransactionModel> transactions,
+    List<Category> categories,
+    DateTime now,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+        return DraggableScrollableSheet(
+          initialChildSize: 0.75,
+          minChildSize: 0.5,
+          maxChildSize: 0.95,
+          expand: false,
+          builder: (context, scrollController) {
+            return Container(
+              decoration: BoxDecoration(
+                color: isDarkMode ? const Color(0xFF0F1115) : Colors.white,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
+              ),
+              child: Column(
+                children: [
+                  const SizedBox(height: 12.0),
+                  Container(
+                    width: 38.0,
+                    height: 4.5,
+                    decoration: BoxDecoration(
+                      color: isDarkMode ? Colors.white24 : Colors.black12,
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                  const SizedBox(height: 16.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Semua Riwayat Transaksi',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close_outlined, size: 20),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(height: 1, thickness: 0.5),
+                  Expanded(
+                    child: ListView.builder(
+                      controller: scrollController,
+                      padding: const EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 40.0),
+                      itemCount: transactions.length,
+                      itemBuilder: (context, idx) {
+                        final tx = transactions[idx];
+                        final category = categories.firstWhere(
+                          (c) => c.id == tx.categoryId,
+                          orElse: () => Category(name: 'Lain-lain', type: tx.type),
+                        );
+
+                        String timeStr = DateFormat('HH:mm').format(tx.createdAt);
+                        String dateSubtitle;
+                        final txDate = DateTime(tx.createdAt.year, tx.createdAt.month, tx.createdAt.day);
+                        final today = DateTime(now.year, now.month, now.day);
+                        final yesterday = today.subtract(const Duration(days: 1));
+                        
+                        if (txDate == today) {
+                          dateSubtitle = 'Hari ini, $timeStr';
+                        } else if (txDate == yesterday) {
+                          dateSubtitle = 'Kemarin, $timeStr';
+                        } else {
+                          dateSubtitle = DateFormat('d MMM yyyy, HH:mm', 'id_ID').format(tx.createdAt);
+                        }
+
+                        return Dismissible(
+                          key: Key('sheet-tx-${tx.id}'),
+                          direction: DismissDirection.endToStart,
+                          background: Container(
+                            color: Colors.redAccent,
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.only(right: 20.0),
+                            child: const Icon(Icons.delete_outline, color: Colors.white),
+                          ),
+                          onDismissed: (direction) {
+                            if (tx.id != null) {
+                              ref.read(transactionsNotifierProvider.notifier).deleteTransaction(tx.id!);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+                                  backgroundColor: isDarkMode ? const Color(0xFF131D1D) : const Color(0xFF2E3131),
+                                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                  duration: const Duration(seconds: 5),
+                                  content: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          'Transaksi "${tx.note}" dihapus',
+                                          style: const TextStyle(color: Colors.white, fontSize: 13.0),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          ref.read(transactionsNotifierProvider.notifier).addTransaction(tx);
+                                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                        },
+                                        child: const Text(
+                                          'Urungkan',
+                                          style: TextStyle(color: Color(0xFFFC8A40), fontWeight: FontWeight.bold, fontSize: 13.0),
+                                        ),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.close, color: Colors.white70, size: 16.0),
+                                        padding: EdgeInsets.zero,
+                                        constraints: const BoxConstraints(),
+                                        onPressed: () {
+                                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.pop(context);
+                              _showEditDialog(context, ref, tx, categories);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 12.0),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 38.0,
+                                    height: 38.0,
+                                    decoration: BoxDecoration(
+                                      color: isDarkMode ? const Color(0xFF131D1D) : const Color(0xFFECEEEE),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      _getCategoryIcon(category.icon),
+                                      color: isDarkMode ? Colors.white : Colors.black,
+                                      size: 18.0,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12.0),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          (tx.note == null || tx.note!.isEmpty) ? category.name : tx.note!,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontSize: 13.0,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2.0),
+                                        Text(
+                                          dateSubtitle,
+                                          style: TextStyle(
+                                            fontSize: 10.5,
+                                            color: isDarkMode ? Colors.grey[400] : Colors.grey[500],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8.0),
+                                  Text(
+                                    (tx.type == 'income' ? '+ ' : '- ') + _formatRp(tx.amount),
+                                    style: TextStyle(
+                                      fontSize: 13.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: tx.type == 'income'
+                                          ? const Color(0xFF10B981)
+                                          : const Color(0xFFEF4444),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
