@@ -5,11 +5,9 @@ MyDompet adalah aplikasi manajemen keuangan pribadi modern untuk perangkat mobil
 ---
 
 ## 📱 Screenshots
-> Tempatkan tangkapan layar (screenshots) aplikasi Anda pada folder `assets/screenshots/` untuk ditampilkan di sini.
-
-| Beranda (Mode Gelap) | Laporan Keuangan | Anggaran Kategori |
+| Beranda (Mode Terang) | Laporan Keuangan | Anggaran Kategori |
 | :---: | :---: | :---: |
-| ![Beranda](assets/screenshots/home.png) | ![Laporan](assets/screenshots/reports.png) | ![Anggaran](assets/screenshots/budgeting.png) |
+| ![Beranda](assets/screenshots/home.jpeg) | ![Laporan](assets/screenshots/reports.jpeg) | ![Anggaran](assets/screenshots/budgeting.jpeg) |
 
 ---
 

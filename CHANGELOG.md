@@ -2,6 +2,19 @@
 
 Semua perubahan penting pada proyek **MyDompet** akan didokumentasikan di berkas ini.
 
+## [1.1.0] - 2026-07-04
+
+### Ditambahkan
+- **Paginasi Riwayat Transaksi**: Navigasi halaman interaktif (`< 1, 2, 3, ... >`) langsung pada dashboard beranda dengan performa scroll konstan 120 FPS.
+
+### Diperbaiki
+- **Optimasi Performa Ekstrem**: Menghapus efek shader blur pada navbar untuk memotong beban GPU menjadi 0ms, membatasi daftar transaksi awal hingga 10 transaksi terbaru untuk menghindari bottleneck UI Thread.
+- **Revisi & Perbaikan Visual (UI Polish)**:
+  - Mengubah warna fokus border input field dan nominal angka preview pemasukan (*income*) menjadi hijau (`0xFF10B981`) di Quick Input.
+  - Mengubah warna tombol mic dan centang di sebelah kolom Quick Input menjadi hitam/charcoal.
+  - Memperbaiki visibilitas tombol "Simpan Transaksi" (Quick Input) dan "Kirim Transfer" (Kelola Dompet) di mode gelap agar teks terlihat kontras.
+  - Menyelaraskan tema Splash Screen Android secara default ke latar belakang putih, melenyapkan efek kedipan kilau saat aplikasi dimuat.
+
 ## [1.0.0] - 2026-07-04
 
 ### Ditambahkan
