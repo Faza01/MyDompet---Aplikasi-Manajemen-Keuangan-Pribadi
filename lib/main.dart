@@ -44,6 +44,19 @@ final themeModeProvider = NotifierProvider<ThemeModeNotifier, ThemeMode>(
   ThemeModeNotifier.new,
 );
 
+class ScrollingNotifier extends Notifier<bool> {
+  @override
+  bool build() => false;
+
+  void setScrolling(bool value) {
+    state = value;
+  }
+}
+
+final isScrollingProvider = NotifierProvider<ScrollingNotifier, bool>(
+  ScrollingNotifier.new,
+);
+
 class KeuanganApp extends ConsumerWidget {
   const KeuanganApp({super.key});
 

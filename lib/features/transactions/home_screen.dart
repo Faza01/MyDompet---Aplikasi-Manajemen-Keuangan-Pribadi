@@ -132,9 +132,18 @@ class HomeScreen extends ConsumerWidget {
             ref.invalidate(accountsNotifierProvider);
             ref.invalidate(transactionsNotifierProvider);
           },
-          child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            slivers: [
+          child: NotificationListener<ScrollNotification>(
+            onNotification: (notification) {
+              if (notification is ScrollStartNotification) {
+                ref.read(isScrollingProvider.notifier).setScrolling(true);
+              } else if (notification is ScrollEndNotification) {
+                ref.read(isScrollingProvider.notifier).setScrolling(false);
+              }
+              return false;
+            },
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
               // Header
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 0),
@@ -241,6 +250,10 @@ class HomeScreen extends ConsumerWidget {
                   child: transactionsAsync.when(
                     data: (transactions) {
                       final now = DateTime.now();
+                      final categoriesList = categoriesAsync.maybeWhen(
+                        data: (cats) => cats,
+                        orElse: () => <Category>[],
+                      );
                       
                       // Filter transactions of current selected account AND current selected timeframe
                       final filteredTxs = transactions.where((tx) {
@@ -264,13 +277,11 @@ class HomeScreen extends ConsumerWidget {
                         
                         // Exclude "Transfer" transactions from stats
                         final isNotTransfer = tx.categoryId != null &&
-                            categoriesAsync.maybeWhen(
-                              data: (cats) {
-                                final cat = cats.firstWhere((c) => c.id == tx.categoryId, orElse: () => cats.first);
-                                return cat.name.toLowerCase() != 'transfer';
-                              },
-                              orElse: () => true,
-                            );
+                            categoriesList.isNotEmpty &&
+                            categoriesList.firstWhere(
+                              (c) => c.id == tx.categoryId,
+                              orElse: () => categoriesList.first,
+                            ).name.toLowerCase() != 'transfer';
 
                         return matchesDate && matchesAccount && isNotTransfer;
                       }).toList();
@@ -691,8 +702,9 @@ class HomeScreen extends ConsumerWidget {
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   void _showEditDialog(BuildContext context, WidgetRef ref, TransactionModel tx, List<Category> categories) {
     final noteController = TextEditingController(text: tx.note);

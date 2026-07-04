@@ -1,20 +1,22 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:inspire_blur/inspire_blur.dart';
+import '../main.dart';
 import 'transactions/home_screen.dart';
 import 'budgeting/budgeting_screen.dart';
 import 'reports/reports_screen.dart';
 import 'backup/settings_screen.dart';
 import 'quick_input/quick_input_dialog.dart';
 
-class MainNavigationHub extends StatefulWidget {
+class MainNavigationHub extends ConsumerStatefulWidget {
   const MainNavigationHub({super.key});
 
   @override
-  State<MainNavigationHub> createState() => _MainNavigationHubState();
+  ConsumerState<MainNavigationHub> createState() => _MainNavigationHubState();
 }
 
-class _MainNavigationHubState extends State<MainNavigationHub> {
+class _MainNavigationHubState extends ConsumerState<MainNavigationHub> {
   int _currentIndex = 0;
 
   final List<Widget> _screens = const [
@@ -38,6 +40,7 @@ class _MainNavigationHubState extends State<MainNavigationHub> {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final isScrolling = ref.watch(isScrollingProvider);
 
     return Scaffold(
       extendBody: true,
@@ -50,12 +53,17 @@ class _MainNavigationHubState extends State<MainNavigationHub> {
         child: Stack(
           children: [
             // Progressive Backdrop Blur using GPU shaders from inspire_blur package
+            // Faded out dynamically during scrolling to yield 120 FPS performance
             Positioned.fill(
               child: ClipRect(
-                child: Inspire.backdropBlur(
-                  config: InspireBlurConfig.bottomToTop(
-                    sigmaY: 12.0,
-                    fadeCurve: Curves.easeInSine,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 200),
+                  opacity: isScrolling ? 0.0 : 1.0,
+                  child: Inspire.backdropBlur(
+                    config: InspireBlurConfig.bottomToTop(
+                      sigmaY: 12.0,
+                      fadeCurve: Curves.easeInSine,
+                    ),
                   ),
                 ),
               ),
