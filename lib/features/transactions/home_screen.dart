@@ -21,6 +21,19 @@ final dashboardTimeframeProvider = NotifierProvider.autoDispose<DashboardTimefra
   DashboardTimeframeNotifier.new,
 );
 
+class HomePageNotifier extends Notifier<int> {
+  @override
+  int build() => 1;
+
+  void setPage(int page) {
+    state = page;
+  }
+}
+
+final homePageProvider = NotifierProvider.autoDispose<HomePageNotifier, int>(
+  HomePageNotifier.new,
+);
+
 // Helper to format currency
 String _formatRp(double val) {
   return NumberFormat.currency(
@@ -121,6 +134,7 @@ class HomeScreen extends ConsumerWidget {
     final transactionsAsync = ref.watch(transactionsNotifierProvider);
     final categoriesAsync = ref.watch(categoriesNotifierProvider);
     final dashboardTimeframe = ref.watch(dashboardTimeframeProvider);
+    final currentPage = ref.watch(homePageProvider);
 
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
@@ -458,7 +472,18 @@ class HomeScreen extends ConsumerWidget {
 
                   // Sort transactions by date descending
                   transactions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-                  final displayTransactions = transactions.take(10).toList();
+                  
+                  const itemsPerPage = 10;
+                  final totalItems = transactions.length;
+                  final totalPages = (totalItems / itemsPerPage).ceil();
+                  final activePage = currentPage > totalPages ? (totalPages > 0 ? totalPages : 1) : currentPage;
+                  
+                  final startIndex = (activePage - 1) * itemsPerPage;
+                  final endIndex = startIndex + itemsPerPage;
+                  final displayTransactions = transactions.sublist(
+                    startIndex,
+                    endIndex > totalItems ? totalItems : endIndex,
+                  );
 
                   if (transactions.isEmpty) {
                     return const SliverPadding(
@@ -673,31 +698,13 @@ class HomeScreen extends ConsumerWidget {
                                         ),
                                       );
                                       }),
-                                      if (transactions.length > 10) ...[
-                                        const SizedBox(height: 12.0),
-                                        Divider(
-                                          height: 1.0,
-                                          thickness: 1.0,
-                                          color: isDarkMode ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.06),
-                                        ),
-                                        const SizedBox(height: 12.0),
-                                        Center(
-                                          child: TextButton.icon(
-                                            onPressed: () {
-                                              _showAllTransactionsSheet(context, ref, transactions, categories, now);
-                                            },
-                                            icon: const Icon(Icons.arrow_forward_outlined, size: 16.0, color: Color(0xFFFC8A40)),
-                                            label: const Text(
-                                              'Lihat Semua Transaksi',
-                                              style: TextStyle(
-                                                color: Color(0xFFFC8A40),
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 13.0,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                      _buildPaginationRow(
+                                        context,
+                                        ref,
+                                        activePage,
+                                        totalPages,
+                                        isDarkMode,
+                                      ),
                                     ],
                                   ),
                                 ],
@@ -868,211 +875,191 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  void _showAllTransactionsSheet(
+  Widget _buildPaginationRow(
     BuildContext context,
     WidgetRef ref,
-    List<TransactionModel> transactions,
-    List<Category> categories,
-    DateTime now,
+    int currentPage,
+    int totalPages,
+    bool isDarkMode,
   ) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-        return DraggableScrollableSheet(
-          initialChildSize: 0.75,
-          minChildSize: 0.5,
-          maxChildSize: 0.95,
-          expand: false,
-          builder: (context, scrollController) {
-            return Container(
-              decoration: BoxDecoration(
-                color: isDarkMode ? const Color(0xFF0F1115) : Colors.white,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
-              ),
-              child: Column(
-                children: [
-                  const SizedBox(height: 12.0),
-                  Container(
-                    width: 38.0,
-                    height: 4.5,
-                    decoration: BoxDecoration(
-                      color: isDarkMode ? Colors.white24 : Colors.black12,
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Semua Riwayat Transaksi',
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.close_outlined, size: 20),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Divider(height: 1, thickness: 0.5),
-                  Expanded(
-                    child: ListView.builder(
-                      controller: scrollController,
-                      padding: const EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 40.0),
-                      itemCount: transactions.length,
-                      itemBuilder: (context, idx) {
-                        final tx = transactions[idx];
-                        final category = categories.firstWhere(
-                          (c) => c.id == tx.categoryId,
-                          orElse: () => Category(name: 'Lain-lain', type: tx.type),
-                        );
+    if (totalPages <= 1) return const SizedBox.shrink();
 
-                        String timeStr = DateFormat('HH:mm').format(tx.createdAt);
-                        String dateSubtitle;
-                        final txDate = DateTime(tx.createdAt.year, tx.createdAt.month, tx.createdAt.day);
-                        final today = DateTime(now.year, now.month, now.day);
-                        final yesterday = today.subtract(const Duration(days: 1));
-                        
-                        if (txDate == today) {
-                          dateSubtitle = 'Hari ini, $timeStr';
-                        } else if (txDate == yesterday) {
-                          dateSubtitle = 'Kemarin, $timeStr';
-                        } else {
-                          dateSubtitle = DateFormat('d MMM yyyy, HH:mm', 'id_ID').format(tx.createdAt);
-                        }
+    final List<Widget> pageButtons = [];
+    const int maxVisibleButtons = 5;
 
-                        return Dismissible(
-                          key: Key('sheet-tx-${tx.id}'),
-                          direction: DismissDirection.endToStart,
-                          background: Container(
-                            color: Colors.redAccent,
-                            alignment: Alignment.centerRight,
-                            padding: const EdgeInsets.only(right: 20.0),
-                            child: const Icon(Icons.delete_outline, color: Colors.white),
-                          ),
-                          onDismissed: (direction) {
-                            if (tx.id != null) {
-                              ref.read(transactionsNotifierProvider.notifier).deleteTransaction(tx.id!);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  behavior: SnackBarBehavior.floating,
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-                                  backgroundColor: isDarkMode ? const Color(0xFF131D1D) : const Color(0xFF2E3131),
-                                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                                  duration: const Duration(seconds: 5),
-                                  content: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          'Transaksi "${tx.note}" dihapus',
-                                          style: const TextStyle(color: Colors.white, fontSize: 13.0),
-                                        ),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          ref.read(transactionsNotifierProvider.notifier).addTransaction(tx);
-                                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                                        },
-                                        child: const Text(
-                                          'Urungkan',
-                                          style: TextStyle(color: Color(0xFFFC8A40), fontWeight: FontWeight.bold, fontSize: 13.0),
-                                        ),
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(Icons.close, color: Colors.white70, size: 16.0),
-                                        padding: EdgeInsets.zero,
-                                        constraints: const BoxConstraints(),
-                                        onPressed: () {
-                                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.pop(context);
-                              _showEditDialog(context, ref, tx, categories);
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 12.0),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 38.0,
-                                    height: 38.0,
-                                    decoration: BoxDecoration(
-                                      color: isDarkMode ? const Color(0xFF131D1D) : const Color(0xFFECEEEE),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(
-                                      _getCategoryIcon(category.icon),
-                                      color: isDarkMode ? Colors.white : Colors.black,
-                                      size: 18.0,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12.0),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          (tx.note == null || tx.note!.isEmpty) ? category.name : tx.note!,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            fontSize: 13.0,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 2.0),
-                                        Text(
-                                          dateSubtitle,
-                                          style: TextStyle(
-                                            fontSize: 10.5,
-                                            color: isDarkMode ? Colors.grey[400] : Colors.grey[500],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8.0),
-                                  Text(
-                                    (tx.type == 'income' ? '+ ' : '- ') + _formatRp(tx.amount),
-                                    style: TextStyle(
-                                      fontSize: 13.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: tx.type == 'income'
-                                          ? const Color(0xFF10B981)
-                                          : const Color(0xFFEF4444),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
+    pageButtons.add(
+      _buildPageArrow(
+        icon: Icons.chevron_left_outlined,
+        onPressed: currentPage > 1
+            ? () => ref.read(homePageProvider.notifier).setPage(currentPage - 1)
+            : null,
+        isDarkMode: isDarkMode,
+      ),
+    );
+    pageButtons.add(const SizedBox(width: 6.0));
+
+    if (totalPages <= maxVisibleButtons) {
+      for (int i = 1; i <= totalPages; i++) {
+        pageButtons.add(
+          _buildPageNumberButton(
+            ref: ref,
+            page: i,
+            isActive: i == currentPage,
+            onPressed: () => ref.read(homePageProvider.notifier).setPage(i),
+            isDarkMode: isDarkMode,
+          ),
         );
-      },
+        if (i < totalPages) pageButtons.add(const SizedBox(width: 6.0));
+      }
+    } else {
+      final List<int> pages = [];
+      pages.add(1);
+
+      int start = currentPage - 1;
+      int end = currentPage + 1;
+
+      if (start <= 2) {
+        start = 2;
+        end = 4;
+      } else if (end >= totalPages - 1) {
+        start = totalPages - 3;
+        end = totalPages - 1;
+      }
+
+      if (start > 2) {
+        pages.add(-1);
+      }
+
+      for (int i = start; i <= end; i++) {
+        pages.add(i);
+      }
+
+      if (end < totalPages - 1) {
+        pages.add(-2);
+      }
+
+      pages.add(totalPages);
+
+      for (int i = 0; i < pages.length; i++) {
+        final p = pages[i];
+        if (p < 0) {
+          pageButtons.add(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: Text(
+                '...',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13.0,
+                  color: isDarkMode ? Colors.white30 : Colors.black26,
+                ),
+              ),
+            ),
+          );
+        } else {
+          pageButtons.add(
+            _buildPageNumberButton(
+              ref: ref,
+              page: p,
+              isActive: p == currentPage,
+              onPressed: () => ref.read(homePageProvider.notifier).setPage(p),
+              isDarkMode: isDarkMode,
+            ),
+          );
+        }
+        if (i < pages.length - 1) pageButtons.add(const SizedBox(width: 6.0));
+      }
+    }
+
+    pageButtons.add(const SizedBox(width: 6.0));
+    pageButtons.add(
+      _buildPageArrow(
+        icon: Icons.chevron_right_outlined,
+        onPressed: currentPage < totalPages
+            ? () => ref.read(homePageProvider.notifier).setPage(currentPage + 1)
+            : null,
+        isDarkMode: isDarkMode,
+      ),
+    );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: pageButtons,
+      ),
+    );
+  }
+
+  Widget _buildPageNumberButton({
+    required WidgetRef ref,
+    required int page,
+    required bool isActive,
+    required VoidCallback onPressed,
+    required bool isDarkMode,
+  }) {
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(6.0),
+      child: Container(
+        width: 28.0,
+        height: 28.0,
+        decoration: BoxDecoration(
+          color: isActive
+              ? (isDarkMode ? Colors.white : const Color(0xFF2C2C2C))
+              : (isDarkMode ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04)),
+          borderRadius: BorderRadius.circular(6.0),
+          border: Border.all(
+            color: isActive
+                ? (isDarkMode ? Colors.white : const Color(0xFF2C2C2C))
+                : (isDarkMode ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.05)),
+            width: 1.0,
+          ),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          page.toString(),
+          style: TextStyle(
+            fontSize: 11.5,
+            fontWeight: FontWeight.bold,
+            color: isActive
+                ? (isDarkMode ? Colors.black : Colors.white)
+                : (isDarkMode ? Colors.white70 : Colors.black87),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPageArrow({
+    required IconData icon,
+    required VoidCallback? onPressed,
+    required bool isDarkMode,
+  }) {
+    final bool isDisabled = onPressed == null;
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(6.0),
+      child: Container(
+        width: 28.0,
+        height: 28.0,
+        decoration: BoxDecoration(
+          color: isDarkMode ? Colors.white.withOpacity(0.03) : Colors.black.withOpacity(0.02),
+          borderRadius: BorderRadius.circular(6.0),
+          border: Border.all(
+            color: isDarkMode ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.03),
+            width: 1.0,
+          ),
+        ),
+        alignment: Alignment.center,
+        child: Icon(
+          icon,
+          size: 16.0,
+          color: isDisabled
+              ? (isDarkMode ? Colors.white30 : Colors.black26)
+              : (isDarkMode ? Colors.white : Colors.black87),
+        ),
+      ),
     );
   }
 }
