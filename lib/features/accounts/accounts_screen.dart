@@ -345,8 +345,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                         ElevatedButton(
                           onPressed: _executeTransfer,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).colorScheme.primary,
-                            foregroundColor: Colors.white,
+                            backgroundColor: isDarkMode ? Colors.white : const Color(0xFF2C2C2C),
+                            foregroundColor: isDarkMode ? Colors.black : Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 14.0),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                             elevation: 0,

@@ -425,7 +425,7 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14.0),
                           borderSide: BorderSide(
-                            color: _type == 'income' ? const Color(0xFFFC8A40) : const Color(0xFFEF4444),
+                            color: _type == 'income' ? const Color(0xFF10B981) : const Color(0xFFEF4444),
                             width: 1.5,
                           ),
                         ),
@@ -448,13 +448,13 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                           gradient: LinearGradient(
                             colors: _isListening
                                 ? [Colors.redAccent, Colors.red]
-                                : [const Color(0xFF004D4D), const Color(0xFF003434)],
+                                : [Colors.black, const Color(0xFF1A1A1A)],
                           ),
                           boxShadow: [
                             BoxShadow(
                               color: _isListening
                                   ? Colors.red.withOpacity(0.2)
-                                  : const Color(0xFF004D4D).withOpacity(0.2),
+                                  : Colors.black.withOpacity(0.15),
                               blurRadius: 6,
                               offset: const Offset(0, 3),
                             ),
@@ -477,10 +477,10 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                       width: 44,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: const Color(0xFF004D4D),
+                        color: Colors.black,
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF004D4D).withOpacity(0.2),
+                            color: Colors.black.withOpacity(0.15),
                             blurRadius: 6,
                             offset: const Offset(0, 3),
                           ),
@@ -536,7 +536,7 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                       style: TextStyle(
                         fontSize: 22.0,
                         fontWeight: FontWeight.w900,
-                        color: _type == 'income' ? const Color(0xFFFC8A40) : const Color(0xFFEF4444),
+                        color: _type == 'income' ? const Color(0xFF10B981) : const Color(0xFFEF4444),
                       ),
                     ),
                     const SizedBox(height: 6.0),
@@ -749,8 +749,8 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
               ElevatedButton(
                 onPressed: _saveTransaction,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Colors.white,
+                  backgroundColor: isDarkMode ? Colors.white : const Color(0xFF2C2C2C),
+                  foregroundColor: isDarkMode ? Colors.black : Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.0),
