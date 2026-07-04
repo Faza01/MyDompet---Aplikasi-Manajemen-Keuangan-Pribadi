@@ -1,7 +1,5 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:inspire_blur/inspire_blur.dart';
 import '../main.dart';
 import 'transactions/home_screen.dart';
 import 'budgeting/budgeting_screen.dart';
@@ -17,8 +15,6 @@ class MainNavigationHub extends ConsumerStatefulWidget {
 }
 
 class _MainNavigationHubState extends ConsumerState<MainNavigationHub> {
-  int _currentIndex = 0;
-
   final List<Widget> _screens = const [
     HomeScreen(),
     BudgetingScreen(),
@@ -40,30 +36,30 @@ class _MainNavigationHubState extends ConsumerState<MainNavigationHub> {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final isScrolling = ref.watch(isScrollingProvider);
+    final currentIndex = ref.watch(navigationIndexProvider);
 
     return Scaffold(
       extendBody: true,
       body: IndexedStack(
-        index: _currentIndex,
+        index: currentIndex,
         children: _screens,
       ),
       bottomNavigationBar: SizedBox(
         height: 120.0,
         child: Stack(
           children: [
-            // Progressive Backdrop Blur using GPU shaders from inspire_blur package
-            // Faded out dynamically during scrolling to yield 120 FPS performance
+            // Smooth gradient transparent navbar background (No Blur = 0ms GPU overhead)
             Positioned.fill(
-              child: ClipRect(
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 200),
-                  opacity: isScrolling ? 0.0 : 1.0,
-                  child: Inspire.backdropBlur(
-                    config: InspireBlurConfig.bottomToTop(
-                      sigmaY: 12.0,
-                      fadeCurve: Curves.easeInSine,
-                    ),
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      (isDarkMode ? const Color(0xFF0F1115) : const Color(0xFFF8F9FA)).withOpacity(0.0),
+                      (isDarkMode ? const Color(0xFF0F1115) : const Color(0xFFF8F9FA)).withOpacity(0.95),
+                    ],
+                    stops: const [0.0, 0.8],
                   ),
                 ),
               ),
@@ -94,11 +90,11 @@ class _MainNavigationHubState extends ConsumerState<MainNavigationHub> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            _buildNavItem(0, Icons.home_outlined),
-                            _buildNavItem(1, Icons.pie_chart_outline),
+                            _buildNavItem(0, Icons.home_outlined, currentIndex),
+                            _buildNavItem(1, Icons.pie_chart_outline, currentIndex),
                             _buildCenterPlusButton(),
-                            _buildNavItem(3, Icons.analytics_outlined),
-                            _buildNavItem(4, Icons.settings_outlined),
+                            _buildNavItem(3, Icons.analytics_outlined, currentIndex),
+                            _buildNavItem(4, Icons.settings_outlined, currentIndex),
                           ],
                         ),
                       ),
@@ -113,13 +109,11 @@ class _MainNavigationHubState extends ConsumerState<MainNavigationHub> {
     );
   }
 
-  Widget _buildNavItem(int index, IconData icon) {
-    final isSelected = _currentIndex == index;
+  Widget _buildNavItem(int index, IconData icon, int currentIndex) {
+    final isSelected = currentIndex == index;
     return GestureDetector(
       onTap: () {
-        setState(() {
-          _currentIndex = index;
-        });
+        ref.read(navigationIndexProvider.notifier).setIndex(index);
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),

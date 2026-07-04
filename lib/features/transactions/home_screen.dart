@@ -132,18 +132,9 @@ class HomeScreen extends ConsumerWidget {
             ref.invalidate(accountsNotifierProvider);
             ref.invalidate(transactionsNotifierProvider);
           },
-          child: NotificationListener<ScrollNotification>(
-            onNotification: (notification) {
-              if (notification is ScrollStartNotification) {
-                ref.read(isScrollingProvider.notifier).setScrolling(true);
-              } else if (notification is ScrollEndNotification) {
-                ref.read(isScrollingProvider.notifier).setScrolling(false);
-              }
-              return false;
-            },
-            child: CustomScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              slivers: [
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
               // Header
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 0),
@@ -467,6 +458,7 @@ class HomeScreen extends ConsumerWidget {
 
                   // Sort transactions by date descending
                   transactions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+                  final displayTransactions = transactions.take(10).toList();
 
                   if (transactions.isEmpty) {
                     return const SliverPadding(
@@ -543,8 +535,9 @@ class HomeScreen extends ConsumerWidget {
                                   
                                   // Transactions list items inside Column
                                   Column(
-                                    children: List.generate(transactions.length, (idx) {
-                                      final tx = transactions[idx];
+                                    children: [
+                                      ...List.generate(displayTransactions.length, (idx) {
+                                        final tx = displayTransactions[idx];
                                       final category = categories.firstWhere(
                                         (c) => c.id == tx.categoryId,
                                         orElse: () => Category(name: 'Lain-lain', type: tx.type),
@@ -679,7 +672,33 @@ class HomeScreen extends ConsumerWidget {
                                           ),
                                         ),
                                       );
-                                    }),
+                                      }),
+                                      if (transactions.length > 10) ...[
+                                        const SizedBox(height: 12.0),
+                                        Divider(
+                                          height: 1.0,
+                                          thickness: 1.0,
+                                          color: isDarkMode ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.06),
+                                        ),
+                                        const SizedBox(height: 12.0),
+                                        Center(
+                                          child: TextButton.icon(
+                                            onPressed: () {
+                                              ref.read(navigationIndexProvider.notifier).setIndex(3);
+                                            },
+                                            icon: const Icon(Icons.arrow_forward_outlined, size: 16.0, color: Color(0xFFFC8A40)),
+                                            label: const Text(
+                                              'Lihat Semua Transaksi',
+                                              style: TextStyle(
+                                                color: Color(0xFFFC8A40),
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 13.0,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ],
                                   ),
                                 ],
                               ),
@@ -702,9 +721,8 @@ class HomeScreen extends ConsumerWidget {
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   void _showEditDialog(BuildContext context, WidgetRef ref, TransactionModel tx, List<Category> categories) {
     final noteController = TextEditingController(text: tx.note);
