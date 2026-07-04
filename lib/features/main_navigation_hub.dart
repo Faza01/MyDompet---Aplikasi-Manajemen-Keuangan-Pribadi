@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:inspire_blur/inspire_blur.dart';
 import 'transactions/home_screen.dart';
 import 'budgeting/budgeting_screen.dart';
 import 'reports/reports_screen.dart';
@@ -48,27 +49,15 @@ class _MainNavigationHubState extends State<MainNavigationHub> {
         height: 120.0,
         child: Stack(
           children: [
-            // Lightweight 3-band gradient blur (only 120px, not full screen)
+            // Progressive Backdrop Blur using GPU shaders from inspire_blur package
             Positioned.fill(
-              child: Column(
-                children: [
-                  // Band 1: top — no blur (transparent spacer)
-                  const SizedBox(height: 40.0, width: double.infinity),
-                  // Band 2: middle — light blur
-                  ClipRect(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
-                      child: const SizedBox(height: 40.0, width: double.infinity),
-                    ),
+              child: ClipRect(
+                child: Inspire.backdropBlur(
+                  config: InspireBlurConfig.bottomToTop(
+                    sigma: 20.0,
+                    fadeCurve: Curves.easeInSine,
                   ),
-                  // Band 3: bottom — strong blur behind navbar capsule
-                  ClipRect(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 12.0, sigmaY: 12.0),
-                      child: const SizedBox(height: 40.0, width: double.infinity),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
             // Floating Navbar Capsule

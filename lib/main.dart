@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:inspire_blur/inspire_blur.dart';
 import 'features/main_navigation_hub.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Precache inspire blur shaders
+  await Inspire.warmUp();
   
   // Set system overlays to transparent for a truly edge-to-edge floating UI
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
