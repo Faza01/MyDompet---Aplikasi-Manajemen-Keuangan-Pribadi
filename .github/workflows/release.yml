@@ -32,10 +32,26 @@ jobs:
           flutter build apk --release
           flutter build apk --release --split-per-abi
 
+      - name: Extract Changelog Section
+        id: extract_changelog
+        run: |
+          VERSION="${{ github.ref_name }}"
+          VERSION_CLEAN="${VERSION#v}"
+          echo "Extracting changelog for version $VERSION_CLEAN..."
+          awk -v ver="[$VERSION_CLEAN]" '
+            $0 ~ "^## " {
+              if (found) { exit }
+              if (index($2, ver) == 1 || index($2, "[" ver "]") == 1) { found=1; next }
+            }
+            found { print }
+          ' CHANGELOG.md > release_notes.txt
+          echo "--- Release Notes ---"
+          cat release_notes.txt
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: build/app/outputs/flutter-apk/*.apk
-          generate_release_notes: true
+          body_path: release_notes.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
