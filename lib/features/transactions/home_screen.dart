@@ -638,238 +638,192 @@ class HomeScreen extends ConsumerWidget {
                                   ),
                                   const SizedBox(height: 16.0),
 
-                                  // Transactions list items inside Column
-                                  Column(
-                                    children: [
-                                      ...List.generate(
-                                          displayTransactions.length, (idx) {
-                                        final tx = displayTransactions[idx];
-                                        final category = categories.firstWhere(
-                                          (c) => c.id == tx.categoryId,
-                                          orElse: () => Category(
-                                              name: 'Lain-lain', type: tx.type),
-                                        );
-
-                                        // Time subtitle formatting
-                                        String timeStr = DateFormat('HH:mm')
-                                            .format(tx.createdAt);
-                                        String dateSubtitle;
-                                        final txDate = DateTime(
-                                            tx.createdAt.year,
-                                            tx.createdAt.month,
-                                            tx.createdAt.day);
-                                        final today = DateTime(
-                                            now.year, now.month, now.day);
-                                        final yesterday = today
-                                            .subtract(const Duration(days: 1));
-
-                                        if (txDate == today) {
-                                          dateSubtitle = 'Hari ini, $timeStr';
-                                        } else if (txDate == yesterday) {
-                                          dateSubtitle = 'Kemarin, $timeStr';
-                                        } else {
-                                          dateSubtitle = DateFormat(
-                                                  'd MMM yyyy, HH:mm', 'id_ID')
-                                              .format(tx.createdAt);
+                                  // Transactions list items inside Column grouped by day
+                                  Builder(
+                                    builder: (context) {
+                                      // Group displayTransactions by date
+                                      final Map<String, List<TransactionModel>> groupedTransactions = {};
+                                      final dfHeader = DateFormat('dd MMMM yyyy', 'id_ID');
+                                      for (final tx in displayTransactions) {
+                                        final headerKey = dfHeader.format(tx.createdAt);
+                                        if (!groupedTransactions.containsKey(headerKey)) {
+                                          groupedTransactions[headerKey] = [];
                                         }
+                                        groupedTransactions[headerKey]!.add(tx);
+                                      }
 
-                                        return Dismissible(
-                                          key: Key('tx-${tx.id}'),
-                                          direction:
-                                              DismissDirection.endToStart,
-                                          background: Container(
-                                            color: Colors.redAccent,
-                                            alignment: Alignment.centerRight,
-                                            padding: const EdgeInsets.only(
-                                                right: 20.0),
-                                            child: const Icon(
-                                                Icons.delete_outline,
-                                                color: Colors.white),
-                                          ),
-                                          onDismissed: (direction) {
-                                            if (tx.id != null) {
-                                              ref
-                                                  .read(
-                                                      transactionsNotifierProvider
-                                                          .notifier)
-                                                  .deleteTransaction(tx.id!);
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                SnackBar(
-                                                  behavior:
-                                                      SnackBarBehavior.floating,
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              16.0)),
-                                                  backgroundColor: isDarkMode
-                                                      ? const Color(0xFF131D1D)
-                                                      : const Color(0xFF2E3131),
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 16.0,
-                                                      vertical: 8.0),
-                                                  duration: const Duration(
-                                                      seconds: 5),
-                                                  content: Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                          'Transaksi "${tx.note}" dihapus',
-                                                          style:
-                                                              const TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize:
-                                                                      13.0),
-                                                        ),
+                                      return Column(
+                                        children: [
+                                          ...groupedTransactions.entries.expand((entry) {
+                                            final dateHeader = entry.key;
+                                            final txList = entry.value;
+
+                                            return [
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 14.0, bottom: 8.0),
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      dateHeader,
+                                                      style: TextStyle(
+                                                        fontSize: 12.0,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: isDarkMode ? Colors.white70 : Colors.black87,
                                                       ),
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          ref
-                                                              .read(
-                                                                  transactionsNotifierProvider
-                                                                      .notifier)
-                                                              .addTransaction(
-                                                                  tx);
-                                                          ScaffoldMessenger.of(
-                                                                  context)
-                                                              .hideCurrentSnackBar();
-                                                        },
-                                                        child: const Text(
-                                                          'Urungkan',
-                                                          style: TextStyle(
-                                                              color: Color(
-                                                                  0xFFFC8A40),
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontSize: 13.0),
-                                                        ),
-                                                      ),
-                                                      IconButton(
-                                                        icon: const Icon(
-                                                            Icons.close,
-                                                            color:
-                                                                Colors.white70,
-                                                            size: 16.0),
-                                                        padding:
-                                                            EdgeInsets.zero,
-                                                        constraints:
-                                                            const BoxConstraints(),
-                                                        onPressed: () {
-                                                          ScaffoldMessenger.of(
-                                                                  context)
-                                                              .hideCurrentSnackBar();
-                                                        },
-                                                      ),
-                                                    ],
-                                                  ),
+                                                    ),
+                                                    const SizedBox(height: 4.0),
+                                                    Divider(
+                                                      color: isDarkMode ? Colors.white10 : Colors.black.withOpacity(0.06),
+                                                      thickness: 1.0,
+                                                      height: 1.0,
+                                                    ),
+                                                  ],
                                                 ),
-                                              );
-                                            }
-                                          },
-                                          child: InkWell(
-                                            onTap: () {
-                                              _showEditDialog(
-                                                  context, ref, tx, categories);
-                                            },
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 12.0),
-                                              child: Row(
-                                                children: [
-                                                  Container(
-                                                    width: 38.0,
-                                                    height: 38.0,
-                                                    decoration: BoxDecoration(
-                                                      color: isDarkMode
-                                                          ? const Color(
-                                                              0xFF131D1D)
-                                                          : const Color(
-                                                              0xFFECEEEE),
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                    child: Icon(
-                                                      _getCategoryIcon(
-                                                          category.icon),
-                                                      color: isDarkMode
-                                                          ? Colors.white
-                                                          : Colors.black,
-                                                      size: 18.0,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 12.0),
-                                                  Expanded(
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          (tx.note == null ||
-                                                                  tx.note!
-                                                                      .isEmpty)
-                                                              ? category.name
-                                                              : tx.note!,
-                                                          maxLines: 1,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 13.0,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 2.0),
-                                                        Text(
-                                                          dateSubtitle,
-                                                          style: TextStyle(
-                                                            fontSize: 10.5,
-                                                            color: isDarkMode
-                                                                ? Colors
-                                                                    .grey[400]
-                                                                : Colors
-                                                                    .grey[500],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 8.0),
-                                                  Text(
-                                                    (tx.type == 'income'
-                                                            ? '+ '
-                                                            : '- ') +
-                                                        _formatRp(tx.amount),
-                                                    style: TextStyle(
-                                                      fontSize: 13.0,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: tx.type == 'income'
-                                                          ? const Color(
-                                                              0xFF10B981) // Green for Income!
-                                                          : const Color(
-                                                              0xFFEF4444), // Red for Expense!
-                                                    ),
-                                                  ),
-                                                ],
                                               ),
-                                            ),
+                                              ...txList.map((tx) {
+                                                final category = categories.firstWhere(
+                                                  (c) => c.id == tx.categoryId,
+                                                  orElse: () => Category(
+                                                      name: 'Lain-lain', type: tx.type),
+                                                );
+
+                                                // Time subtitle formatting
+                                                final String dateSubtitle = DateFormat('HH:mm').format(tx.createdAt);
+
+                                                return Dismissible(
+                                                  key: Key('tx-${tx.id}'),
+                                                  direction: DismissDirection.endToStart,
+                                                  background: Container(
+                                                    color: Colors.redAccent,
+                                                    alignment: Alignment.centerRight,
+                                                    padding: const EdgeInsets.only(right: 20.0),
+                                                    child: const Icon(Icons.delete_outline, color: Colors.white),
+                                                  ),
+                                                  onDismissed: (direction) {
+                                                    if (tx.id != null) {
+                                                      ref.read(transactionsNotifierProvider.notifier).deleteTransaction(tx.id!);
+                                                      ScaffoldMessenger.of(context).showSnackBar(
+                                                        SnackBar(
+                                                          behavior: SnackBarBehavior.floating,
+                                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+                                                          backgroundColor: isDarkMode ? const Color(0xFF131D1D) : const Color(0xFF2E3131),
+                                                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                                          duration: const Duration(seconds: 5),
+                                                          content: Row(
+                                                            children: [
+                                                              Expanded(
+                                                                child: Text(
+                                                                  'Transaksi "${tx.note}" dihapus',
+                                                                  style: const TextStyle(color: Colors.white, fontSize: 13.0),
+                                                                ),
+                                                              ),
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  ref.read(transactionsNotifierProvider.notifier).addTransaction(tx);
+                                                                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                                                },
+                                                                child: const Text(
+                                                                  'Urungkan',
+                                                                  style: TextStyle(
+                                                                      color: Color(0xFFFC8A40),
+                                                                      fontWeight: FontWeight.bold,
+                                                                      fontSize: 13.0),
+                                                                ),
+                                                              ),
+                                                              IconButton(
+                                                                icon: const Icon(Icons.close, color: Colors.white70, size: 16.0),
+                                                                padding: EdgeInsets.zero,
+                                                                constraints: const BoxConstraints(),
+                                                                onPressed: () {
+                                                                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                                                },
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }
+                                                  },
+                                                  child: InkWell(
+                                                    onTap: () {
+                                                      _showEditDialog(context, ref, tx, categories);
+                                                    },
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                                                      child: Row(
+                                                        children: [
+                                                          Container(
+                                                            width: 38.0,
+                                                            height: 38.0,
+                                                            decoration: BoxDecoration(
+                                                              color: isDarkMode
+                                                                  ? const Color(0xFF131D1D)
+                                                                  : const Color(0xFFECEEEE),
+                                                              shape: BoxShape.circle,
+                                                            ),
+                                                            child: Icon(
+                                                              _getCategoryIcon(category.icon),
+                                                              color: isDarkMode ? Colors.white : Colors.black,
+                                                              size: 18.0,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(width: 12.0),
+                                                          Expanded(
+                                                            child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Text(
+                                                                  (tx.note == null || tx.note!.isEmpty)
+                                                                      ? category.name
+                                                                      : tx.note!,
+                                                                  maxLines: 1,
+                                                                  overflow: TextOverflow.ellipsis,
+                                                                  style: const TextStyle(
+                                                                    fontSize: 13.0,
+                                                                    fontWeight: FontWeight.w500,
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(height: 2.0),
+                                                                Text(
+                                                                  dateSubtitle,
+                                                                  style: TextStyle(
+                                                                    fontSize: 10.5,
+                                                                    color: isDarkMode ? Colors.grey[400] : Colors.grey[500],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          const SizedBox(width: 8.0),
+                                                          Text(
+                                                            (tx.type == 'income' ? '+ ' : '- ') + _formatRp(tx.amount),
+                                                            style: TextStyle(
+                                                              fontSize: 13.0,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: tx.type == 'income'
+                                                                  ? const Color(0xFF10B981)
+                                                                  : const Color(0xFFEF4444),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              }),
+                                            ];
+                                          }),
+                                          _buildPaginationRow(
+                                            context,
+                                            ref,
+                                            activePage,
+                                            totalPages,
+                                            isDarkMode,
                                           ),
-                                        );
-                                      }),
-                                      _buildPaginationRow(
-                                        context,
-                                        ref,
-                                        activePage,
-                                        totalPages,
-                                        isDarkMode,
-                                      ),
-                                    ],
+                                        ],
+                                      );
+                                    },
                                   ),
                                 ],
                               ),
