@@ -5,17 +5,34 @@ Semua perubahan penting pada proyek **MyDompet** akan didokumentasikan di berkas
 ## [1.2.0] - 2026-07-05
 
 ### Ditambahkan
-- **Custom Date Range Picker**: Dialog pemilihan rentang tanggal di Laporan Keuangan kini menggunakan pop-up kalender kecil (bukan layar penuh) dengan visual range selection monokrom dan mode input teks manual (ikon edit).
+- **Pencatatan Cepat & Chatbot Cerdas (NLP Quick Input)**:
+  - Penambahan antarmuka asisten percakapan (chatbot) untuk memproses input transaksi cepat.
+  - Dukungan edit pesan langsung secara inline (pesan pengguna dapat diedit kembali untuk memicu reparsing instan).
+  - Redesain dialog edit transaksi beranda dengan aksen garis warna vertikal (hijau/merah) di sisi kiri dan editor tanggal-waktu.
+- **Redesain & Fitur Baru Laporan Keuangan (Reports Screen)**:
+  - **Diagram Tren Keuangan Komparatif**: Menampilkan perbandingan 2 batang (Pemasukan vs Pengeluaran) secara berdampingan dengan tooltip detail berwarna adaptif (hijau/merah).
+  - **Penyaringan Rentang Tanggal Pop-up**: Mengubah dialog pemilihan rentang tanggal dari layar penuh menjadi modal dialog berukuran ringkas (`DateRangePickerDialog`) yang berpusat di layar.
+  - **Pemilihan Tanggal Monokrom & Manual**: Mengkustomisasi warna range selection menjadi hitam transparan (Light Mode) / putih transparan (Dark Mode) serta mengintegrasikan tombol edit manual untuk input teks terformat (`HH/BB/TTTT`) dua arah.
+  - **Penyaringan Lanjutan**: Selektor tipe alokasi, rentang waktu, dan filter multi-rekening berbasis Bottom Sheet yang didesain dengan bentuk kapsul minimalis dan indikator latar geser (*sliding active indicator*).
+  - **Interaktivitas Grafik**: Mendukung filter interaktif pada diagram batang, persentase nilai pada diagram pai, serta toggle interaktif alokasi dana dengan mengetuk kotak ringkasan Tren Keuangan.
+- **Redesain Pengaturan & Manajemen Dompet (Settings & Wallet dialog)**:
+  - **Unified Settings Container**: Pengelompokan item menu ke dalam satu kontainer terpadu ber-divider tipis dan ber-ikon warna-warni, lengkap dengan kartu header profil ringkas di bagian atas.
+  - **Premium Wallet dialog**: Desain ulang dialog Tambah/Edit dompet menggunakan modal pop-up melengkung (`borderRadius: 24.0`), selektor chip ikon lingkaran interaktif, grid palet warna logo, dan tombol aksi blok lebar penuh yang solid.
 
 ### Diperbaiki
-- **Redesain Palet Warna Kategori**: Mengganti warna ikon kategori yang gelap/kusam (*Teal Family + Orange Family*) dengan palet *Sophisticated Muted* — setiap kategori expense kini memiliki warna unik yang lebih hidup namun tetap elegan:
-  - Belanja → Warm Terracotta (`#E8845C`)
-  - Makanan → Golden Sand (`#E6A65D`)
-  - Tagihan → Soft Crimson (`#E05A5A`)
-  - Hiburan → Lavender Mist (`#A78BDA`)
-  - Transportasi → Sky Slate (`#5BA4D9`)
-  - Income (Gaji/Bonus/Terima Transfer) → Fresh Teal variants yang lebih cerah
-  - Transfer/Lain-lain → Steel Gray & Mist Gray yang lebih terang
+- **Redesain Palet Warna Kategori (Sophisticated Muted)**:
+  - Mengganti warna kategori gelap dan kusam dengan palet warna mid-tone premium yang kontras baik di mode gelap maupun terang:
+    - Belanja → Warm Terracotta (`#E8845C`)
+    - Makanan → Golden Sand (`#E6A65D`)
+    - Tagihan → Soft Crimson (`#E05A5A`)
+    - Hiburan → Lavender Mist (`#A78BDA`)
+    - Transportasi → Sky Slate (`#5BA4D9`)
+    - Pemasukan (Gaji, Bonus, Terima Transfer) → Varian Teal cerah yang segar
+    - Transfer & Lain-lain → Steel Gray (`#8B96A3`) & Mist Gray (`#A0AAB4`)
+  - Meningkatkan opacity latar belakang ikon kategori dari `12%` ke `15%` untuk visibilitas yang lebih tegas.
+- **Monokrom Ikon Dashboard**: Menyinkronkan seluruh ikon kategori di halaman Dashboard beranda menggunakan warna monokrom netral (putih/hitam transparan) demi mempertahankan estetika beranda yang sangat bersih.
+- **Duplikasi Database Safe Guard**: Memperbaiki bug duplikasi database ketika tombol "Batal Hapus" (Undo) di snackbar ditekan berkali-kali secara cepat menggunakan teknik debouncing/guarding.
+- **Optimasi CI/CD**: Upgrade versi Flutter SDK di CI ke 3.44.4 dan perbaikan penanganan parsing rilis otomatis.
 
 ## [1.1.0] - 2026-07-04
 
