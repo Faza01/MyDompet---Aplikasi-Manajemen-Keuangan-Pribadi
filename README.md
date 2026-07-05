@@ -1,93 +1,165 @@
-# <img src="assets/icon/new_icon_padded.png" width="38" valign="middle"/> MyDompet — Aplikasi Manajemen Keuangan Pribadi
+<div align="center">
 
-MyDompet adalah aplikasi manajemen keuangan pribadi modern untuk perangkat mobile yang dirancang dengan performa cepat, visual premium, serta navigasi super mulus. Aplikasi ini membantu melacak pengeluaran dan pemasukan harian, menetapkan batas anggaran belanja, serta menyajikan visualisasi laporan keuangan terperinci.
+<img src="assets/icon/new_icon_padded.png" alt="MyDompet app icon" width="150" />
 
----
+# MyDompet
 
-## 📥 Unduh Aplikasi (Download)
-Unduh dan pasang berkas APK rilis resmi terbaru untuk langsung mencoba aplikasi **MyDompet** di perangkat Android Anda:
+### Aplikasi Manajemen Keuangan Pribadi
 
-[![RELEASE](https://img.shields.io/github/v/release/Faza01/MyDompet-Aplikasi-Manajemen-Keuangan-Pribadi?label=RELEASE&color=007ec6&style=flat-square)](https://github.com/Faza01/MyDompet-Aplikasi-Manajemen-Keuangan-Pribadi/releases/latest)
+<br/>
 
-👉 **[Download Di Sini](https://github.com/Faza01/MyDompet-Aplikasi-Manajemen-Keuangan-Pribadi/releases/latest)**
+[![Latest release](https://img.shields.io/github/v/release/Faza01/MyDompet-Aplikasi-Manajemen-Keuangan-Pribadi?style=for-the-badge&labelColor=0d1117)](https://github.com/Faza01/MyDompet-Aplikasi-Manajemen-Keuangan-Pribadi/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/Faza01/MyDompet-Aplikasi-Manajemen-Keuangan-Pribadi/total?style=for-the-badge&labelColor=0d1117)](https://github.com/Faza01/MyDompet-Aplikasi-Manajemen-Keuangan-Pribadi/releases)
 
----
+<br/>
 
-## 📱 Screenshots
-| Beranda (Mode Terang) | Laporan Keuangan | Anggaran Kategori |
-| :---: | :---: | :---: |
-| ![Beranda](assets/screenshots/home.jpeg) | ![Laporan](assets/screenshots/reports.jpeg) | ![Anggaran](assets/screenshots/budgeting.jpeg) |
+[**Unduh**](#unduh) · [**Fitur**](#fitur) · [**Cara Install**](#cara-install) · [**Disclaimer**](#disclaimer)
 
----
-
-## ✨ Fitur Utama
-*   **Manajemen Multi-Dompet**: Tambah, ubah, dan hapus akun dompet/rekening Anda. Saldo gabungan dihitung secara real-time dan disajikan dalam bentuk kartu geser (*carousel card*) premium.
-*   **Pencatatan Cepat & Pintar (Quick Input NLP)**: Input transaksi instan berbasis teks asisten dengan pemrosesan bahasa alami (NLP sederhana). Cukup tulis *"makan bakso 25rb"* atau gunakan asisten suara (Voice input) untuk otomatis mendeteksi kategori dan nominalnya.
-*   **Paginasi Riwayat Transaksi**: Navigasi halaman riwayat transaksi interaktif (`< 1, 2, 3, ... >`) langsung di dashboard beranda untuk mendukung performa scroll konstan 120 FPS tanpa lag.
-*   **Manajemen Anggaran (Budgeting)**: Batasi pengeluaran bulanan per kategori dengan indikator bar progres interaktif.
-*   **Grafik Laporan Interaktif**: Visualisasi statistik keuangan menggunakan diagram pai (*pie chart*) dan diagram batang (*bar chart*) interaktif (Hari, Minggu, Bulan, Tahun).
-*   **Backup & Restore SQLite**: Ekspor database lokal ke file JSON eksternal dan pulihkan kembali kapan saja dengan mudah.
-*   **Truly Floating Glassmorphism Navbar**: Navigasi bilah bawah melayang murni (*pure floating capsule*) dengan efek bayangan drop shadow dan transisi gradasi memudar yang halus.
+</div>
 
 ---
 
-## 🛠️ Tech Stack
-*   **Framework**: Flutter (Dart)
-*   **State Management**: Riverpod (Notifier, AsyncNotifier, NotifierProvider)
-*   **Database**: SQLite (via `sqflite`)
-*   **Charting**: `fl_chart`
-*   **Shader Blur**: `progressive_blur` (GLSL Fragment Shaders)
-*   **Font**: General Sans (Lokal)
+<div align="center">
+
+<h1><a id="screenshots"></a>Screenshots</h1>
+
+<img src="assets/screenshots/home.jpeg" alt="Beranda" width="30%" />
+<img src="assets/screenshots/reports.jpeg" alt="Laporan Keuangan" width="30%" />
+<img src="assets/screenshots/budgeting.jpeg" alt="Anggaran Kategori" width="30%" />
+
+</div>
 
 ---
 
-## ⚙️ Cara Install & Menjalankan
+<div align="center">
 
-### Persyaratan:
-*   Flutter SDK (versi `>=3.0.0`)
-*   Android SDK / Xcode untuk emulator atau perangkat fisik
+<h1><a id="fitur"></a>Fitur</h1>
 
-### Langkah-langkah:
-1.  **Clone Repositori**:
-    ```bash
-    git clone https://github.com/Faza01/MyDompet-Aplikasi-Manajemen-Keuangan-Pribadi.git
-    cd MyDompet-Aplikasi-Manajemen-Keuangan-Pribadi
-    ```
-2.  **Unduh Dependensi**:
-    ```bash
-    flutter pub get
-    ```
-3.  **Jalankan di Mode Debug**:
-    ```bash
-    flutter run
-    ```
-4.  **Jalankan di Mode Performa Tinggi (Profile)**:
-    ```bash
-    flutter run --profile
-    ```
-5.  **Build APK Release (Split ABI)**:
-    ```bash
-    flutter build apk --release --split-per-abi
-    ```
+<table>
+  <tr>
+    <td width="50%" valign="top">
+
+#### Pencatatan Transaksi
+- Input transaksi instan berbasis teks maupun suara
+- Deteksi otomatis kategori dan nominal
+- Riwayat transaksi dengan navigasi halaman
+
+</td>
+    <td width="50%" valign="top">
+
+#### Manajemen Dompet
+- Kelola beberapa akun dompet atau rekening sekaligus
+- Saldo gabungan lintas akun
+
+</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+
+#### Anggaran & Laporan
+- Batas anggaran bulanan per kategori
+- Visualisasi statistik dalam diagram pai dan diagram batang
+- Rentang laporan harian, mingguan, bulanan, hingga tahunan
+
+</td>
+    <td width="50%" valign="top">
+
+#### Data & Privasi
+- Basis data tersimpan sepenuhnya secara lokal
+- Ekspor dan impor data untuk cadangan
+
+</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+
+#### Antarmuka
+- Desain modern minimalis
+
+</td>
+    <td width="50%" valign="top">
+
+</td>
+  </tr>
+</table>
+
+</div>
 
 ---
 
-## 📄 Lisensi & Penggunaan
+<div align="center">
 
-Hak Cipta © 2026 Faza. Seluruh hak cipta dilindungi undang-undang.
+<h1><a id="unduh"></a>Unduh</h1>
 
-Repositori ini berstatus *source-available* (kode terbuka untuk dilihat) **hanya untuk tujuan edukasi dan referensi pribadi**.
+<table>
+  <tr>
+    <th align="center">GitHub</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/Faza01/MyDompet-Aplikasi-Manajemen-Keuangan-Pribadi/releases/latest">
+        <img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Download from GitHub" height="60">
+      </a>
+    </td>
+  </tr>
+</table>
 
-### ✅ Anda DIPERBOLEHKAN untuk:
-- Melihat dan membaca kode sumber untuk mempelajari pola pengembangan Flutter.
-- Mempelajari arsitektur, struktur kode, dan pendekatan implementasi yang digunakan.
-- Mengunduh dan menggunakan APK hasil kompilasi dari menu [Releases](https://github.com/Faza01/MyDompet-Aplikasi-Manajemen-Keuangan-Pribadi/releases) untuk penggunaan pribadi.
-- Merujuk cuplikan kode kecil dalam catatan belajar Anda sendiri dengan mencantumkan sumber/atribusi.
+</div>
 
-### ❌ Anda TIDAK DIPERBOLEHKAN untuk:
-- Menyalin, mendistribusikan ulang (forking/cloning) kode sumber ini (secara keseluruhan atau bagian besar) sebagai proyek Anda sendiri.
-- Mengubah merek (rebranding), menamai ulang, atau menerbitkan ulang aplikasi ini.
-- Menggunakan kode ini (baik sebagian maupun seluruhnya) untuk tujuan komersial.
-- Menjual atau melisensikan perangkat lunak ini atau karya turunannya.
+---
 
-Jika Anda ingin menggunakan proyek ini di luar tujuan pembelajaran pribadi atau untuk tujuan komersial, silakan hubungi pemilik repositori untuk meminta izin tertulis.
+<div align="center">
+
+<h1><a id="cara-install"></a>Cara Install & Menjalankan</h1>
+
+</div>
+
+### Persyaratan
+- Flutter SDK (versi `>=3.0.0`)
+- Android SDK / Xcode untuk emulator atau perangkat fisik
+
+### Langkah-langkah
+
+1. Clone repositori:
+   ```bash
+   git clone https://github.com/Faza01/MyDompet-Aplikasi-Manajemen-Keuangan-Pribadi.git
+   cd MyDompet-Aplikasi-Manajemen-Keuangan-Pribadi
+   ```
+2. Unduh dependensi:
+   ```bash
+   flutter pub get
+   ```
+3. Jalankan di mode debug:
+   ```bash
+   flutter run
+   ```
+4. Jalankan di mode performa tinggi (profile):
+   ```bash
+   flutter run --profile
+   ```
+5. Build APK rilis (split per ABI):
+   ```bash
+   flutter build apk --release --split-per-abi
+   ```
+
+---
+
+<div align="center">
+
+<h1><a id="disclaimer"></a>Disclaimer</h1>
+
+</div>
+
+MyDompet dikembangkan sebagai proyek pribadi untuk keperluan pembelajaran. Aplikasi ini tidak berafiliasi dengan, disponsori oleh, atau terhubung dengan pihak bank, lembaga keuangan, maupun penyedia layanan pembayaran mana pun.
+
+Seluruh data yang dimasukkan pengguna disimpan secara lokal pada perangkat masing-masing. Kode sumber repositori ini bersifat *source-available* untuk tujuan edukasi dan referensi pribadi. Penyalinan, distribusi ulang, perubahan merek, maupun penggunaan untuk tujuan komersial tanpa izin tertulis dari pemilik repositori tidak diperkenankan.
+
+---
+
+<div align="center">
+
+<br/>
+
+**Dibuat oleh [Faza](https://github.com/Faza01)**
+
+</div>
