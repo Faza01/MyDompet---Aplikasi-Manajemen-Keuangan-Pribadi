@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../../core/theme/app_colors.dart';
 import '../../data/models/category.dart';
 import '../../data/models/keyword.dart';
 import 'budget_provider.dart';
@@ -65,9 +66,9 @@ class BudgetingScreen extends ConsumerWidget {
                 Color progressColor =
                     Theme.of(context).colorScheme.primary; // Core Ledger Teal
                 if (prog.percentage >= 1.0) {
-                  progressColor = const Color(0xFFDC2626); // Coral Red
+                  progressColor = AppColors.expense;
                 } else if (prog.percentage >= 0.75) {
-                  progressColor = Colors.amber;
+                  progressColor = AppColors.warning;
                 }
 
                 return Card(
@@ -174,7 +175,7 @@ class BudgetingScreen extends ConsumerWidget {
                               child: LinearProgressIndicator(
                                 value: prog.percentage.clamp(0.0, 1.0),
                                 backgroundColor: isDarkMode
-                                    ? const Color(0xFF12161A)
+                                    ? AppColors.darkScaffold
                                     : Colors.grey[200],
                                 color: progressColor,
                                 minHeight: 6,

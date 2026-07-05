@@ -6,6 +6,7 @@ import '../../data/models/transaction.dart';
 import '../accounts/accounts_provider.dart';
 import '../budgeting/categories_provider.dart';
 import 'transactions_provider.dart';
+import '../../core/theme/app_colors.dart';
 import '../../main.dart';
 
 class DashboardTimeframeNotifier extends Notifier<String> {
@@ -88,13 +89,13 @@ IconData _getAccountIcon(String? iconName) {
 
 Color? _parseCustomColor(String? colorStr) {
   if (colorStr == null || colorStr.isEmpty) return null;
-  if (colorStr == 'teal') return const Color(0xFF004D4D);
-  if (colorStr == 'orange') return const Color(0xFFFC8A40);
+  if (colorStr == 'teal') return AppColors.accentTeal;
+  if (colorStr == 'orange') return AppColors.accentOrange;
   if (colorStr == 'light_blue') return const Color(0xFF0288D1);
   if (colorStr == 'dark_blue') return const Color(0xFF0A192F);
   if (colorStr == 'red') return const Color(0xFFD32F2F);
   if (colorStr == 'purple') return const Color(0xFF673AB7);
-  if (colorStr == 'black') return const Color(0xFF2C2C2C);
+  if (colorStr == 'black') return AppColors.primaryBlack;
   if (colorStr == 'pink') return const Color(0xFFE91E63);
 
   // Try parsing hex
@@ -122,22 +123,9 @@ Color? _parseCustomColor(String? colorStr) {
 }
 
 List<Color> _generatePremiumGradient(Color baseColor) {
-  final double darkenFactor = 0.5;
-  final Color darkColor = Color.fromARGB(
-    255,
-    (baseColor.red * darkenFactor).round(),
-    (baseColor.green * darkenFactor).round(),
-    (baseColor.blue * darkenFactor).round(),
-  );
-
-  final double lightenFactor = 0.55;
-  final Color lightColor = Color.fromARGB(
-    255,
-    (baseColor.red + (255 - baseColor.red) * lightenFactor).round(),
-    (baseColor.green + (255 - baseColor.green) * lightenFactor).round(),
-    (baseColor.blue + (255 - baseColor.blue) * lightenFactor).round(),
-  );
-
+  final hsl = HSLColor.fromColor(baseColor);
+  final darkColor = hsl.withLightness((hsl.lightness * 0.5).clamp(0.0, 1.0)).toColor();
+  final lightColor = hsl.withLightness((hsl.lightness + (1.0 - hsl.lightness) * 0.55).clamp(0.0, 1.0)).toColor();
   return [darkColor, baseColor, lightColor];
 }
 
@@ -200,7 +188,7 @@ class HomeScreen extends ConsumerWidget {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: isDarkMode
-                                ? const Color(0xFF1E222B)
+                                ? AppColors.darkModal
                                 : Colors.grey[100],
                           ),
                           child: Icon(
@@ -258,7 +246,7 @@ class HomeScreen extends ConsumerWidget {
                       padding: const EdgeInsets.all(4.0),
                       decoration: BoxDecoration(
                         color: isDarkMode
-                            ? const Color(0xFF131D1D)
+                            ? AppColors.darkCard
                             : const Color(0xFFECEEEE),
                         borderRadius: BorderRadius.circular(12.0),
                       ),
@@ -345,7 +333,7 @@ class HomeScreen extends ConsumerWidget {
                               padding: const EdgeInsets.all(16.0),
                               decoration: BoxDecoration(
                                 color: isDarkMode
-                                    ? const Color(0xFF131D1D)
+                                    ? AppColors.darkCard
                                     : Colors.white,
                                 borderRadius: BorderRadius.circular(20.0),
                                 border: Border.all(
@@ -423,7 +411,7 @@ class HomeScreen extends ConsumerWidget {
                               padding: const EdgeInsets.all(16.0),
                               decoration: BoxDecoration(
                                 color: isDarkMode
-                                    ? const Color(0xFF131D1D)
+                                    ? AppColors.darkCard
                                     : Colors.white,
                                 borderRadius: BorderRadius.circular(20.0),
                                 border: Border.all(
@@ -591,7 +579,7 @@ class HomeScreen extends ConsumerWidget {
                           child: Card(
                             elevation: 0,
                             color: isDarkMode
-                                ? const Color(0xFF1E222B)
+                                ? AppColors.darkModal
                                 : Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20.0),
@@ -612,17 +600,13 @@ class HomeScreen extends ConsumerWidget {
                                       Container(
                                         padding: const EdgeInsets.all(8),
                                         decoration: BoxDecoration(
-                                          color: isDarkMode
-                                              ? const Color(0xFF003434)
-                                              : const Color(0xFFE0F2F1),
+                                          color: AppColors.accentTeal.withOpacity(0.15),
                                           borderRadius:
                                               BorderRadius.circular(10.0),
                                         ),
-                                        child: Icon(
+                                        child: const Icon(
                                           Icons.history_outlined,
-                                          color: isDarkMode
-                                              ? const Color(0xFF94D1D1)
-                                              : const Color(0xFF004D4D),
+                                          color: AppColors.accentTeal,
                                           size: 22.0,
                                         ),
                                       ),
@@ -695,7 +679,7 @@ class HomeScreen extends ConsumerWidget {
                                                   key: Key('tx-${tx.id}'),
                                                   direction: DismissDirection.endToStart,
                                                   background: Container(
-                                                    color: Colors.redAccent,
+                                                    color: AppColors.expense,
                                                     alignment: Alignment.centerRight,
                                                     padding: const EdgeInsets.only(right: 20.0),
                                                     child: const Icon(Icons.delete_outline, color: Colors.white),
@@ -707,7 +691,7 @@ class HomeScreen extends ConsumerWidget {
                                                         SnackBar(
                                                           behavior: SnackBarBehavior.floating,
                                                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-                                                          backgroundColor: isDarkMode ? const Color(0xFF131D1D) : const Color(0xFF2E3131),
+                                                          backgroundColor: isDarkMode ? AppColors.darkCard : const Color(0xFF2E3131),
                                                           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                                           duration: const Duration(seconds: 5),
                                                           content: Row(
@@ -877,7 +861,7 @@ class HomeScreen extends ConsumerWidget {
             }
 
             return Dialog(
-              backgroundColor: isDarkMode ? const Color(0xFF1E222B) : Colors.white,
+              backgroundColor: isDarkMode ? AppColors.darkModal : Colors.white,
               clipBehavior: Clip.antiAlias,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0),
@@ -894,7 +878,7 @@ class HomeScreen extends ConsumerWidget {
                     children: [
                       Container(
                         width: 5.0,
-                        color: type == 'expense' ? Colors.redAccent : const Color(0xFF0D9488),
+                        color: type == 'expense' ? AppColors.expense : AppColors.income,
                       ),
                       Expanded(
                         child: Padding(
@@ -929,7 +913,7 @@ class HomeScreen extends ConsumerWidget {
                                     child: _buildCustomTypeChip(
                                       title: 'Pengeluaran',
                                       isActive: type == 'expense',
-                                      activeColor: Colors.redAccent,
+                                      activeColor: AppColors.expense,
                                       onTap: () => setState(() => type = 'expense'),
                                       isDarkMode: isDarkMode,
                                     ),
@@ -939,7 +923,7 @@ class HomeScreen extends ConsumerWidget {
                                     child: _buildCustomTypeChip(
                                       title: 'Pemasukan',
                                       isActive: type == 'income',
-                                      activeColor: const Color(0xFF0D9488),
+                                      activeColor: AppColors.income,
                                       onTap: () => setState(() => type = 'income'),
                                       isDarkMode: isDarkMode,
                                     ),
@@ -988,7 +972,7 @@ class HomeScreen extends ConsumerWidget {
                                     child: DropdownButtonFormField<Category>(
                                       initialValue: selectedCat,
                                       dropdownColor: isDarkMode
-                                          ? const Color(0xFF1E222B)
+                                          ? AppColors.darkModal
                                           : Colors.white,
                                       borderRadius: BorderRadius.circular(12.0),
                                       items: filteredCats.map((c) {
@@ -1022,7 +1006,7 @@ class HomeScreen extends ConsumerWidget {
                                     child: DropdownButtonFormField<int>(
                                       initialValue: selectedAccId,
                                       dropdownColor: isDarkMode
-                                          ? const Color(0xFF1E222B)
+                                          ? AppColors.darkModal
                                           : Colors.white,
                                       borderRadius: BorderRadius.circular(12.0),
                                       items: accounts.map((a) {
@@ -1162,7 +1146,7 @@ class HomeScreen extends ConsumerWidget {
                                   const SizedBox(width: 8.0),
                                   ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: isDarkMode ? Colors.white : const Color(0xFF1E222B),
+                                      backgroundColor: isDarkMode ? Colors.white : AppColors.darkModal,
                                       foregroundColor: isDarkMode ? Colors.black : Colors.white,
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
                                       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -1650,21 +1634,13 @@ class _PremiumStackCardState extends State<PremiumStackCard>
     List<Color> gradientColors;
 
     if (widget.isAllAccounts) {
-      gradientColors = [
-        const Color(0xFF111111),
-        const Color(0xFF2C2C2C),
-        const Color(0xFF555555)
-      ];
+      gradientColors = _generatePremiumGradient(AppColors.primaryBlack);
     } else {
       final parsedColor = _parseCustomColor(colorId);
       if (parsedColor != null) {
         gradientColors = _generatePremiumGradient(parsedColor);
       } else {
-        gradientColors = [
-          const Color(0xFF002222),
-          const Color(0xFF004D4D),
-          const Color(0xFF4DB6B5)
-        ];
+        gradientColors = _generatePremiumGradient(AppColors.accentTeal);
       }
     }
 

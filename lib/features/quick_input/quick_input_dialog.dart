@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../../core/nlp/nlp_parser.dart';
+import '../../core/theme/app_colors.dart';
 import '../../data/models/category.dart';
 import '../../data/models/transaction.dart';
 import '../accounts/accounts_provider.dart';
@@ -609,7 +610,7 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
 
     if (categoriesAsync.isLoading || keywordsAsync.isLoading || accountsAsync.isLoading) {
       return Dialog(
-        backgroundColor: isDarkMode ? const Color(0xFF1E222B) : Colors.white,
+        backgroundColor: isDarkMode ? AppColors.darkModal : Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)),
         child: const Padding(
           padding: EdgeInsets.all(40.0),
@@ -624,7 +625,7 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
     final accounts = accountsAsync.value ?? [];
 
     return Dialog(
-      backgroundColor: isDarkMode ? const Color(0xFF1E222B) : Colors.white,
+      backgroundColor: isDarkMode ? AppColors.darkModal : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24.0),
         side: BorderSide(
@@ -694,7 +695,7 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                         if (!message.isUser) ...[
                           CircleAvatar(
                             radius: 14,
-                            backgroundColor: isDarkMode ? const Color(0xFF2C313E) : Colors.grey.shade200,
+                            backgroundColor: isDarkMode ? AppColors.darkElevated : Colors.grey.shade200,
                             child: Icon(Icons.smart_toy_outlined, size: 14, color: isDarkMode ? Colors.white70 : Colors.black54),
                           ),
                           const SizedBox(width: 8.0),
@@ -704,8 +705,8 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                             padding: const EdgeInsets.all(12.0),
                             decoration: BoxDecoration(
                               color: message.isUser
-                                  ? (isDarkMode ? const Color(0xFF2A2E3D) : const Color(0xFF1E222B))
-                                  : (isDarkMode ? const Color(0xFF232732) : Colors.grey.shade50),
+                                  ? (isDarkMode ? AppColors.darkElevated : AppColors.primaryBlack)
+                                  : (isDarkMode ? AppColors.darkElevated : Colors.grey.shade50),
                               borderRadius: BorderRadius.only(
                                 topLeft: const Radius.circular(16.0),
                                 topRight: const Radius.circular(16.0),
@@ -1144,7 +1145,7 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: isDarkMode ? const Color(0xFF232732) : Colors.grey.shade100,
+                        color: isDarkMode ? AppColors.darkElevated : Colors.grey.shade100,
                         borderRadius: BorderRadius.circular(24.0),
                         border: Border.all(
                           color: isDarkMode ? Colors.white10 : Colors.black.withOpacity(0.08),
@@ -1193,7 +1194,7 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                     child: Container(
                       padding: const EdgeInsets.all(10.0),
                       decoration: const BoxDecoration(
-                        color: Color(0xFF1E222B),
+                        color: AppColors.primaryBlack,
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(

@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../../core/theme/app_colors.dart';
 import '../../data/models/account.dart';
 import '../transactions/transactions_provider.dart';
 import 'accounts_provider.dart';
 
 Color? _parseCustomColor(String? colorStr) {
   if (colorStr == null || colorStr.isEmpty) return null;
-  if (colorStr == 'teal') return const Color(0xFF004D4D);
-  if (colorStr == 'orange') return const Color(0xFFFC8A40);
+  if (colorStr == 'teal') return AppColors.accentTeal;
+  if (colorStr == 'orange') return AppColors.accentOrange;
   if (colorStr == 'light_blue') return const Color(0xFF0288D1);
   if (colorStr == 'dark_blue') return const Color(0xFF0A192F);
   if (colorStr == 'red') return const Color(0xFFD32F2F);
   if (colorStr == 'purple') return const Color(0xFF673AB7);
-  if (colorStr == 'black') return const Color(0xFF2C2C2C);
+  if (colorStr == 'black') return AppColors.primaryBlack;
   if (colorStr == 'pink') return const Color(0xFFE91E63);
 
   // Try parsing hex
@@ -302,7 +303,7 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                       children: [
                         const Row(
                           children: [
-                            Icon(Icons.swap_horiz, color: Color(0xFF004D4D)),
+                            Icon(Icons.swap_horiz, color: AppColors.catTransfer),
                             SizedBox(width: 8),
                             Text(
                               'Pindah Dana / Transfer',
@@ -495,7 +496,7 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                         IconButton(
                           icon: Icon(Icons.account_balance_wallet,
                               color: selectedIcon == 'wallet'
-                                  ? const Color(0xFF004D4D)
+                                  ? AppColors.accentTeal
                                   : Colors.grey),
                           onPressed: () =>
                               setState(() => selectedIcon = 'wallet'),
@@ -503,7 +504,7 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                         IconButton(
                           icon: Icon(Icons.account_balance,
                               color: selectedIcon == 'account_balance'
-                                  ? const Color(0xFF004D4D)
+                                  ? AppColors.accentTeal
                                   : Colors.grey),
                           onPressed: () =>
                               setState(() => selectedIcon = 'account_balance'),
@@ -511,7 +512,7 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                         IconButton(
                           icon: Icon(Icons.payment,
                               color: selectedIcon == 'payment'
-                                  ? const Color(0xFF004D4D)
+                                  ? AppColors.accentTeal
                                   : Colors.grey),
                           onPressed: () =>
                               setState(() => selectedIcon = 'payment'),
@@ -525,9 +526,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                     const SizedBox(height: 8.0),
                     Row(
                       children: [
-                        buildColorDot('teal', const Color(0xFF004D4D)),
+                        buildColorDot('teal', AppColors.accentTeal),
                         const SizedBox(width: 12.0),
-                        buildColorDot('orange', const Color(0xFFFC8A40)),
+                        buildColorDot('orange', AppColors.accentOrange),
                         const SizedBox(width: 12.0),
                         if (isCustomActive) ...[
                           GestureDetector(
@@ -790,7 +791,7 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                         IconButton(
                           icon: Icon(Icons.account_balance_wallet,
                               color: selectedIcon == 'wallet'
-                                  ? const Color(0xFF004D4D)
+                                  ? AppColors.accentTeal
                                   : Colors.grey),
                           onPressed: () =>
                               setState(() => selectedIcon = 'wallet'),
@@ -798,7 +799,7 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                         IconButton(
                           icon: Icon(Icons.account_balance,
                               color: selectedIcon == 'account_balance'
-                                  ? const Color(0xFF004D4D)
+                                  ? AppColors.accentTeal
                                   : Colors.grey),
                           onPressed: () =>
                               setState(() => selectedIcon = 'account_balance'),
@@ -806,7 +807,7 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                         IconButton(
                           icon: Icon(Icons.payment,
                               color: selectedIcon == 'payment'
-                                  ? const Color(0xFF004D4D)
+                                  ? AppColors.accentTeal
                                   : Colors.grey),
                           onPressed: () =>
                               setState(() => selectedIcon = 'payment'),
@@ -820,9 +821,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                     const SizedBox(height: 8.0),
                     Row(
                       children: [
-                        buildColorDot('teal', const Color(0xFF004D4D)),
+                        buildColorDot('teal', AppColors.accentTeal),
                         const SizedBox(width: 12.0),
-                        buildColorDot('orange', const Color(0xFFFC8A40)),
+                        buildColorDot('orange', AppColors.accentOrange),
                         const SizedBox(width: 12.0),
                         if (isCustomActive) ...[
                           GestureDetector(

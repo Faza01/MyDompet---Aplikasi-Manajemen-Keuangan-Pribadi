@@ -3,6 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../../core/theme/app_colors.dart';
 import '../../data/models/category.dart';
 import '../accounts/accounts_provider.dart';
 import '../budgeting/categories_provider.dart';
@@ -913,7 +914,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                   borderRadius:
                                                       BorderRadius.circular(8.0),
                                                   gradient: const LinearGradient(
-                                                    colors: [Color(0xFF059669), Color(0xFF34D399)],
+                                                    colors: [AppColors.income, Color(0xFF2DD4BF)],
                                                     begin: Alignment.bottomCenter,
                                                     end: Alignment.topCenter,
                                                   ),
@@ -1086,7 +1087,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                         borderRadius:
                                                             BorderRadius.circular(rRadius),
                                                         gradient: const LinearGradient(
-                                                          colors: [Color(0xFF059669), Color(0xFF34D399)],
+                                                          colors: [AppColors.income, Color(0xFF2DD4BF)],
                                                           begin: Alignment.bottomCenter,
                                                           end: Alignment.topCenter,
                                                         ),

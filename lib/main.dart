@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:inspire_blur/inspire_blur.dart';
+import 'core/theme/app_colors.dart';
 import 'features/main_navigation_hub.dart';
 
 void main() async {
@@ -73,25 +74,25 @@ class KeuanganApp extends ConsumerWidget {
         useMaterial3: true,
         fontFamily: 'General Sans',
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF090F0F), // Deep Slate Teal
-        colorScheme: const ColorScheme.dark(
-          primary: Colors.white, // White primary for dark mode
-          secondary: Color(0xFFFC8A40), // Vibrant Orange
-          surface: Color(0xFF131D1D), // Dark Card Surface
-          error: Color(0xFFBA1A1A),
+        scaffoldBackgroundColor: AppColors.darkScaffold,
+        colorScheme: ColorScheme.dark(
+          primary: Colors.white,
+          secondary: AppColors.accentOrange,
+          surface: AppColors.darkCard,
+          error: AppColors.error,
         ),
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF090F0F),
+          backgroundColor: AppColors.darkScaffold,
           foregroundColor: Colors.white,
           centerTitle: true,
         ),
         cardTheme: const CardThemeData(
-          color: Color(0xFF131D1D),
+          color: AppColors.darkCard,
           elevation: 0,
         ),
         snackBarTheme: SnackBarThemeData(
           behavior: SnackBarBehavior.floating,
-          backgroundColor: const Color(0xFF131D1D),
+          backgroundColor: AppColors.snackBarBackground,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.0),
           ),
@@ -108,25 +109,25 @@ class KeuanganApp extends ConsumerWidget {
         useMaterial3: true,
         fontFamily: 'General Sans',
         brightness: Brightness.light,
-        scaffoldBackgroundColor: const Color(0xFFF8FAFA), // Off-white
-        colorScheme: const ColorScheme.light(
-          primary: Color(0xFF2C2C2C), // Charcoal primary for light mode
-          secondary: Color(0xFF9B4500), // Dark Orange
-          surface: Color(0xFFECEEEE), // Soft Mint-Gray surface
-          error: Color(0xFFBA1A1A),
+        scaffoldBackgroundColor: AppColors.background,
+        colorScheme: ColorScheme.light(
+          primary: AppColors.primaryBlack,
+          secondary: AppColors.accentOrange,
+          surface: AppColors.surface,
+          error: AppColors.error,
         ),
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFFF8FAFA),
-          foregroundColor: Color(0xFF191C1D),
+          backgroundColor: AppColors.background,
+          foregroundColor: AppColors.primaryBlack,
           centerTitle: true,
         ),
         cardTheme: const CardThemeData(
-          color: Color(0xFFFFFFFF),
+          color: AppColors.surface,
           elevation: 0,
         ),
         snackBarTheme: SnackBarThemeData(
           behavior: SnackBarBehavior.floating,
-          backgroundColor: const Color(0xFF2E3131),
+          backgroundColor: AppColors.snackBarBackground,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.0),
           ),

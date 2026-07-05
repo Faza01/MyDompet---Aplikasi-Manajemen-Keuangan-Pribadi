@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/theme/app_colors.dart';
 import '../../core/database/database_backup_helper.dart';
 import '../accounts/accounts_provider.dart';
 import '../accounts/accounts_screen.dart';
@@ -208,14 +209,14 @@ class SettingsScreen extends ConsumerWidget {
                       const SnackBar(
                         content:
                             Text('Data berhasil dipulihkan (Restore Sukses)!'),
-                        backgroundColor: Color(0xFF004D4D),
+                        backgroundColor: AppColors.income,
                       ),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Format JSON tidak valid atau rusak.'),
-                        backgroundColor: Colors.redAccent,
+                        backgroundColor: AppColors.error,
                       ),
                     );
                   }

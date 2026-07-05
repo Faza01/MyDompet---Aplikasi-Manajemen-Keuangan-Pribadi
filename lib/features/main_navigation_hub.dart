@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../core/theme/app_colors.dart';
 import '../main.dart';
 import 'transactions/home_screen.dart';
 import 'budgeting/budgeting_screen.dart';
@@ -57,12 +58,12 @@ class _MainNavigationHubState extends ConsumerState<MainNavigationHub> {
                     end: Alignment.bottomCenter,
                     colors: [
                       (isDarkMode
-                              ? const Color(0xFF0F1115)
-                              : const Color(0xFFF8F9FA))
+                              ? AppColors.darkScaffold
+                              : AppColors.background)
                           .withValues(alpha: 0.0),
                       (isDarkMode
-                              ? const Color(0xFF0F1115)
-                              : const Color(0xFFF8F9FA))
+                              ? AppColors.darkScaffold
+                              : AppColors.background)
                           .withValues(alpha: 0.95),
                     ],
                     stops: const [0.0, 0.8],
@@ -83,7 +84,7 @@ class _MainNavigationHubState extends ConsumerState<MainNavigationHub> {
                         width: 280.0,
                         height: 64.0,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF2C2C2C),
+                          color: AppColors.primaryBlack,
                           borderRadius: BorderRadius.circular(16.0),
                           boxShadow: [
                             BoxShadow(
