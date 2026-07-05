@@ -113,6 +113,10 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                               child: DropdownButton<int?>(
                                 value: _localAccountId,
                                 isExpanded: true,
+                                dropdownColor: isDarkMode
+                                    ? const Color(0xFF1E222B)
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(12.0),
                                 icon: Icon(
                                   Icons.unfold_more,
                                   size: 16.0,
@@ -145,16 +149,40 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                   ];
                                 },
                                 items: [
-                                  const DropdownMenuItem<int?>(
+                                  DropdownMenuItem<int?>(
                                     value: null,
-                                    child: Text('Semua Akun',
-                                        style: TextStyle(fontSize: 12.0)),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.account_balance_wallet_outlined,
+                                          size: 16.0,
+                                          color: isDarkMode ? Colors.white70 : Colors.black54,
+                                        ),
+                                        const SizedBox(width: 8.0),
+                                        const Text(
+                                          'Semua Akun',
+                                          style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w500),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                   ...accounts.map((acc) {
                                     return DropdownMenuItem<int?>(
                                       value: acc.account.id,
-                                      child: Text(acc.account.name,
-                                          style: const TextStyle(fontSize: 12.0)),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.credit_card_outlined,
+                                            size: 16.0,
+                                            color: isDarkMode ? Colors.white70 : Colors.black54,
+                                          ),
+                                          const SizedBox(width: 8.0),
+                                          Text(
+                                            acc.account.name,
+                                            style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.w500),
+                                          ),
+                                        ],
+                                      ),
                                     );
                                   }),
                                 ],
@@ -190,6 +218,10 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                               child: DropdownButton<String?>(
                                 value: _selectedDateRange != null ? null : _timeframe,
                                 isExpanded: true,
+                                dropdownColor: isDarkMode
+                                    ? const Color(0xFF1E222B)
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(12.0),
                                 icon: Icon(
                                   Icons.unfold_more,
                                   size: 16.0,
@@ -239,26 +271,62 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                     ),
                                   ];
                                 },
-                                items: const [
+                                items: [
                                   DropdownMenuItem(
                                     value: 'day',
-                                    child: Text('Hari Ini',
-                                        style: TextStyle(fontSize: 12.0)),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.today_outlined,
+                                          size: 16.0,
+                                          color: isDarkMode ? Colors.white70 : Colors.black54,
+                                        ),
+                                        const SizedBox(width: 8.0),
+                                        const Text('Hari Ini', style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w500)),
+                                      ],
+                                    ),
                                   ),
                                   DropdownMenuItem(
                                     value: 'week',
-                                    child: Text('Minggu Ini',
-                                        style: TextStyle(fontSize: 12.0)),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.view_week_outlined,
+                                          size: 16.0,
+                                          color: isDarkMode ? Colors.white70 : Colors.black54,
+                                        ),
+                                        const SizedBox(width: 8.0),
+                                        const Text('Minggu Ini', style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w500)),
+                                      ],
+                                    ),
                                   ),
                                   DropdownMenuItem(
                                     value: 'month',
-                                    child: Text('Bulan Ini',
-                                        style: TextStyle(fontSize: 12.0)),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.calendar_view_month_outlined,
+                                          size: 16.0,
+                                          color: isDarkMode ? Colors.white70 : Colors.black54,
+                                        ),
+                                        const SizedBox(width: 8.0),
+                                        const Text('Bulan Ini', style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w500)),
+                                      ],
+                                    ),
                                   ),
                                   DropdownMenuItem(
                                     value: 'year',
-                                    child: Text('Tahun Ini',
-                                        style: TextStyle(fontSize: 12.0)),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.calendar_today_outlined,
+                                          size: 16.0,
+                                          color: isDarkMode ? Colors.white70 : Colors.black54,
+                                        ),
+                                        const SizedBox(width: 8.0),
+                                        const Text('Tahun Ini', style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w500)),
+                                      ],
+                                    ),
                                   ),
                                 ],
                                 onChanged: _selectedDateRange != null
@@ -1114,7 +1182,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                     : Colors.black
                                                         .withOpacity(0.03)),
                                             borderRadius:
-                                                BorderRadius.circular(30.0),
+                                                BorderRadius.circular(12.0), // match border radius box/filter boxes
                                             border: Border.all(
                                               color: _allocationType == 'income'
                                                   ? const Color(0xFF10B981)
@@ -1156,7 +1224,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                     : Colors.black
                                                         .withOpacity(0.03)),
                                             borderRadius:
-                                                BorderRadius.circular(30.0),
+                                                BorderRadius.circular(12.0), // match border radius box/filter boxes
                                             border: Border.all(
                                               color: _allocationType == 'expense'
                                                   ? const Color(0xFFEF4444)
@@ -1263,7 +1331,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                             .toList();
                                         final dateRangeStr = _selectedDateRange !=
                                                 null
-                                            ? '${DateFormat('dd MMM yyyy').format(_selectedDateRange!.start)} - ${DateFormat('dd MMM yroi_ID').format(_selectedDateRange!.end)}'
+                                            ? '${DateFormat('dd MMM yyyy').format(_selectedDateRange!.start)} - ${DateFormat('dd MMM yyyy').format(_selectedDateRange!.end)}'
                                             : _timeframe == 'day'
                                                 ? 'Hari Ini'
                                                 : _timeframe == 'week'
