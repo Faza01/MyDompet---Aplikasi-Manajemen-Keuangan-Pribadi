@@ -909,10 +909,12 @@ class HomeScreen extends ConsumerWidget {
     String type = tx.type;
     final accounts = ref.read(accountsNotifierProvider).value ?? [];
     int? selectedAccId = tx.accountId;
+    DateTime selectedDateTime = tx.createdAt;
 
     showDialog(
       context: context,
       builder: (context) {
+        final isDarkMode = Theme.of(context).brightness == Brightness.dark;
         return StatefulBuilder(
           builder: (context, setState) {
             final filteredCats =
@@ -921,100 +923,343 @@ class HomeScreen extends ConsumerWidget {
               selectedCat = filteredCats.isNotEmpty ? filteredCats.first : null;
             }
 
-            return AlertDialog(
-              title: const Text('Edit Transaksi'),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ChoiceChip(
-                            label: const Center(child: Text('Pengeluaran')),
-                            selected: type == 'expense',
-                            onSelected: (val) {
-                              if (val) setState(() => type = 'expense');
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: ChoiceChip(
-                            label: const Center(child: Text('Pemasukan')),
-                            selected: type == 'income',
-                            onSelected: (val) {
-                              if (val) setState(() => type = 'income');
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    DropdownButtonFormField<Category>(
-                      initialValue: selectedCat,
-                      decoration: const InputDecoration(labelText: 'Kategori'),
-                      items: filteredCats.map((c) {
-                        return DropdownMenuItem(value: c, child: Text(c.name));
-                      }).toList(),
-                      onChanged: (val) => setState(() => selectedCat = val),
-                    ),
-                    const SizedBox(height: 8),
-                    DropdownButtonFormField<int>(
-                      initialValue: selectedAccId,
-                      decoration:
-                          const InputDecoration(labelText: 'Dompet / Akun'),
-                      items: accounts.map((a) {
-                        return DropdownMenuItem<int>(
-                          value: a.account.id,
-                          child: Text(a.account.name),
-                        );
-                      }).toList(),
-                      onChanged: (val) => setState(() => selectedAccId = val),
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      controller: noteController,
-                      decoration: const InputDecoration(labelText: 'Catatan'),
-                    ),
-                    TextField(
-                      controller: amountController,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(labelText: 'Nominal'),
-                    ),
-                  ],
+            return Dialog(
+              backgroundColor: isDarkMode ? const Color(0xFF1E222B) : Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                side: BorderSide(
+                  color: isDarkMode ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.05),
+                  width: 1,
                 ),
               ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('Batal'),
+              child: IntrinsicHeight(
+                child: SizedBox(
+                  width: 320,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Container(
+                        width: 5.0,
+                        decoration: BoxDecoration(
+                          color: type == 'expense' ? Colors.redAccent : const Color(0xFF10B981),
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(19.0),
+                            bottomLeft: Radius.circular(19.0),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    'Edit Transaksi',
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: isDarkMode ? Colors.white : Colors.black87,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  IconButton(
+                                    icon: Icon(Icons.close_outlined, size: 18, color: isDarkMode ? Colors.white70 : Colors.black54),
+                                    onPressed: () => Navigator.pop(context),
+                                    constraints: const BoxConstraints(),
+                                    padding: EdgeInsets.zero,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12.0),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: _buildCustomTypeChip(
+                                      title: 'Pengeluaran',
+                                      isActive: type == 'expense',
+                                      activeColor: Colors.redAccent,
+                                      onTap: () => setState(() => type = 'expense'),
+                                      isDarkMode: isDarkMode,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8.0),
+                                  Expanded(
+                                    child: _buildCustomTypeChip(
+                                      title: 'Pemasukan',
+                                      isActive: type == 'income',
+                                      activeColor: const Color(0xFF10B981),
+                                      onTap: () => setState(() => type = 'income'),
+                                      isDarkMode: isDarkMode,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 14.0),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child: TextField(
+                                      controller: noteController,
+                                      style: TextStyle(fontSize: 12.5, color: isDarkMode ? Colors.white : Colors.black87),
+                                      decoration: InputDecoration(
+                                        labelText: 'Catatan',
+                                        labelStyle: const TextStyle(fontSize: 11.0),
+                                        isDense: true,
+                                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6.0),
+                                  Expanded(
+                                    flex: 1,
+                                    child: TextField(
+                                      controller: amountController,
+                                      keyboardType: TextInputType.number,
+                                      style: TextStyle(fontSize: 12.5, color: isDarkMode ? Colors.white : Colors.black87),
+                                      decoration: InputDecoration(
+                                        labelText: 'Nominal',
+                                        labelStyle: const TextStyle(fontSize: 11.0),
+                                        isDense: true,
+                                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10.0),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: DropdownButtonFormField<Category>(
+                                      value: selectedCat,
+                                      items: filteredCats.map((c) {
+                                        return DropdownMenuItem(
+                                          value: c,
+                                          child: Text(c.name, style: const TextStyle(fontSize: 11.5)),
+                                        );
+                                      }).toList(),
+                                      onChanged: (val) => setState(() => selectedCat = val),
+                                      decoration: InputDecoration(
+                                        labelText: 'Kategori',
+                                        labelStyle: const TextStyle(fontSize: 10.0),
+                                        isDense: true,
+                                        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6.0),
+                                  Expanded(
+                                    child: DropdownButtonFormField<int>(
+                                      value: selectedAccId,
+                                      items: accounts.map((a) {
+                                        return DropdownMenuItem<int>(
+                                          value: a.account.id,
+                                          child: Text(a.account.name, style: const TextStyle(fontSize: 11.5)),
+                                        );
+                                      }).toList(),
+                                      onChanged: (val) => setState(() => selectedAccId = val),
+                                      decoration: InputDecoration(
+                                        labelText: 'Dompet',
+                                        labelStyle: const TextStyle(fontSize: 10.0),
+                                        isDense: true,
+                                        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10.0),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: InkWell(
+                                      onTap: () async {
+                                        final selectedDate = await showDatePicker(
+                                          context: context,
+                                          initialDate: selectedDateTime,
+                                          firstDate: DateTime(2000),
+                                          lastDate: DateTime(2100),
+                                        );
+                                        if (selectedDate != null) {
+                                          setState(() {
+                                            selectedDateTime = DateTime(
+                                              selectedDate.year,
+                                              selectedDate.month,
+                                              selectedDate.day,
+                                              selectedDateTime.hour,
+                                              selectedDateTime.minute,
+                                            );
+                                          });
+                                        }
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: isDarkMode ? Colors.white24 : Colors.black26,
+                                          ),
+                                          borderRadius: BorderRadius.circular(8.0),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.calendar_today_outlined, size: 12, color: isDarkMode ? Colors.white70 : Colors.black54),
+                                            const SizedBox(width: 6),
+                                            Expanded(
+                                              child: Text(
+                                                DateFormat('dd MMM yyyy').format(selectedDateTime),
+                                                style: TextStyle(fontSize: 11.0, color: isDarkMode ? Colors.white : Colors.black87),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6.0),
+                                  Expanded(
+                                    child: InkWell(
+                                      onTap: () async {
+                                        final selectedTime = await showTimePicker(
+                                          context: context,
+                                          initialTime: TimeOfDay.fromDateTime(selectedDateTime),
+                                        );
+                                        if (selectedTime != null) {
+                                          setState(() {
+                                            selectedDateTime = DateTime(
+                                              selectedDateTime.year,
+                                              selectedDateTime.month,
+                                              selectedDateTime.day,
+                                              selectedTime.hour,
+                                              selectedTime.minute,
+                                            );
+                                          });
+                                        }
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: isDarkMode ? Colors.white24 : Colors.black26,
+                                          ),
+                                          borderRadius: BorderRadius.circular(8.0),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.access_time_outlined, size: 12, color: isDarkMode ? Colors.white70 : Colors.black54),
+                                            const SizedBox(width: 6),
+                                            Expanded(
+                                              child: Text(
+                                                DateFormat('HH:mm').format(selectedDateTime),
+                                                style: TextStyle(fontSize: 11.0, color: isDarkMode ? Colors.white : Colors.black87),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16.0),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: Text(
+                                      'Batal',
+                                      style: TextStyle(
+                                        color: isDarkMode ? Colors.white70 : Colors.black54,
+                                        fontSize: 13.0,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8.0),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: isDarkMode ? Colors.white : const Color(0xFF1E222B),
+                                      foregroundColor: isDarkMode ? Colors.black : Colors.white,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                      minimumSize: const Size(80, 36),
+                                    ),
+                                    onPressed: () {
+                                      final amt = double.tryParse(amountController.text) ?? 0.0;
+                                      if (amt > 0) {
+                                        ref.read(transactionsNotifierProvider.notifier).updateTransaction(
+                                          tx.copyWith(
+                                            amount: amt,
+                                            type: type,
+                                            accountId: selectedAccId,
+                                            categoryId: selectedCat?.id,
+                                            note: noteController.text,
+                                            createdAt: selectedDateTime,
+                                          ),
+                                        );
+                                        Navigator.pop(context);
+                                      }
+                                    },
+                                    child: const Text(
+                                      'Simpan',
+                                      style: TextStyle(fontSize: 13.0, fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                TextButton(
-                  onPressed: () {
-                    final amt = double.tryParse(amountController.text) ?? 0.0;
-                    if (amt > 0) {
-                      ref
-                          .read(transactionsNotifierProvider.notifier)
-                          .updateTransaction(
-                            tx.copyWith(
-                              amount: amt,
-                              type: type,
-                              accountId: selectedAccId,
-                              categoryId: selectedCat?.id,
-                              note: noteController.text,
-                            ),
-                          );
-                      Navigator.pop(context);
-                    }
-                  },
-                  child: const Text('Simpan'),
-                ),
-              ],
+              ),
             );
           },
         );
       },
+    );
+  }
+
+  Widget _buildCustomTypeChip({
+    required String title,
+    required bool isActive,
+    required Color activeColor,
+    required VoidCallback onTap,
+    required bool isDarkMode,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        decoration: BoxDecoration(
+          color: isActive ? activeColor.withOpacity(0.15) : Colors.transparent,
+          borderRadius: BorderRadius.circular(10.0),
+          border: Border.all(
+            color: isActive ? activeColor : (isDarkMode ? Colors.white30 : Colors.black26),
+            width: 1,
+          ),
+        ),
+        child: Text(
+          title,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 12.0,
+            fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+            color: isActive ? activeColor : (isDarkMode ? Colors.white70 : Colors.black54),
+          ),
+        ),
+      ),
     );
   }
 
