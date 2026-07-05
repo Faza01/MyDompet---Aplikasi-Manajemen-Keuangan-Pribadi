@@ -18,7 +18,7 @@ class ReportsScreen extends ConsumerStatefulWidget {
 }
 
 class _ReportsScreenState extends ConsumerState<ReportsScreen> {
-  int? _localAccountId; // null means "Semua Akun"
+  final Set<int> _selectedAccountIds = {};
   String _timeframe = 'month'; // 'day' | 'week' | 'month' | 'year'
   DateTimeRange? _selectedDateRange; // null means no custom date range
   String _allocationType = 'expense'; // 'income' | 'expense'
@@ -60,6 +60,423 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     }
   }
 
+  IconData _getAccountIcon(String? iconName) {
+    switch (iconName) {
+      case 'wallet':
+        return Icons.account_balance_wallet_outlined;
+      case 'account_balance':
+        return Icons.account_balance_outlined;
+      case 'payment':
+        return Icons.payment_outlined;
+      default:
+        return Icons.credit_card_outlined;
+    }
+  }
+
+  Color _getPresetColor(String? colorName) {
+    switch (colorName) {
+      case 'teal':
+        return const Color(0xFF0D9488);
+      case 'orange':
+        return const Color(0xFFF2994A);
+      case 'black':
+        return const Color(0xFF1A1A1A);
+      case 'red':
+        return const Color(0xFFDC2626);
+      case 'gray':
+        return const Color(0xFF6B7280);
+      default:
+        return const Color(0xFF0D9488);
+    }
+  }
+
+  void _showWalletFilterBottomSheet(BuildContext context, List<AccountWithBalance> accounts) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: isDarkMode ? const Color(0xFF131D1D) : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            final tempSelected = Set<int>.from(_selectedAccountIds);
+
+            return Padding(
+              padding: EdgeInsets.fromLTRB(
+                20.0,
+                20.0,
+                20.0,
+                MediaQuery.of(context).viewInsets.bottom + 24.0,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Pilih rekening',
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          color: isDarkMode ? Colors.white : Colors.black87,
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              Icons.close,
+                              color: isDarkMode ? Colors.white70 : Colors.black54,
+                            ),
+                            onPressed: () => Navigator.pop(context),
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                          ),
+                          const SizedBox(height: 8.0),
+                          GestureDetector(
+                            onTap: () {
+                              setModalState(() {
+                                tempSelected.clear();
+                              });
+                            },
+                            child: Text(
+                              'Reset',
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                color: isDarkMode ? Colors.white54 : Colors.black54,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20.0),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(context).size.height * 0.4,
+                    ),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: accounts.map((acc) {
+                          final isChecked = tempSelected.contains(acc.account.id);
+                          return GestureDetector(
+                            onTap: () {
+                              setModalState(() {
+                                if (isChecked) {
+                                  tempSelected.remove(acc.account.id);
+                                } else {
+                                  tempSelected.add(acc.account.id!);
+                                }
+                              });
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(bottom: 12.0),
+                              padding: const EdgeInsets.all(16.0),
+                              decoration: BoxDecoration(
+                                color: isDarkMode
+                                    ? Colors.white.withOpacity(0.03)
+                                    : Colors.black.withOpacity(0.02),
+                                border: Border.all(
+                                  color: isDarkMode
+                                      ? Colors.white.withOpacity(0.08)
+                                      : Colors.black.withOpacity(0.08),
+                                  width: 1.0,
+                                ),
+                                borderRadius: BorderRadius.circular(16.0),
+                              ),
+                              child: Row(
+                                children: [
+                                  // Custom Checkbox
+                                  Container(
+                                    width: 22,
+                                    height: 22,
+                                    decoration: BoxDecoration(
+                                      color: isChecked
+                                          ? (isDarkMode ? Colors.white30 : Colors.black26)
+                                          : Colors.transparent,
+                                      border: Border.all(
+                                        color: isDarkMode ? Colors.white54 : Colors.black38,
+                                        width: 1.5,
+                                      ),
+                                      borderRadius: BorderRadius.circular(4.0),
+                                    ),
+                                    child: isChecked
+                                        ? const Icon(
+                                            Icons.check,
+                                            size: 16.0,
+                                            color: Colors.white,
+                                          )
+                                        : null,
+                                  ),
+                                  const SizedBox(width: 16.0),
+                                  Icon(
+                                    _getAccountIcon(acc.account.icon),
+                                    color: _getPresetColor(acc.account.color),
+                                    size: 20,
+                                  ),
+                                  const SizedBox(width: 12.0),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          acc.account.name,
+                                          style: TextStyle(
+                                            fontSize: 14.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: isDarkMode ? Colors.white70 : Colors.black87,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2.0),
+                                        Text(
+                                          _formatRp(acc.balance),
+                                          style: TextStyle(
+                                            fontSize: 12.0,
+                                            color: isDarkMode ? Colors.white38 : Colors.black38,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20.0),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.accentTeal,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24.0),
+                        ),
+                        elevation: 0,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _selectedAccountIds.clear();
+                          _selectedAccountIds.addAll(tempSelected);
+                        });
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'Tampilkan',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showCalendarFilterBottomSheet(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: isDarkMode ? const Color(0xFF131D1D) : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.fromLTRB(
+            20.0,
+            20.0,
+            20.0,
+            MediaQuery.of(context).viewInsets.bottom + 24.0,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Pilih rentang waktu',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      color: isDarkMode ? Colors.white : Colors.black87,
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.close,
+                      color: isDarkMode ? Colors.white70 : Colors.black54,
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20.0),
+              _buildCalendarOptionItem(
+                context,
+                label: 'Hari Ini',
+                icon: Icons.today_outlined,
+                isActive: _selectedDateRange == null && _timeframe == 'day',
+                onTap: () {
+                  setState(() {
+                    _selectedDateRange = null;
+                    _timeframe = 'day';
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              _buildCalendarOptionItem(
+                context,
+                label: 'Minggu Ini',
+                icon: Icons.view_week_outlined,
+                isActive: _selectedDateRange == null && _timeframe == 'week',
+                onTap: () {
+                  setState(() {
+                    _selectedDateRange = null;
+                    _timeframe = 'week';
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              _buildCalendarOptionItem(
+                context,
+                label: 'Bulan Ini',
+                icon: Icons.calendar_view_month_outlined,
+                isActive: _selectedDateRange == null && _timeframe == 'month',
+                onTap: () {
+                  setState(() {
+                    _selectedDateRange = null;
+                    _timeframe = 'month';
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              _buildCalendarOptionItem(
+                context,
+                label: 'Tahun Ini',
+                icon: Icons.calendar_today_outlined,
+                isActive: _selectedDateRange == null && _timeframe == 'year',
+                onTap: () {
+                  setState(() {
+                    _selectedDateRange = null;
+                    _timeframe = 'year';
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              _buildCalendarOptionItem(
+                context,
+                label: 'Pilih Range Tanggal',
+                icon: Icons.date_range_outlined,
+                isActive: _selectedDateRange != null,
+                onTap: () async {
+                  Navigator.pop(context); // Close bottom sheet
+                  final DateTimeRange? pickedRange = await showDateRangePicker(
+                    context: context,
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2100),
+                    initialDateRange: _selectedDateRange,
+                    builder: (context, child) {
+                      return Theme(
+                        data: isDarkMode ? ThemeData.dark() : ThemeData.light(),
+                        child: child!,
+                      );
+                    },
+                  );
+                  if (pickedRange != null) {
+                    setState(() {
+                      _selectedDateRange = pickedRange;
+                    });
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildCalendarOptionItem(
+    BuildContext context, {
+    required String label,
+    required IconData icon,
+    required bool isActive,
+    required VoidCallback onTap,
+  }) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+        decoration: BoxDecoration(
+          color: isActive
+              ? AppColors.accentTeal.withOpacity(0.1)
+              : (isDarkMode ? Colors.white.withOpacity(0.03) : Colors.black.withOpacity(0.02)),
+          border: Border.all(
+            color: isActive
+                ? AppColors.accentTeal
+                : (isDarkMode ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.08)),
+            width: 1.0,
+          ),
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: isActive ? AppColors.accentTeal : (isDarkMode ? Colors.white70 : Colors.black54),
+              size: 20,
+            ),
+            const SizedBox(width: 16.0),
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
+                  color: isActive ? AppColors.accentTeal : (isDarkMode ? Colors.white : Colors.black87),
+                ),
+              ),
+            ),
+            if (isActive)
+              const Icon(
+                Icons.check,
+                color: AppColors.accentTeal,
+                size: 20,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final transactionsAsync = ref.watch(transactionsNotifierProvider);
@@ -84,311 +501,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // 1. Filters Row with rounded card selection boxes matching dashboard dialog styles
-                accountsAsync.when(
-                  data: (accounts) {
-                    return Row(
-                      children: [
-                        // Account select box (inline Dropdown Menu)
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12.0, vertical: 2.0),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: isDarkMode
-                                    ? Colors.white30
-                                    : Colors.black,
-                                width: 1.0,
-                              ),
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<int?>(
-                                value: _localAccountId,
-                                isExpanded: true,
-                                dropdownColor: isDarkMode
-                                    ? const Color(0xFF1E222B)
-                                    : Colors.white,
-                                borderRadius: BorderRadius.circular(12.0),
-                                icon: Icon(
-                                  Icons.unfold_more,
-                                  size: 16.0,
-                                  color: isDarkMode
-                                      ? Colors.white54
-                                      : Colors.black54,
-                                ),
-                                selectedItemBuilder: (BuildContext context) {
-                                  return [
-                                    const Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        'Semua Akun',
-                                        style: TextStyle(
-                                            fontSize: 12.0,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    ),
-                                    ...accounts.map((acc) {
-                                      return Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          acc.account.name,
-                                          style: const TextStyle(
-                                              fontSize: 12.0,
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                      );
-                                    }),
-                                  ];
-                                },
-                                items: [
-                                  DropdownMenuItem<int?>(
-                                    value: null,
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.account_balance_wallet_outlined,
-                                          size: 16.0,
-                                          color: isDarkMode ? Colors.white70 : Colors.black54,
-                                        ),
-                                        const SizedBox(width: 8.0),
-                                        const Text(
-                                          'Semua Akun',
-                                          style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w500),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  ...accounts.map((acc) {
-                                    return DropdownMenuItem<int?>(
-                                      value: acc.account.id,
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.credit_card_outlined,
-                                            size: 16.0,
-                                            color: isDarkMode ? Colors.white70 : Colors.black54,
-                                          ),
-                                          const SizedBox(width: 8.0),
-                                          Text(
-                                            acc.account.name,
-                                            style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.w500),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  }),
-                                ],
-                                onChanged: (val) {
-                                  setState(() {
-                                    _localAccountId = val;
-                                  });
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8.0),
-                        // Timeframe select box (inline Dropdown Menu)
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12.0, vertical: 2.0),
-                            decoration: BoxDecoration(
-                              color: _selectedDateRange != null
-                                  ? (isDarkMode
-                                      ? Colors.white.withOpacity(0.04)
-                                      : Colors.black.withOpacity(0.03))
-                                  : null,
-                              border: Border.all(
-                                color: isDarkMode
-                                    ? Colors.white30
-                                    : Colors.black,
-                                width: 1.0,
-                              ),
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String?>(
-                                value: _selectedDateRange != null ? null : _timeframe,
-                                isExpanded: true,
-                                dropdownColor: isDarkMode
-                                    ? const Color(0xFF1E222B)
-                                    : Colors.white,
-                                borderRadius: BorderRadius.circular(12.0),
-                                icon: Icon(
-                                  Icons.unfold_more,
-                                  size: 16.0,
-                                  color: isDarkMode
-                                      ? Colors.white54
-                                      : Colors.black54,
-                                ),
-                                disabledHint: const Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    'Kustom (Aktif)',
-                                    style: TextStyle(
-                                        fontSize: 12.0,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.grey),
-                                  ),
-                                ),
-                                selectedItemBuilder: (BuildContext context) {
-                                  return [
-                                    const Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text('Hari Ini',
-                                          style: TextStyle(
-                                              fontSize: 12.0,
-                                              fontWeight: FontWeight.w500)),
-                                    ),
-                                    const Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text('Minggu Ini',
-                                          style: TextStyle(
-                                              fontSize: 12.0,
-                                              fontWeight: FontWeight.w500)),
-                                    ),
-                                    const Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text('Bulan Ini',
-                                          style: TextStyle(
-                                              fontSize: 12.0,
-                                              fontWeight: FontWeight.w500)),
-                                    ),
-                                    const Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text('Tahun Ini',
-                                          style: TextStyle(
-                                              fontSize: 12.0,
-                                              fontWeight: FontWeight.w500)),
-                                    ),
-                                  ];
-                                },
-                                items: [
-                                  DropdownMenuItem(
-                                    value: 'day',
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.today_outlined,
-                                          size: 16.0,
-                                          color: isDarkMode ? Colors.white70 : Colors.black54,
-                                        ),
-                                        const SizedBox(width: 8.0),
-                                        const Text('Hari Ini', style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w500)),
-                                      ],
-                                    ),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: 'week',
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.view_week_outlined,
-                                          size: 16.0,
-                                          color: isDarkMode ? Colors.white70 : Colors.black54,
-                                        ),
-                                        const SizedBox(width: 8.0),
-                                        const Text('Minggu Ini', style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w500)),
-                                      ],
-                                    ),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: 'month',
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.calendar_view_month_outlined,
-                                          size: 16.0,
-                                          color: isDarkMode ? Colors.white70 : Colors.black54,
-                                        ),
-                                        const SizedBox(width: 8.0),
-                                        const Text('Bulan Ini', style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w500)),
-                                      ],
-                                    ),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: 'year',
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.calendar_today_outlined,
-                                          size: 16.0,
-                                          color: isDarkMode ? Colors.white70 : Colors.black54,
-                                        ),
-                                        const SizedBox(width: 8.0),
-                                        const Text('Tahun Ini', style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w500)),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                                onChanged: _selectedDateRange != null
-                                    ? null
-                                    : (val) {
-                                        if (val != null) {
-                                          setState(() {
-                                            _timeframe = val;
-                                          });
-                                        }
-                                      },
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 4.0),
-                        // Calendar icon
-                        IconButton(
-                          icon: const Icon(Icons.calendar_month_outlined),
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                          onPressed: () async {
-                            final DateTimeRange? pickedRange =
-                                await showDateRangePicker(
-                              context: context,
-                              firstDate: DateTime(2000),
-                              lastDate: DateTime(2100),
-                              initialDateRange: _selectedDateRange,
-                              builder: (context, child) {
-                                return Theme(
-                                  data: isDarkMode
-                                      ? ThemeData.dark()
-                                      : ThemeData.light(),
-                                  child: child!,
-                                );
-                              },
-                            );
-                            if (pickedRange != null) {
-                              setState(() {
-                                _selectedDateRange = pickedRange;
-                              });
-                            }
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                  loading: () => const Center(child: LinearProgressIndicator()),
-                  error: (err, st) => const Text('Error loading accounts'),
-                ),
-                if (_selectedDateRange != null) ...[
-                  const SizedBox(height: 10.0),
-                  Center(
-                    child: InputChip(
-                      label: Text(
-                        'Rentang: ${DateFormat('dd MMM yyyy').format(_selectedDateRange!.start)} - ${DateFormat('dd MMM yyyy').format(_selectedDateRange!.end)}',
-                        style: const TextStyle(fontSize: 11.5),
-                      ),
-                      onDeleted: () {
-                        setState(() {
-                          _selectedDateRange = null;
-                        });
-                      },
-                      deleteIcon: const Icon(Icons.close, size: 14),
-                    ),
-                  ),
-                ],
-                const SizedBox(height: 16.0),
+
 
                 // 2. Data Rendering
                 transactionsAsync.when(
@@ -399,8 +512,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                     // Apply filters to transactions
                     final now = DateTime.now();
                     final filteredTxs = transactions.where((tx) {
-                      final matchesAccount = _localAccountId == null ||
-                          tx.accountId == _localAccountId;
+                      final matchesAccount = _selectedAccountIds.isEmpty ||
+                          _selectedAccountIds.contains(tx.accountId);
 
                       // Filter by Date
                       bool matchesDate = false;
@@ -653,13 +766,15 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                     final sortedAllocation = allocationByCategory.entries.toList()
                       ..sort((a, b) => b.value.compareTo(a.value));
 
-                    final selectedAccName = _localAccountId == null
+                    final selectedAccName = _selectedAccountIds.isEmpty
                         ? 'Semua Akun'
-                        : accounts
-                            .firstWhere((a) => a.account.id == _localAccountId,
-                                orElse: () => accounts.first)
-                            .account
-                            .name;
+                        : (_selectedAccountIds.length == 1
+                            ? accounts
+                                .firstWhere((a) => a.account.id == _selectedAccountIds.first,
+                                    orElse: () => accounts.first)
+                                .account
+                                .name
+                            : '${_selectedAccountIds.length} Rekening');
 
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -683,12 +798,88 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                Text(
-                                  isSingleDay ? 'Tren Keuangan Hari Ini' : 'Tren Keuangan',
-                                  style: const TextStyle(
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.bold),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      isSingleDay ? 'Tren Keuangan Hari Ini' : 'Tren Keuangan',
+                                      style: const TextStyle(
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () => _showWalletFilterBottomSheet(context, accounts),
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+                                            decoration: BoxDecoration(
+                                              color: isDarkMode
+                                                  ? Colors.white.withOpacity(0.06)
+                                                  : Colors.black.withOpacity(0.04),
+                                              borderRadius: BorderRadius.circular(10.0),
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  selectedAccName,
+                                                  style: TextStyle(
+                                                    fontSize: 12.0,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: isDarkMode ? Colors.white70 : Colors.black87,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 4.0),
+                                                Icon(
+                                                  Icons.keyboard_arrow_down,
+                                                  size: 16.0,
+                                                  color: isDarkMode ? Colors.white54 : Colors.black54,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8.0),
+                                        GestureDetector(
+                                          onTap: () => _showCalendarFilterBottomSheet(context),
+                                          child: Container(
+                                            padding: const EdgeInsets.all(6.0),
+                                            decoration: BoxDecoration(
+                                              color: isDarkMode
+                                                  ? Colors.white.withOpacity(0.06)
+                                                  : Colors.black.withOpacity(0.04),
+                                              borderRadius: BorderRadius.circular(10.0),
+                                            ),
+                                            child: Icon(
+                                              Icons.calendar_month_outlined,
+                                              size: 16.0,
+                                              color: isDarkMode ? Colors.white70 : Colors.black87,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
+                                if (_selectedDateRange != null) ...[
+                                  const SizedBox(height: 10.0),
+                                  Center(
+                                    child: InputChip(
+                                      label: Text(
+                                        'Rentang: ${DateFormat('dd MMM yyyy').format(_selectedDateRange!.start)} - ${DateFormat('dd MMM yyyy').format(_selectedDateRange!.end)}',
+                                        style: const TextStyle(fontSize: 11.5),
+                                      ),
+                                      onDeleted: () {
+                                        setState(() {
+                                          _selectedDateRange = null;
+                                        });
+                                      },
+                                      deleteIcon: const Icon(Icons.close, size: 14),
+                                    ),
+                                  ),
+                                ],
                                 const SizedBox(height: 16.0),
 
                                 // Totals side-by-side
