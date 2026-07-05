@@ -119,9 +119,9 @@ class DatabaseHelper {
     final nowStr = DateTime.now().toIso8601String();
 
     // Seed Accounts
-    await db.insert('accounts', {'name': 'Tunai', 'initial_balance': 100000.0, 'icon': 'wallet', 'created_at': nowStr});
-    await db.insert('accounts', {'name': 'Bank Mandiri', 'initial_balance': 1000000.0, 'icon': 'account_balance', 'created_at': nowStr});
-    await db.insert('accounts', {'name': 'GoPay', 'initial_balance': 50000.0, 'icon': 'payment', 'created_at': nowStr});
+    await db.insert('accounts', {'name': 'Tunai', 'initial_balance': 100000.0, 'icon': 'wallet', 'color': 'teal', 'created_at': nowStr});
+    await db.insert('accounts', {'name': 'Bank Mandiri', 'initial_balance': 1000000.0, 'icon': 'account_balance', 'color': 'black', 'created_at': nowStr});
+    await db.insert('accounts', {'name': 'GoPay', 'initial_balance': 50000.0, 'icon': 'payment', 'color': 'orange', 'created_at': nowStr});
 
     // Seed Categories
     // Income

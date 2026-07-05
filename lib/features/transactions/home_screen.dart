@@ -91,12 +91,12 @@ Color? _parseCustomColor(String? colorStr) {
   if (colorStr == null || colorStr.isEmpty) return null;
   if (colorStr == 'teal') return AppColors.accentTeal;
   if (colorStr == 'orange') return AppColors.accentOrange;
-  if (colorStr == 'light_blue') return const Color(0xFF0288D1);
-  if (colorStr == 'dark_blue') return const Color(0xFF0A192F);
-  if (colorStr == 'red') return const Color(0xFFD32F2F);
-  if (colorStr == 'purple') return const Color(0xFF673AB7);
+  if (colorStr == 'light_blue') return AppColors.accentTeal;
+  if (colorStr == 'dark_blue') return AppColors.primaryBlack;
+  if (colorStr == 'red') return AppColors.semanticRed;
+  if (colorStr == 'purple') return AppColors.neutralGray;
   if (colorStr == 'black') return AppColors.primaryBlack;
-  if (colorStr == 'pink') return const Color(0xFFE91E63);
+  if (colorStr == 'pink') return AppColors.accentOrange;
 
   // Try parsing hex
   try {
@@ -741,13 +741,16 @@ class HomeScreen extends ConsumerWidget {
                                                               width: 38.0,
                                                               height: 38.0,
                                                               decoration: BoxDecoration(
-                                                                color: category.color
-                                                                    .withOpacity(0.12),
+                                                                color: isDarkMode
+                                                                    ? Colors.white10
+                                                                    : Colors.black.withOpacity(0.05),
                                                                 shape: BoxShape.circle,
                                                               ),
                                                               child: Icon(
                                                                 _getCategoryIcon(category.icon),
-                                                                color: category.color,
+                                                                color: isDarkMode
+                                                                    ? Colors.white70
+                                                                    : Colors.black87,
                                                                 size: 18.0,
                                                               ),
                                                             ),

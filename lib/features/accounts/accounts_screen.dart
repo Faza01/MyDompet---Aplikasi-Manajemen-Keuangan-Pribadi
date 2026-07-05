@@ -10,12 +10,12 @@ Color? _parseCustomColor(String? colorStr) {
   if (colorStr == null || colorStr.isEmpty) return null;
   if (colorStr == 'teal') return AppColors.accentTeal;
   if (colorStr == 'orange') return AppColors.accentOrange;
-  if (colorStr == 'light_blue') return const Color(0xFF0288D1);
-  if (colorStr == 'dark_blue') return const Color(0xFF0A192F);
-  if (colorStr == 'red') return const Color(0xFFD32F2F);
-  if (colorStr == 'purple') return const Color(0xFF673AB7);
+  if (colorStr == 'light_blue') return AppColors.accentTeal;
+  if (colorStr == 'dark_blue') return AppColors.primaryBlack;
+  if (colorStr == 'red') return AppColors.semanticRed;
+  if (colorStr == 'purple') return AppColors.neutralGray;
   if (colorStr == 'black') return AppColors.primaryBlack;
-  if (colorStr == 'pink') return const Color(0xFFE91E63);
+  if (colorStr == 'pink') return AppColors.accentOrange;
 
   // Try parsing hex
   try {
@@ -538,7 +538,7 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                               height: 32.0,
                               decoration: BoxDecoration(
                                 color: _parseCustomColor(selectedColor) ??
-                                    const Color(0xFF0288D1),
+                                    AppColors.accentTeal,
                                 shape: BoxShape.circle,
                                 border: Border.all(
                                   color: isDarkMode
@@ -604,12 +604,12 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                         spacing: 10.0,
                         runSpacing: 10.0,
                         children: [
-                          {'id': '#0288D1', 'color': const Color(0xFF0288D1)},
-                          {'id': '#0A192F', 'color': const Color(0xFF0A192F)},
-                          {'id': '#D32F2F', 'color': const Color(0xFFD32F2F)},
-                          {'id': '#673AB7', 'color': const Color(0xFF673AB7)},
-                          {'id': '#2C2C2C', 'color': const Color(0xFF2C2C2C)},
-                          {'id': '#E91E63', 'color': const Color(0xFFE91E63)},
+                          {'id': '#1A1A1A', 'color': AppColors.primaryBlack},
+                          {'id': '#0D9488', 'color': AppColors.accentTeal},
+                          {'id': '#F2994A', 'color': AppColors.accentOrange},
+                          {'id': '#6B7280', 'color': AppColors.neutralGray},
+                          {'id': '#DC2626', 'color': AppColors.semanticRed},
+                          {'id': '#064B45', 'color': const Color(0xFF064B45)},
                         ].map((c) {
                           final isThisSelected = selectedColor.toLowerCase() ==
                               (c['id'] as String).toLowerCase();
@@ -833,7 +833,7 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                               height: 32.0,
                               decoration: BoxDecoration(
                                 color: _parseCustomColor(selectedColor) ??
-                                    const Color(0xFF0288D1),
+                                    AppColors.accentTeal,
                                 shape: BoxShape.circle,
                                 border: Border.all(
                                   color: isDarkMode
@@ -899,12 +899,12 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                         spacing: 10.0,
                         runSpacing: 10.0,
                         children: [
-                          {'id': '#0288D1', 'color': const Color(0xFF0288D1)},
-                          {'id': '#0A192F', 'color': const Color(0xFF0A192F)},
-                          {'id': '#D32F2F', 'color': const Color(0xFFD32F2F)},
-                          {'id': '#673AB7', 'color': const Color(0xFF673AB7)},
-                          {'id': '#2C2C2C', 'color': const Color(0xFF2C2C2C)},
-                          {'id': '#E91E63', 'color': const Color(0xFFE91E63)},
+                          {'id': '#1A1A1A', 'color': AppColors.primaryBlack},
+                          {'id': '#0D9488', 'color': AppColors.accentTeal},
+                          {'id': '#F2994A', 'color': AppColors.accentOrange},
+                          {'id': '#6B7280', 'color': AppColors.neutralGray},
+                          {'id': '#DC2626', 'color': AppColors.semanticRed},
+                          {'id': '#064B45', 'color': const Color(0xFF064B45)},
                         ].map((c) {
                           final isThisSelected = selectedColor.toLowerCase() ==
                               (c['id'] as String).toLowerCase();

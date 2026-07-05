@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/app_colors.dart';
 
 class Category {
   final int? id;
@@ -17,32 +18,37 @@ class Category {
 
   Color get color {
     switch (icon) {
-      // Income Family (nuansa Teal, sesuai brand)
-      case 'work':
-        return const Color(0xFF0D9488); // Teal — Gaji
-      case 'card_giftcard':
-        return const Color(0xFF14B8A6); // Teal Light — Bonus
-      case 'download':
-        return const Color(0xFF2C7A94); // Cyan — Terima Transfer
-      case 'add_circle':
-        return const Color(0xFF6B7280); // Grey — Lain-lain (Masuk)
-      // Expense Family (variasi hangat & netral, selaras Orange brand)
-      case 'restaurant':
-        return const Color(0xFFB8722E); // Orange — Makanan
+      // Teal Family
       case 'directions_car':
-        return const Color(0xFF3B69B3); // Blue — Transportasi
+        return AppColors.catTransportasi;
+      case 'work':
+        return AppColors.catGaji;
+      case 'card_giftcard':
+        return AppColors.catBonus;
+      case 'download':
+        return AppColors.catTerimaTransfer;
+
+      // Orange Family
       case 'shopping_bag':
-        return const Color(0xFFAE4277); // Pink — Belanja
-      case 'receipt_long':
-        return const Color(0xFFDC2626); // Red — Tagihan
+        return AppColors.catBelanja;
+      case 'restaurant':
+        return AppColors.catMakanan;
       case 'sports_esports':
-        return const Color(0xFF6C47C0); // Purple — Hiburan
+        return AppColors.catHiburan;
+
+      // Gray Family
       case 'swap_horiz':
-        return const Color(0xFF4C46B9); // Indigo — Transfer
+        return AppColors.catTransfer;
       case 'remove_circle':
-        return const Color(0xFF6B7280); // Grey — Lain-lain (Keluar)
+      case 'add_circle':
+        return AppColors.catLainLain;
+
+      // Red semantic
+      case 'receipt_long':
+        return AppColors.catTagihan;
+
       default:
-        return const Color(0xFF6B7280); // Grey — fallback
+        return AppColors.catLainLain;
     }
   }
 
