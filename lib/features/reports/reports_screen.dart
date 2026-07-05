@@ -104,8 +104,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                             decoration: BoxDecoration(
                               border: Border.all(
                                 color: isDarkMode
-                                    ? Colors.white10
-                                    : Colors.black.withOpacity(0.08),
+                                    ? Colors.white30
+                                    : Colors.black,
+                                width: 1.0,
                               ),
                               borderRadius: BorderRadius.circular(12.0),
                             ),
@@ -209,8 +210,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                   : null,
                               border: Border.all(
                                 color: isDarkMode
-                                    ? Colors.white10
-                                    : Colors.black.withOpacity(0.08),
+                                    ? Colors.white30
+                                    : Colors.black,
+                                width: 1.0,
                               ),
                               borderRadius: BorderRadius.circular(12.0),
                             ),
