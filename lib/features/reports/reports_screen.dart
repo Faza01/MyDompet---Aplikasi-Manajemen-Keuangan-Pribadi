@@ -397,15 +397,34 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                   isActive: _selectedDateRange != null,
                   onTap: () async {
                     Navigator.pop(context); // Close dialog
-                    final DateTimeRange? pickedRange = await showDateRangePicker(
+                    final DateTimeRange? pickedRange = await showDialog<DateTimeRange>(
                       context: context,
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2100),
-                      initialDateRange: _selectedDateRange,
-                      builder: (context, child) {
+                      builder: (context) {
                         return Theme(
-                          data: isDarkMode ? ThemeData.dark() : ThemeData.light(),
-                          child: child!,
+                          data: (isDarkMode ? ThemeData.dark() : ThemeData.light()).copyWith(
+                            colorScheme: isDarkMode
+                                ? const ColorScheme.dark(
+                                    primary: Colors.white,
+                                    onPrimary: Colors.black,
+                                    primaryContainer: Colors.white24,
+                                    onPrimaryContainer: Colors.white,
+                                    surface: AppColors.darkModal,
+                                    onSurface: Colors.white,
+                                  )
+                                : const ColorScheme.light(
+                                    primary: Colors.black,
+                                    onPrimary: Colors.white,
+                                    primaryContainer: Color(0xFFE5E5E5),
+                                    onPrimaryContainer: Colors.black,
+                                    surface: Colors.white,
+                                    onSurface: Colors.black,
+                                  ),
+                          ),
+                          child: DateRangePickerDialog(
+                            firstDate: DateTime(2000),
+                            lastDate: DateTime(2100),
+                            initialDateRange: _selectedDateRange,
+                          ),
                         );
                       },
                     );
