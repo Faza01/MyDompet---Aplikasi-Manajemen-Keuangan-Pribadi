@@ -1897,7 +1897,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                 height: 36.0,
                                                 decoration: BoxDecoration(
                                                   color: catColor
-                                                      .withOpacity(0.12),
+                                                      .withOpacity(0.15),
                                                   shape: BoxShape.circle,
                                                 ),
                                                 child: Icon(

@@ -100,7 +100,7 @@ class BudgetingScreen extends ConsumerWidget {
                                 width: 40.0,
                                 height: 40.0,
                                 decoration: BoxDecoration(
-                                  color: catColor.withOpacity(0.12),
+                                  color: catColor.withOpacity(0.15),
                                   borderRadius: BorderRadius.circular(12.0),
                                 ),
                                 child: Icon(

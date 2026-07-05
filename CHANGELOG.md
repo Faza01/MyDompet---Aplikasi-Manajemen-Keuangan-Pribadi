@@ -2,6 +2,21 @@
 
 Semua perubahan penting pada proyek **MyDompet** akan didokumentasikan di berkas ini.
 
+## [1.2.0] - 2026-07-05
+
+### Ditambahkan
+- **Custom Date Range Picker**: Dialog pemilihan rentang tanggal di Laporan Keuangan kini menggunakan pop-up kalender kecil (bukan layar penuh) dengan visual range selection monokrom dan mode input teks manual (ikon edit).
+
+### Diperbaiki
+- **Redesain Palet Warna Kategori**: Mengganti warna ikon kategori yang gelap/kusam (*Teal Family + Orange Family*) dengan palet *Sophisticated Muted* — setiap kategori expense kini memiliki warna unik yang lebih hidup namun tetap elegan:
+  - Belanja → Warm Terracotta (`#E8845C`)
+  - Makanan → Golden Sand (`#E6A65D`)
+  - Tagihan → Soft Crimson (`#E05A5A`)
+  - Hiburan → Lavender Mist (`#A78BDA`)
+  - Transportasi → Sky Slate (`#5BA4D9`)
+  - Income (Gaji/Bonus/Terima Transfer) → Fresh Teal variants yang lebih cerah
+  - Transfer/Lain-lain → Steel Gray & Mist Gray yang lebih terang
+
 ## [1.1.0] - 2026-07-04
 
 ### Ditambahkan

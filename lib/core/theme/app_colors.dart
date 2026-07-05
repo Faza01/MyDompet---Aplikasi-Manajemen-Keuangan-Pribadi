@@ -38,24 +38,22 @@ class AppColors {
   static const textPrimary = primaryBlack;
   static const textSecondary = neutralGray;
 
-  // ── Category Colors (Shades of the 5 Brand Colors) ──────────
-  // Teal Family (Income + 1 Expense "cool")
-  static const catTransportasi = Color(0xFF064B45); // Teal paling gelap
-  static const catGaji = Color(0xFF0B8479);         // Teal gelap
-  static const catBonus = Color(0xFF11978C);        // Teal dasar (mendekati brand asli)
-  static const catTerimaTransfer = Color(0xFF1FADA1); // Teal terang
+  // ── Category Colors (Sophisticated Muted Palette) ───────────
+  // Income — Fresh Teal variants
+  static const catGaji = Color(0xFF34B8A8);           // Fresh Teal
+  static const catBonus = Color(0xFF4ECDC4);          // Mint Teal
+  static const catTerimaTransfer = Color(0xFF6BD9C5); // Light Jade
 
-  // Orange Family (Expense "hangat")
-  static const catBelanja = Color(0xFF974D0C);      // Orange gelap/burnt
-  static const catMakanan = Color(0xFFC16615);      // Orange dasar
-  static const catHiburan = Color(0xFFD07525);      // Orange lebih terang
+  // Expense — Unique color per category
+  static const catBelanja = Color(0xFFE8845C);        // Warm Terracotta
+  static const catMakanan = Color(0xFFE6A65D);        // Golden Sand
+  static const catTagihan = Color(0xFFE05A5A);        // Soft Crimson
+  static const catHiburan = Color(0xFFA78BDA);        // Lavender Mist
+  static const catTransportasi = Color(0xFF5BA4D9);   // Sky Slate
 
-  // Gray Family (Netral)
-  static const catTransfer = Color(0xFF635F5F);     // Gray gelap
-  static const catLainLain = Color(0xFF827D7D);     // Gray terang
-
-  // Red (semantic)
-  static const catTagihan = Color(0xFFDC2626);
+  // Neutral
+  static const catTransfer = Color(0xFF8B96A3);       // Steel Gray
+  static const catLainLain = Color(0xFFA0AAB4);       // Mist Gray
 
   // ── Snackbar ────────────────────────────────────────────────
   static const snackBarBackground = darkModal;        // Level 2
