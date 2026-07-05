@@ -756,19 +756,19 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                 ),
                                 const SizedBox(height: 24.0),
 
-                                // Bar chart (with 210 container height, top and horizontal padding to prevent tooltip overlap/clipping)
+                                // Bar chart
                                 if (isSingleDay)
                                   SizedBox(
-                                    height: 210,
+                                    height: 180,
                                     child: Container(
-                                      padding: const EdgeInsets.only(top: 28.0, left: 16.0, right: 16.0),
+                                      padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
                                       child: BarChart(
                                         BarChartData(
                                           alignment: BarChartAlignment.spaceEvenly,
                                           maxY: max(totalIncome, totalExpense) == 0
                                               ? 1000.0
                                               : max(totalIncome, totalExpense) *
-                                                  1.35, // increased headroom
+                                                  1.15, // reduced space headroom
                                           barTouchData: BarTouchData(
                                             enabled: true,
                                             touchTooltipData: BarTouchTooltipData(
@@ -850,10 +850,19 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                               barRods: [
                                                 BarChartRodData(
                                                   toY: totalIncome,
-                                                  width: 44,
+                                                  width: 48,
                                                   borderRadius:
                                                       BorderRadius.circular(8.0),
                                                   color: const Color(0xFF10B981),
+                                                  backDrawRodData: BackgroundBarChartRodData(
+                                                    show: true,
+                                                    toY: max(totalIncome, totalExpense) == 0
+                                                        ? 1000.0
+                                                        : max(totalIncome, totalExpense) * 1.15,
+                                                    color: isDarkMode
+                                                        ? Colors.white.withOpacity(0.04)
+                                                        : Colors.black.withOpacity(0.04),
+                                                  ),
                                                 ),
                                               ],
                                             ),
@@ -862,10 +871,19 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                               barRods: [
                                                 BarChartRodData(
                                                   toY: totalExpense,
-                                                  width: 44,
+                                                  width: 48,
                                                   borderRadius:
                                                       BorderRadius.circular(8.0),
                                                   color: const Color(0xFFEF4444),
+                                                  backDrawRodData: BackgroundBarChartRodData(
+                                                    show: true,
+                                                    toY: max(totalIncome, totalExpense) == 0
+                                                        ? 1000.0
+                                                        : max(totalIncome, totalExpense) * 1.15,
+                                                    color: isDarkMode
+                                                        ? Colors.white.withOpacity(0.04)
+                                                        : Colors.black.withOpacity(0.04),
+                                                  ),
                                                 ),
                                               ],
                                             ),
@@ -875,9 +893,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                     ),
                                   )
                                 else
-                                  // Scrollable Trend Bar Chart showing both Income and Expense side-by-side
+                                  // Scrollable Trend Bar Chart showing both Income and Expense side-by-side with light empty backgrounds
                                   SizedBox(
-                                    height: 210,
+                                    height: 180,
                                     child: Builder(
                                       builder: (context) {
                                         final double maxAmount = lineSpotsExpense.isEmpty
@@ -894,13 +912,16 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                               );
                                         final double chartMaxY = maxAmount == 0
                                             ? 1000.0
-                                            : maxAmount * 1.35; // increased headroom
+                                            : maxAmount * 1.15; // compact chart headroom
+
+                                        final isMonth = _timeframe == 'month' || totalChartPoints > 15;
 
                                         return SingleChildScrollView(
                                           scrollDirection: Axis.horizontal,
+                                          clipBehavior: Clip.none, // Allow tooltips to overflow the horizontal scrollview vertically/horizontally!
                                           child: Container(
-                                            width: max(MediaQuery.of(context).size.width - 80.0, totalChartPoints * 48.0),
-                                            padding: const EdgeInsets.only(top: 28.0, left: 16.0, right: 16.0),
+                                            width: max(MediaQuery.of(context).size.width - 64.0, totalChartPoints * (isMonth ? 36.0 : 52.0)),
+                                            padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
                                             child: BarChart(
                                               BarChartData(
                                                 alignment: BarChartAlignment.spaceAround,
@@ -978,25 +999,41 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                     totalChartPoints, (index) {
                                                   final incomeAmt = lineSpotsIncome[index].y;
                                                   final expenseAmt = lineSpotsExpense[index].y;
-                                                  final isMonth = _timeframe == 'month' || totalChartPoints > 15;
+                                                  final rodWidth = isMonth ? 12.0 : 18.0;
+                                                  final rRadius = isMonth ? 4.0 : 6.0;
+
                                                   return BarChartGroupData(
                                                     x: index,
                                                     barRods: [
                                                       // Pemasukan Bar (Green)
                                                       BarChartRodData(
                                                         toY: incomeAmt,
-                                                        width: isMonth ? 10 : 14,
+                                                        width: rodWidth,
                                                         borderRadius:
-                                                            BorderRadius.circular(2.0),
+                                                            BorderRadius.circular(rRadius),
                                                         color: const Color(0xFF10B981),
+                                                        backDrawRodData: BackgroundBarChartRodData(
+                                                          show: true,
+                                                          toY: chartMaxY,
+                                                          color: isDarkMode
+                                                              ? Colors.white.withOpacity(0.04)
+                                                              : Colors.black.withOpacity(0.04),
+                                                        ),
                                                       ),
                                                       // Pengeluaran Bar (Red)
                                                       BarChartRodData(
                                                         toY: expenseAmt,
-                                                        width: isMonth ? 10 : 14,
+                                                        width: rodWidth,
                                                         borderRadius:
-                                                            BorderRadius.circular(2.0),
+                                                            BorderRadius.circular(rRadius),
                                                         color: const Color(0xFFEF4444),
+                                                        backDrawRodData: BackgroundBarChartRodData(
+                                                          show: true,
+                                                          toY: chartMaxY,
+                                                          color: isDarkMode
+                                                              ? Colors.white.withOpacity(0.04)
+                                                              : Colors.black.withOpacity(0.04),
+                                                        ),
                                                       ),
                                                     ],
                                                   );
