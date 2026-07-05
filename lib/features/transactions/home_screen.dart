@@ -855,7 +855,6 @@ class HomeScreen extends ConsumerWidget {
 
   void _showEditDialog(BuildContext context, WidgetRef ref, TransactionModel tx,
       List<Category> categories) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final noteController = TextEditingController(text: tx.note);
     final amountController =
         TextEditingController(text: tx.amount.toStringAsFixed(0));
