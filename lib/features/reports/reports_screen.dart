@@ -24,7 +24,6 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
   String _allocationType = 'expense'; // 'income' | 'expense'
   bool _showAllocationChart = false;
 
-
   String _formatRp(double val) {
     return NumberFormat.currency(
       locale: 'id_ID',
@@ -38,7 +37,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
       final start = _selectedDateRange!.start;
       final end = _selectedDateRange!.end;
       final startStr = DateFormat('dd MMM').format(start);
-      if (start.year == end.year && start.month == end.month && start.day == end.day) {
+      if (start.year == end.year &&
+          start.month == end.month &&
+          start.day == end.day) {
         return 'Tren Keuangan: $startStr';
       }
       final endStr = DateFormat('dd MMM').format(end);
@@ -99,7 +100,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     }
   }
 
-  void _showWalletFilterBottomSheet(BuildContext context, List<AccountWithBalance> accounts) {
+  void _showWalletFilterBottomSheet(
+      BuildContext context, List<AccountWithBalance> accounts) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     showDialog(
       context: context,
@@ -138,7 +140,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                             IconButton(
                               icon: Icon(
                                 Icons.close,
-                                color: isDarkMode ? Colors.white70 : Colors.black54,
+                                color: isDarkMode
+                                    ? Colors.white70
+                                    : Colors.black54,
                                 size: 20,
                               ),
                               onPressed: () => Navigator.pop(context),
@@ -156,7 +160,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                 'Reset',
                                 style: TextStyle(
                                   fontSize: 13.0,
-                                  color: isDarkMode ? Colors.white54 : Colors.black54,
+                                  color: isDarkMode
+                                      ? Colors.white54
+                                      : Colors.black54,
                                   decoration: TextDecoration.underline,
                                 ),
                               ),
@@ -173,7 +179,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                       child: SingleChildScrollView(
                         child: Column(
                           children: accounts.map((acc) {
-                            final isChecked = tempSelected.contains(acc.account.id);
+                            final isChecked =
+                                tempSelected.contains(acc.account.id);
                             return GestureDetector(
                               onTap: () {
                                 setModalState(() {
@@ -186,15 +193,24 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                               },
                               child: Container(
                                 margin: const EdgeInsets.only(bottom: 10.0),
-                                padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 12.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 14.0, vertical: 12.0),
                                 decoration: BoxDecoration(
                                   color: isChecked
-                                      ? (isDarkMode ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.05))
-                                      : (isDarkMode ? Colors.white.withOpacity(0.03) : Colors.black.withOpacity(0.02)),
+                                      ? (isDarkMode
+                                          ? Colors.white.withOpacity(0.08)
+                                          : Colors.black.withOpacity(0.05))
+                                      : (isDarkMode
+                                          ? Colors.white.withOpacity(0.03)
+                                          : Colors.black.withOpacity(0.02)),
                                   border: Border.all(
                                     color: isChecked
-                                        ? (isDarkMode ? Colors.white30 : Colors.black38)
-                                        : (isDarkMode ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.08)),
+                                        ? (isDarkMode
+                                            ? Colors.white30
+                                            : Colors.black38)
+                                        : (isDarkMode
+                                            ? Colors.white.withOpacity(0.08)
+                                            : Colors.black.withOpacity(0.08)),
                                     width: 1.0,
                                   ),
                                   borderRadius: BorderRadius.circular(12.0),
@@ -207,13 +223,18 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                       height: 20,
                                       decoration: BoxDecoration(
                                         color: isChecked
-                                            ? (isDarkMode ? Colors.white30 : Colors.black26)
+                                            ? (isDarkMode
+                                                ? Colors.white30
+                                                : Colors.black26)
                                             : Colors.transparent,
                                         border: Border.all(
-                                          color: isDarkMode ? Colors.white54 : Colors.black38,
+                                          color: isDarkMode
+                                              ? Colors.white54
+                                              : Colors.black38,
                                           width: 1.5,
                                         ),
-                                        borderRadius: BorderRadius.circular(4.0),
+                                        borderRadius:
+                                            BorderRadius.circular(4.0),
                                       ),
                                       child: isChecked
                                           ? const Icon(
@@ -226,20 +247,27 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                     const SizedBox(width: 12.0),
                                     Icon(
                                       _getAccountIcon(acc.account.icon),
-                                      color: isDarkMode ? Colors.white70 : Colors.black87,
+                                      color: isDarkMode
+                                          ? Colors.white70
+                                          : Colors.black87,
                                       size: 18,
                                     ),
                                     const SizedBox(width: 12.0),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             acc.account.name,
                                             style: TextStyle(
                                               fontSize: 13.0,
-                                              fontWeight: isChecked ? FontWeight.bold : FontWeight.w500,
-                                              color: isDarkMode ? Colors.white : Colors.black87,
+                                              fontWeight: isChecked
+                                                  ? FontWeight.bold
+                                                  : FontWeight.w500,
+                                              color: isDarkMode
+                                                  ? Colors.white
+                                                  : Colors.black87,
                                             ),
                                           ),
                                           const SizedBox(height: 2.0),
@@ -247,7 +275,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                             _formatRp(acc.balance),
                                             style: TextStyle(
                                               fontSize: 11.0,
-                                              color: isDarkMode ? Colors.white38 : Colors.black38,
+                                              color: isDarkMode
+                                                  ? Colors.white38
+                                                  : Colors.black38,
                                             ),
                                           ),
                                         ],
@@ -264,8 +294,10 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                     const SizedBox(height: 16.0),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: isDarkMode ? Colors.white : const Color(0xFF1E222B),
-                        foregroundColor: isDarkMode ? Colors.black : Colors.white,
+                        backgroundColor:
+                            isDarkMode ? Colors.white : const Color(0xFF1E222B),
+                        foregroundColor:
+                            isDarkMode ? Colors.black : Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 12.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
@@ -398,34 +430,14 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                   onTap: () async {
                     Navigator.pop(context); // Close calendar options dialog
 
-                    final DateTimeRange? pickedRange = await showDialog<DateTimeRange>(
+                    final DateTimeRange? pickedRange =
+                        await showDialog<DateTimeRange>(
                       context: context,
-                      builder: (context) {
-                        return Theme(
-                          data: (isDarkMode ? ThemeData.dark() : ThemeData.light()).copyWith(
-                            colorScheme: isDarkMode
-                                ? const ColorScheme.dark(
-                                    primary: Colors.white,
-                                    onPrimary: Colors.black,
-                                    primaryContainer: Colors.white24,
-                                    onPrimaryContainer: Colors.white,
-                                    surface: AppColors.darkModal,
-                                    onSurface: Colors.white,
-                                  )
-                                : const ColorScheme.light(
-                                    primary: Colors.black,
-                                    onPrimary: Colors.white,
-                                    primaryContainer: Colors.black12, // Black but transparent
-                                    onPrimaryContainer: Colors.black,
-                                    surface: Colors.white,
-                                    onSurface: Colors.black,
-                                  ),
-                          ),
-                          child: DateRangePickerDialog(
-                            firstDate: DateTime(2000),
-                            lastDate: DateTime(2100),
-                            initialDateRange: _selectedDateRange,
-                          ),
+                      builder: (ctx) {
+                        return CustomDateRangePickerDialog(
+                          initialDateRange: _selectedDateRange,
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2100),
                         );
                       },
                     );
@@ -460,12 +472,18 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 12.0),
         decoration: BoxDecoration(
           color: isActive
-              ? (isDarkMode ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.05))
-              : (isDarkMode ? Colors.white.withOpacity(0.03) : Colors.black.withOpacity(0.02)),
+              ? (isDarkMode
+                  ? Colors.white.withOpacity(0.08)
+                  : Colors.black.withOpacity(0.05))
+              : (isDarkMode
+                  ? Colors.white.withOpacity(0.03)
+                  : Colors.black.withOpacity(0.02)),
           border: Border.all(
             color: isActive
                 ? (isDarkMode ? Colors.white30 : Colors.black38)
-                : (isDarkMode ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.08)),
+                : (isDarkMode
+                    ? Colors.white.withOpacity(0.08)
+                    : Colors.black.withOpacity(0.08)),
             width: 1.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -545,9 +563,11 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                           // Wallet Selector Pill
                           Expanded(
                             child: GestureDetector(
-                              onTap: () => _showWalletFilterBottomSheet(context, accounts),
+                              onTap: () => _showWalletFilterBottomSheet(
+                                  context, accounts),
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0, vertical: 12.0),
                                 decoration: BoxDecoration(
                                   color: isDarkMode
                                       ? const Color(0xFF1E222B)
@@ -561,20 +581,25 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                   ),
                                 ),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       selectedAccName,
                                       style: TextStyle(
                                         fontSize: 12.0,
                                         fontWeight: FontWeight.w600,
-                                        color: isDarkMode ? Colors.white70 : Colors.black87,
+                                        color: isDarkMode
+                                            ? Colors.white70
+                                            : Colors.black87,
                                       ),
                                     ),
                                     Icon(
                                       Icons.keyboard_arrow_down,
                                       size: 16.0,
-                                      color: isDarkMode ? Colors.white54 : Colors.black54,
+                                      color: isDarkMode
+                                          ? Colors.white54
+                                          : Colors.black54,
                                     ),
                                   ],
                                 ),
@@ -584,7 +609,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                           const SizedBox(width: 12.0),
                           // Calendar Icon Button
                           GestureDetector(
-                            onTap: () => _showCalendarFilterBottomSheet(context),
+                            onTap: () =>
+                                _showCalendarFilterBottomSheet(context),
                             child: Container(
                               padding: const EdgeInsets.all(12.0),
                               decoration: BoxDecoration(
@@ -602,7 +628,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                               child: Icon(
                                 Icons.calendar_month_outlined,
                                 size: 18.0,
-                                color: isDarkMode ? Colors.white70 : Colors.black87,
+                                color: isDarkMode
+                                    ? Colors.white70
+                                    : Colors.black87,
                               ),
                             ),
                           ),
@@ -630,7 +658,6 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                 ),
                 const SizedBox(height: 16.0),
 
-
                 // 2. Data Rendering
                 transactionsAsync.when(
                   data: (transactions) {
@@ -647,8 +674,10 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                       if (_selectedDateRange != null) {
                         final start = _selectedDateRange!.start;
                         final end = _selectedDateRange!.end;
-                        final actualEnd = DateTime(end.year, end.month, end.day, 23, 59, 59);
-                        matchesDate = tx.createdAt.isAfter(start.subtract(const Duration(seconds: 1))) &&
+                        final actualEnd =
+                            DateTime(end.year, end.month, end.day, 23, 59, 59);
+                        matchesDate = tx.createdAt.isAfter(
+                                start.subtract(const Duration(seconds: 1))) &&
                             tx.createdAt.isBefore(actualEnd);
                       } else {
                         if (_timeframe == 'day') {
@@ -690,11 +719,15 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         .fold(0.0, (sum, tx) => sum + tx.amount);
 
                     // Check if showing single day comparison
-                    final bool isSingleDay = (_selectedDateRange == null && _timeframe == 'day') ||
-                        (_selectedDateRange != null &&
-                            _selectedDateRange!.start.year == _selectedDateRange!.end.year &&
-                            _selectedDateRange!.start.month == _selectedDateRange!.end.month &&
-                            _selectedDateRange!.start.day == _selectedDateRange!.end.day);
+                    final bool isSingleDay =
+                        (_selectedDateRange == null && _timeframe == 'day') ||
+                            (_selectedDateRange != null &&
+                                _selectedDateRange!.start.year ==
+                                    _selectedDateRange!.end.year &&
+                                _selectedDateRange!.start.month ==
+                                    _selectedDateRange!.end.month &&
+                                _selectedDateRange!.start.day ==
+                                    _selectedDateRange!.end.day);
 
                     // Trend Line/Bar calculations for multi-day periods
                     List<FlSpot> lineSpotsIncome = [];
@@ -708,7 +741,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         final end = _selectedDateRange!.end;
                         final daysInRange = end.difference(start).inDays + 1;
 
-                        final List<DateTime> rangeDays = List.generate(daysInRange, (i) {
+                        final List<DateTime> rangeDays =
+                            List.generate(daysInRange, (i) {
                           final d = start.add(Duration(days: i));
                           return DateTime(d.year, d.month, d.day);
                         });
@@ -725,7 +759,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                           final key = df.format(tx.createdAt);
                           if (dailyExpenses.containsKey(key)) {
                             if (tx.type == 'expense') {
-                              dailyExpenses[key] = dailyExpenses[key]! + tx.amount;
+                              dailyExpenses[key] =
+                                  dailyExpenses[key]! + tx.amount;
                             } else if (tx.type == 'income') {
                               dailyIncome[key] = dailyIncome[key]! + tx.amount;
                             }
@@ -735,7 +770,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         totalChartPoints = daysInRange;
                         lineSpotsExpense = List.generate(daysInRange, (i) {
                           final key = df.format(rangeDays[i]);
-                          return FlSpot(i.toDouble(), dailyExpenses[key] ?? 0.0);
+                          return FlSpot(
+                              i.toDouble(), dailyExpenses[key] ?? 0.0);
                         });
                         lineSpotsIncome = List.generate(daysInRange, (i) {
                           final key = df.format(rangeDays[i]);
@@ -747,15 +783,18 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                           if (daysInRange <= 7) {
                             return DateFormat('dd MMM').format(day);
                           } else {
-                            if (i == 0 || i == daysInRange - 1 || i % (daysInRange ~/ 4) == 0) {
+                            if (i == 0 ||
+                                i == daysInRange - 1 ||
+                                i % (daysInRange ~/ 4) == 0) {
                               return DateFormat('dd MMM').format(day);
                             }
                             return '';
                           }
                         });
                       } else if (_timeframe == 'week') {
-                        final startOfWeek = DateTime(now.year, now.month, now.day)
-                            .subtract(Duration(days: now.weekday - 1));
+                        final startOfWeek =
+                            DateTime(now.year, now.month, now.day)
+                                .subtract(Duration(days: now.weekday - 1));
                         final List<DateTime> weekDays = List.generate(7, (i) {
                           final d = startOfWeek.add(Duration(days: i));
                           return DateTime(d.year, d.month, d.day);
@@ -773,7 +812,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                           final key = df.format(tx.createdAt);
                           if (dailyExpenses.containsKey(key)) {
                             if (tx.type == 'expense') {
-                              dailyExpenses[key] = dailyExpenses[key]! + tx.amount;
+                              dailyExpenses[key] =
+                                  dailyExpenses[key]! + tx.amount;
                             } else if (tx.type == 'income') {
                               dailyIncome[key] = dailyIncome[key]! + tx.amount;
                             }
@@ -783,7 +823,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         totalChartPoints = 7;
                         lineSpotsExpense = List.generate(7, (i) {
                           final key = df.format(weekDays[i]);
-                          return FlSpot(i.toDouble(), dailyExpenses[key] ?? 0.0);
+                          return FlSpot(
+                              i.toDouble(), dailyExpenses[key] ?? 0.0);
                         });
                         lineSpotsIncome = List.generate(7, (i) {
                           final key = df.format(weekDays[i]);
@@ -813,7 +854,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                           final key = df.format(tx.createdAt);
                           if (dailyExpenses.containsKey(key)) {
                             if (tx.type == 'expense') {
-                              dailyExpenses[key] = dailyExpenses[key]! + tx.amount;
+                              dailyExpenses[key] =
+                                  dailyExpenses[key]! + tx.amount;
                             } else if (tx.type == 'income') {
                               dailyIncome[key] = dailyIncome[key]! + tx.amount;
                             }
@@ -823,7 +865,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         totalChartPoints = daysInMonth;
                         lineSpotsExpense = List.generate(daysInMonth, (i) {
                           final key = df.format(monthDays[i]);
-                          return FlSpot(i.toDouble(), dailyExpenses[key] ?? 0.0);
+                          return FlSpot(
+                              i.toDouble(), dailyExpenses[key] ?? 0.0);
                         });
                         lineSpotsIncome = List.generate(daysInMonth, (i) {
                           final key = df.format(monthDays[i]);
@@ -854,7 +897,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         for (final tx in filteredTxs) {
                           final m = tx.createdAt.month;
                           if (tx.type == 'expense') {
-                            monthlyExpenses[m] = monthlyExpenses[m]! + tx.amount;
+                            monthlyExpenses[m] =
+                                monthlyExpenses[m]! + tx.amount;
                           } else if (tx.type == 'income') {
                             monthlyIncome[m] = monthlyIncome[m]! + tx.amount;
                           }
@@ -863,16 +907,28 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         totalChartPoints = 12;
                         lineSpotsExpense = List.generate(12, (i) {
                           final monthNum = i + 1;
-                          return FlSpot(i.toDouble(), monthlyExpenses[monthNum] ?? 0.0);
+                          return FlSpot(
+                              i.toDouble(), monthlyExpenses[monthNum] ?? 0.0);
                         });
                         lineSpotsIncome = List.generate(12, (i) {
                           final monthNum = i + 1;
-                          return FlSpot(i.toDouble(), monthlyIncome[monthNum] ?? 0.0);
+                          return FlSpot(
+                              i.toDouble(), monthlyIncome[monthNum] ?? 0.0);
                         });
 
                         bottomAxisLabels = [
-                          'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
-                          'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'
+                          'Jan',
+                          'Feb',
+                          'Mar',
+                          'Apr',
+                          'Mei',
+                          'Jun',
+                          'Jul',
+                          'Ags',
+                          'Sep',
+                          'Okt',
+                          'Nov',
+                          'Des'
                         ];
                       }
                     }
@@ -888,12 +944,13 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                     }
 
                     final double totalForAllocation =
-                        _allocationType == 'income' ? totalIncome : totalExpense;
+                        _allocationType == 'income'
+                            ? totalIncome
+                            : totalExpense;
 
-                    final sortedAllocation = allocationByCategory.entries.toList()
+                    final sortedAllocation = allocationByCategory.entries
+                        .toList()
                       ..sort((a, b) => b.value.compareTo(a.value));
-
-
 
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -918,7 +975,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       _getAdaptiveTitle(),
@@ -931,172 +989,249 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                 const SizedBox(height: 16.0),
 
                                 // Totals side-by-side
-                                 Builder(
-                                   builder: (context) {
-                                     final isIncomeActive = _showAllocationChart && _allocationType == 'income';
-                                     final isExpenseActive = _showAllocationChart && _allocationType == 'expense';
+                                Builder(
+                                  builder: (context) {
+                                    final isIncomeActive =
+                                        _showAllocationChart &&
+                                            _allocationType == 'income';
+                                    final isExpenseActive =
+                                        _showAllocationChart &&
+                                            _allocationType == 'expense';
 
-                                     return Container(
-                                       padding: const EdgeInsets.all(4.0),
-                                       decoration: BoxDecoration(
-                                         color: isDarkMode
-                                             ? AppColors.darkCard
-                                             : const Color(0xFFECEEEE),
-                                         borderRadius: BorderRadius.circular(14.0),
-                                       ),
-                                       child: Stack(
-                                         children: [
-                                           Positioned.fill(
-                                             child: AnimatedAlign(
-                                               duration: const Duration(milliseconds: 250),
-                                               curve: Curves.easeInOutCubic,
-                                               alignment: isIncomeActive
-                                                   ? Alignment.centerLeft
-                                                   : (isExpenseActive
-                                                       ? Alignment.centerRight
-                                                       : Alignment.center),
-                                               child: FractionallySizedBox(
-                                                 widthFactor: 0.5,
-                                                 heightFactor: 1.0,
-                                                 child: AnimatedContainer(
-                                                   duration: const Duration(milliseconds: 150),
-                                                   decoration: BoxDecoration(
-                                                     color: (isIncomeActive || isExpenseActive)
-                                                         ? const Color(0xFF2C2C2C)
-                                                         : Colors.transparent,
-                                                     borderRadius: BorderRadius.circular(12.0),
-                                                   ),
-                                                 ),
-                                               ),
-                                             ),
-                                           ),
-                                           Row(
-                                             children: [
-                                               Expanded(
-                                                 child: GestureDetector(
-                                                   onTap: () {
-                                                     setState(() {
-                                                       if (isIncomeActive) {
-                                                          _showAllocationChart = false;
-                                                       } else {
-                                                          _showAllocationChart = true;
-                                                          _allocationType = 'income';
-                                                       }
-                                                     });
-                                                   },
-                                                   child: Container(
-                                                     padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                                     color: Colors.transparent,
-                                                     child: Column(
-                                                       children: [
-                                                         Row(
-                                                           mainAxisAlignment: MainAxisAlignment.center,
-                                                           children: [
-                                                             Container(
-                                                               width: 8,
-                                                               height: 8,
-                                                               decoration: const BoxDecoration(
-                                                                 color: AppColors.income,
-                                                                 shape: BoxShape.circle,
-                                                               ),
-                                                             ),
-                                                             const SizedBox(width: 6),
-                                                             AnimatedDefaultTextStyle(
-                                                               duration: const Duration(milliseconds: 150),
-                                                               style: TextStyle(
-                                                                 fontSize: 11.5,
-                                                                 fontWeight: isIncomeActive ? FontWeight.bold : FontWeight.normal,
-                                                                 color: isIncomeActive
-                                                                     ? Colors.white
-                                                                     : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
-                                                               ),
-                                                               child: const Text('Pemasukan'),
-                                                             ),
-                                                           ],
-                                                         ),
-                                                         const SizedBox(height: 4),
-                                                         AnimatedDefaultTextStyle(
-                                                           duration: const Duration(milliseconds: 150),
-                                                           style: TextStyle(
-                                                             fontSize: 14.0,
-                                                             fontWeight: FontWeight.bold,
-                                                             color: isIncomeActive
-                                                                 ? Colors.white
-                                                                 : AppColors.income,
-                                                           ),
-                                                           child: Text(_formatRp(totalIncome)),
-                                                         ),
-                                                       ],
-                                                     ),
-                                                   ),
-                                                 ),
-                                               ),
-                                               Expanded(
-                                                 child: GestureDetector(
-                                                   onTap: () {
-                                                     setState(() {
-                                                       if (isExpenseActive) {
-                                                          _showAllocationChart = false;
-                                                       } else {
-                                                          _showAllocationChart = true;
-                                                          _allocationType = 'expense';
-                                                       }
-                                                     });
-                                                   },
-                                                   child: Container(
-                                                     padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                                     color: Colors.transparent,
-                                                     child: Column(
-                                                       children: [
-                                                         Row(
-                                                           mainAxisAlignment: MainAxisAlignment.center,
-                                                           children: [
-                                                             Container(
-                                                               width: 8,
-                                                               height: 8,
-                                                               decoration: const BoxDecoration(
-                                                                 color: AppColors.expense,
-                                                                 shape: BoxShape.circle,
-                                                               ),
-                                                             ),
-                                                             const SizedBox(width: 6),
-                                                             AnimatedDefaultTextStyle(
-                                                               duration: const Duration(milliseconds: 150),
-                                                               style: TextStyle(
-                                                                 fontSize: 11.5,
-                                                                 fontWeight: isExpenseActive ? FontWeight.bold : FontWeight.normal,
-                                                                 color: isExpenseActive
-                                                                     ? Colors.white
-                                                                     : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
-                                                               ),
-                                                               child: const Text('Pengeluaran'),
-                                                             ),
-                                                           ],
-                                                         ),
-                                                         const SizedBox(height: 4),
-                                                         AnimatedDefaultTextStyle(
-                                                           duration: const Duration(milliseconds: 150),
-                                                           style: TextStyle(
-                                                             fontSize: 14.0,
-                                                             fontWeight: FontWeight.bold,
-                                                             color: isExpenseActive
-                                                                 ? Colors.white
-                                                                 : AppColors.expense,
-                                                           ),
-                                                           child: Text(_formatRp(totalExpense)),
-                                                         ),
-                                                       ],
-                                                     ),
-                                                   ),
-                                                 ),
-                                               ),
-                                             ],
-                                           ),
-                                         ],
-                                       ),
-                                     );
-                                   },
-                                 ),
+                                    return Container(
+                                      padding: const EdgeInsets.all(4.0),
+                                      decoration: BoxDecoration(
+                                        color: isDarkMode
+                                            ? AppColors.darkCard
+                                            : const Color(0xFFECEEEE),
+                                        borderRadius:
+                                            BorderRadius.circular(14.0),
+                                      ),
+                                      child: Stack(
+                                        children: [
+                                          Positioned.fill(
+                                            child: AnimatedAlign(
+                                              duration: const Duration(
+                                                  milliseconds: 250),
+                                              curve: Curves.easeInOutCubic,
+                                              alignment: isIncomeActive
+                                                  ? Alignment.centerLeft
+                                                  : (isExpenseActive
+                                                      ? Alignment.centerRight
+                                                      : Alignment.center),
+                                              child: FractionallySizedBox(
+                                                widthFactor: 0.5,
+                                                heightFactor: 1.0,
+                                                child: AnimatedContainer(
+                                                  duration: const Duration(
+                                                      milliseconds: 150),
+                                                  decoration: BoxDecoration(
+                                                    color: (isIncomeActive ||
+                                                            isExpenseActive)
+                                                        ? const Color(
+                                                            0xFF2C2C2C)
+                                                        : Colors.transparent,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12.0),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      if (isIncomeActive) {
+                                                        _showAllocationChart =
+                                                            false;
+                                                      } else {
+                                                        _showAllocationChart =
+                                                            true;
+                                                        _allocationType =
+                                                            'income';
+                                                      }
+                                                    });
+                                                  },
+                                                  child: Container(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 10.0),
+                                                    color: Colors.transparent,
+                                                    child: Column(
+                                                      children: [
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Container(
+                                                              width: 8,
+                                                              height: 8,
+                                                              decoration:
+                                                                  const BoxDecoration(
+                                                                color: AppColors
+                                                                    .income,
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                                width: 6),
+                                                            AnimatedDefaultTextStyle(
+                                                              duration:
+                                                                  const Duration(
+                                                                      milliseconds:
+                                                                          150),
+                                                              style: TextStyle(
+                                                                fontSize: 11.5,
+                                                                fontWeight: isIncomeActive
+                                                                    ? FontWeight
+                                                                        .bold
+                                                                    : FontWeight
+                                                                        .normal,
+                                                                color: isIncomeActive
+                                                                    ? Colors
+                                                                        .white
+                                                                    : (isDarkMode
+                                                                        ? Colors.grey[
+                                                                            400]
+                                                                        : Colors
+                                                                            .grey[600]),
+                                                              ),
+                                                              child: const Text(
+                                                                  'Pemasukan'),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 4),
+                                                        AnimatedDefaultTextStyle(
+                                                          duration:
+                                                              const Duration(
+                                                                  milliseconds:
+                                                                      150),
+                                                          style: TextStyle(
+                                                            fontSize: 14.0,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color:
+                                                                isIncomeActive
+                                                                    ? Colors
+                                                                        .white
+                                                                    : AppColors
+                                                                        .income,
+                                                          ),
+                                                          child: Text(_formatRp(
+                                                              totalIncome)),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      if (isExpenseActive) {
+                                                        _showAllocationChart =
+                                                            false;
+                                                      } else {
+                                                        _showAllocationChart =
+                                                            true;
+                                                        _allocationType =
+                                                            'expense';
+                                                      }
+                                                    });
+                                                  },
+                                                  child: Container(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 10.0),
+                                                    color: Colors.transparent,
+                                                    child: Column(
+                                                      children: [
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Container(
+                                                              width: 8,
+                                                              height: 8,
+                                                              decoration:
+                                                                  const BoxDecoration(
+                                                                color: AppColors
+                                                                    .expense,
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                                width: 6),
+                                                            AnimatedDefaultTextStyle(
+                                                              duration:
+                                                                  const Duration(
+                                                                      milliseconds:
+                                                                          150),
+                                                              style: TextStyle(
+                                                                fontSize: 11.5,
+                                                                fontWeight: isExpenseActive
+                                                                    ? FontWeight
+                                                                        .bold
+                                                                    : FontWeight
+                                                                        .normal,
+                                                                color: isExpenseActive
+                                                                    ? Colors
+                                                                        .white
+                                                                    : (isDarkMode
+                                                                        ? Colors.grey[
+                                                                            400]
+                                                                        : Colors
+                                                                            .grey[600]),
+                                                              ),
+                                                              child: const Text(
+                                                                  'Pengeluaran'),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 4),
+                                                        AnimatedDefaultTextStyle(
+                                                          duration:
+                                                              const Duration(
+                                                                  milliseconds:
+                                                                      150),
+                                                          style: TextStyle(
+                                                            fontSize: 14.0,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color:
+                                                                isExpenseActive
+                                                                    ? Colors
+                                                                        .white
+                                                                    : AppColors
+                                                                        .expense,
+                                                          ),
+                                                          child: Text(_formatRp(
+                                                              totalExpense)),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
                                 const SizedBox(height: 14.0),
 
                                 // Net Difference (Selisih)
@@ -1119,9 +1254,10 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                   totalIncome - totalExpense),
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            color: totalIncome - totalExpense >= 0
-                                                ? const Color(0xFF0D9488)
-                                                : const Color(0xFFDC2626),
+                                            color:
+                                                totalIncome - totalExpense >= 0
+                                                    ? const Color(0xFF0D9488)
+                                                    : const Color(0xFFDC2626),
                                           ),
                                         ),
                                       ],
@@ -1134,43 +1270,62 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                 if (isSingleDay)
                                   Builder(
                                     builder: (context) {
-                                      final double activeMax = _showAllocationChart
-                                          ? (_allocationType == 'income' ? totalIncome : totalExpense)
-                                          : max(totalIncome, totalExpense);
-                                      final double singleDayMaxY = activeMax == 0 ? 1000.0 : activeMax * 1.15;
+                                      final double activeMax =
+                                          _showAllocationChart
+                                              ? (_allocationType == 'income'
+                                                  ? totalIncome
+                                                  : totalExpense)
+                                              : max(totalIncome, totalExpense);
+                                      final double singleDayMaxY =
+                                          activeMax == 0
+                                              ? 1000.0
+                                              : activeMax * 1.15;
 
                                       return SizedBox(
-                                        height: 200, // increased scrollview height to allow vertical tooltip float
+                                        height:
+                                            200, // increased scrollview height to allow vertical tooltip float
                                         child: Container(
-                                          padding: const EdgeInsets.only(top: 24.0, left: 8.0, right: 8.0),
+                                          padding: const EdgeInsets.only(
+                                              top: 24.0, left: 8.0, right: 8.0),
                                           child: BarChart(
                                             BarChartData(
-                                              alignment: BarChartAlignment.spaceEvenly,
+                                              alignment:
+                                                  BarChartAlignment.spaceEvenly,
                                               maxY: singleDayMaxY,
                                               barTouchData: BarTouchData(
                                                 enabled: true,
-                                                touchTooltipData: BarTouchTooltipData(
+                                                touchTooltipData:
+                                                    BarTouchTooltipData(
                                                   fitInsideHorizontally: true,
                                                   fitInsideVertically: true,
                                                   getTooltipColor: (group) {
                                                     if (_showAllocationChart) {
-                                                      return _allocationType == 'income'
-                                                          ? const Color(0xFF0D9488)
-                                                          : const Color(0xFFDC2626);
+                                                      return _allocationType ==
+                                                              'income'
+                                                          ? const Color(
+                                                              0xFF0D9488)
+                                                          : const Color(
+                                                              0xFFDC2626);
                                                     }
                                                     return group.x == 0
-                                                        ? const Color(0xFF0D9488)
-                                                        : const Color(0xFFDC2626); // Green for Pemasukan, Red for Pengeluaran
+                                                        ? const Color(
+                                                            0xFF0D9488)
+                                                        : const Color(
+                                                            0xFFDC2626); // Green for Pemasukan, Red for Pengeluaran
                                                   },
                                                   tooltipBorderRadius:
                                                       BorderRadius.circular(8),
-                                                  getTooltipItem: (group, groupIndex,
-                                                      rod, rodIndex) {
+                                                  getTooltipItem: (group,
+                                                      groupIndex,
+                                                      rod,
+                                                      rodIndex) {
                                                     return BarTooltipItem(
                                                       _formatRp(rod.toY),
                                                       const TextStyle(
-                                                        color: Colors.white, // white text stands out on green/red bg
-                                                        fontWeight: FontWeight.bold,
+                                                        color: Colors
+                                                            .white, // white text stands out on green/red bg
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                         fontSize: 11,
                                                       ),
                                                     );
@@ -1179,43 +1334,50 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                               ),
                                               titlesData: FlTitlesData(
                                                 rightTitles: const AxisTitles(
-                                                    sideTitles:
-                                                        SideTitles(showTitles: false)),
+                                                    sideTitles: SideTitles(
+                                                        showTitles: false)),
                                                 topTitles: const AxisTitles(
-                                                    sideTitles:
-                                                        SideTitles(showTitles: false)),
+                                                    sideTitles: SideTitles(
+                                                        showTitles: false)),
                                                 leftTitles: const AxisTitles(
-                                                    sideTitles:
-                                                        SideTitles(showTitles: false)),
+                                                    sideTitles: SideTitles(
+                                                        showTitles: false)),
                                                 bottomTitles: AxisTitles(
                                                   sideTitles: SideTitles(
                                                     showTitles: true,
-                                                    getTitlesWidget: (val, meta) {
+                                                    getTitlesWidget:
+                                                        (val, meta) {
                                                       if (val == 0) {
                                                         return const Padding(
                                                           padding:
-                                                              EdgeInsets.only(top: 8.0),
+                                                              EdgeInsets.only(
+                                                                  top: 8.0),
                                                           child: Text(
                                                             'Pemasukan',
                                                             style: TextStyle(
                                                               fontSize: 11,
                                                               fontWeight:
-                                                                  FontWeight.bold,
-                                                              color: Colors.grey,
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color:
+                                                                  Colors.grey,
                                                             ),
                                                           ),
                                                         );
                                                       } else if (val == 1) {
                                                         return const Padding(
                                                           padding:
-                                                              EdgeInsets.only(top: 8.0),
+                                                              EdgeInsets.only(
+                                                                  top: 8.0),
                                                           child: Text(
                                                             'Pengeluaran',
                                                             style: TextStyle(
                                                               fontSize: 11,
                                                               fontWeight:
-                                                                  FontWeight.bold,
-                                                              color: Colors.grey,
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color:
+                                                                  Colors.grey,
                                                             ),
                                                           ),
                                                         );
@@ -1225,10 +1387,13 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                   ),
                                                 ),
                                               ),
-                                              gridData: const FlGridData(show: false),
-                                              borderData: FlBorderData(show: false),
+                                              gridData:
+                                                  const FlGridData(show: false),
+                                              borderData:
+                                                  FlBorderData(show: false),
                                               barGroups: [
-                                                if (!_showAllocationChart || _allocationType == 'income')
+                                                if (!_showAllocationChart ||
+                                                    _allocationType == 'income')
                                                   BarChartGroupData(
                                                     x: 0,
                                                     barRods: [
@@ -1236,23 +1401,37 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                         toY: totalIncome,
                                                         width: 48,
                                                         borderRadius:
-                                                            BorderRadius.circular(8.0),
-                                                        gradient: const LinearGradient(
-                                                          colors: [AppColors.income, Color(0xFF2DD4BF)],
-                                                          begin: Alignment.bottomCenter,
-                                                          end: Alignment.topCenter,
+                                                            BorderRadius
+                                                                .circular(8.0),
+                                                        gradient:
+                                                            const LinearGradient(
+                                                          colors: [
+                                                            AppColors.income,
+                                                            Color(0xFF2DD4BF)
+                                                          ],
+                                                          begin: Alignment
+                                                              .bottomCenter,
+                                                          end: Alignment
+                                                              .topCenter,
                                                         ),
-                                                        backDrawRodData: BackgroundBarChartRodData(
+                                                        backDrawRodData:
+                                                            BackgroundBarChartRodData(
                                                           show: true,
                                                           toY: singleDayMaxY,
                                                           color: isDarkMode
-                                                              ? Colors.white.withOpacity(0.04)
-                                                              : Colors.black.withOpacity(0.04),
+                                                              ? Colors.white
+                                                                  .withOpacity(
+                                                                      0.04)
+                                                              : Colors.black
+                                                                  .withOpacity(
+                                                                      0.04),
                                                         ),
                                                       ),
                                                     ],
                                                   ),
-                                                if (!_showAllocationChart || _allocationType == 'expense')
+                                                if (!_showAllocationChart ||
+                                                    _allocationType ==
+                                                        'expense')
                                                   BarChartGroupData(
                                                     x: 1,
                                                     barRods: [
@@ -1260,18 +1439,30 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                         toY: totalExpense,
                                                         width: 48,
                                                         borderRadius:
-                                                            BorderRadius.circular(8.0),
-                                                        gradient: const LinearGradient(
-                                                          colors: [Color(0xFFDC2626), Color(0xFFF87171)],
-                                                          begin: Alignment.bottomCenter,
-                                                          end: Alignment.topCenter,
+                                                            BorderRadius
+                                                                .circular(8.0),
+                                                        gradient:
+                                                            const LinearGradient(
+                                                          colors: [
+                                                            Color(0xFFDC2626),
+                                                            Color(0xFFF87171)
+                                                          ],
+                                                          begin: Alignment
+                                                              .bottomCenter,
+                                                          end: Alignment
+                                                              .topCenter,
                                                         ),
-                                                        backDrawRodData: BackgroundBarChartRodData(
+                                                        backDrawRodData:
+                                                            BackgroundBarChartRodData(
                                                           show: true,
                                                           toY: singleDayMaxY,
                                                           color: isDarkMode
-                                                              ? Colors.white.withOpacity(0.04)
-                                                              : Colors.black.withOpacity(0.04),
+                                                              ? Colors.white
+                                                                  .withOpacity(
+                                                                      0.04)
+                                                              : Colors.black
+                                                                  .withOpacity(
+                                                                      0.04),
                                                         ),
                                                       ),
                                                     ],
@@ -1292,11 +1483,17 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                         if (_allocationType == 'income') {
                                           maxAmount = lineSpotsIncome.isEmpty
                                               ? 1000.0
-                                              : lineSpotsIncome.map((s) => s.y).reduce((a, b) => a > b ? a : b);
+                                              : lineSpotsIncome
+                                                  .map((s) => s.y)
+                                                  .reduce(
+                                                      (a, b) => a > b ? a : b);
                                         } else {
                                           maxAmount = lineSpotsExpense.isEmpty
                                               ? 1000.0
-                                              : lineSpotsExpense.map((s) => s.y).reduce((a, b) => a > b ? a : b);
+                                              : lineSpotsExpense
+                                                  .map((s) => s.y)
+                                                  .reduce(
+                                                      (a, b) => a > b ? a : b);
                                         }
                                       } else {
                                         maxAmount = lineSpotsExpense.isEmpty
@@ -1304,61 +1501,90 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                             : max(
                                                 lineSpotsExpense
                                                     .map((s) => s.y)
-                                                    .reduce((a, b) => a > b ? a : b),
+                                                    .reduce((a, b) =>
+                                                        a > b ? a : b),
                                                 lineSpotsIncome.isEmpty
                                                     ? 0.0
                                                     : lineSpotsIncome
                                                         .map((s) => s.y)
-                                                        .reduce((a, b) => a > b ? a : b),
+                                                        .reduce((a, b) =>
+                                                            a > b ? a : b),
                                               );
                                       }
                                       final double chartMaxY = maxAmount == 0
                                           ? 1000.0
-                                          : maxAmount * 1.15; // compact chart headroom
+                                          : maxAmount *
+                                              1.15; // compact chart headroom
 
-                                      final isMonth = _timeframe == 'month' || totalChartPoints > 15;
+                                      final isMonth = _timeframe == 'month' ||
+                                          totalChartPoints > 15;
 
                                       return SizedBox(
-                                        height: 200, // increased scrollview height to allow vertical tooltip float
+                                        height:
+                                            200, // increased scrollview height to allow vertical tooltip float
                                         child: SingleChildScrollView(
                                           scrollDirection: Axis.horizontal,
                                           // clipBehavior remains default hardEdge to prevent horizontal bars bleed outside the card
                                           child: Container(
-                                            width: max(MediaQuery.of(context).size.width - 64.0, totalChartPoints * (isMonth ? 36.0 : 52.0)),
-                                            padding: const EdgeInsets.only(top: 24.0, left: 8.0, right: 8.0), // top padding keeps tooltip inside scrollview bounds
+                                            width: max(
+                                                MediaQuery.of(context)
+                                                        .size
+                                                        .width -
+                                                    64.0,
+                                                totalChartPoints *
+                                                    (isMonth ? 36.0 : 52.0)),
+                                            padding: const EdgeInsets.only(
+                                                top: 24.0,
+                                                left: 8.0,
+                                                right:
+                                                    8.0), // top padding keeps tooltip inside scrollview bounds
                                             child: BarChart(
                                               BarChartData(
-                                                alignment: BarChartAlignment.spaceAround,
+                                                alignment: BarChartAlignment
+                                                    .spaceAround,
                                                 maxY: chartMaxY,
                                                 barTouchData: BarTouchData(
                                                   enabled: true,
-                                                  touchTooltipData: BarTouchTooltipData(
+                                                  touchTooltipData:
+                                                      BarTouchTooltipData(
                                                     fitInsideHorizontally: true,
                                                     fitInsideVertically: true,
                                                     getTooltipColor: (group) {
                                                       if (_showAllocationChart) {
-                                                        return _allocationType == 'income'
-                                                            ? const Color(0xFF0D9488)
-                                                            : const Color(0xFFDC2626);
+                                                        return _allocationType ==
+                                                                'income'
+                                                            ? const Color(
+                                                                0xFF0D9488)
+                                                            : const Color(
+                                                                0xFFDC2626);
                                                       }
                                                       // Dynamic tooltip color: Green if Pemasukan is higher, Red if Pengeluaran is higher
-                                                      final income = group.barRods[0].toY;
-                                                      final expense = group.barRods[1].toY;
+                                                      final income =
+                                                          group.barRods[0].toY;
+                                                      final expense =
+                                                          group.barRods[1].toY;
                                                       if (income > expense) {
-                                                        return const Color(0xFF0D9488);
+                                                        return const Color(
+                                                            0xFF0D9488);
                                                       } else {
-                                                        return const Color(0xFFDC2626);
+                                                        return const Color(
+                                                            0xFFDC2626);
                                                       }
                                                     },
                                                     tooltipBorderRadius:
-                                                        BorderRadius.circular(8),
-                                                    getTooltipItem: (group, groupIndex,
-                                                        rod, rodIndex) {
+                                                        BorderRadius.circular(
+                                                            8),
+                                                    getTooltipItem: (group,
+                                                        groupIndex,
+                                                        rod,
+                                                        rodIndex) {
                                                       return BarTooltipItem(
                                                         _formatRp(rod.toY),
                                                         const TextStyle(
-                                                          color: Colors.white, // white text stands out on green/red bg
-                                                          fontWeight: FontWeight.bold,
+                                                          color: Colors
+                                                              .white, // white text stands out on green/red bg
+                                                          fontWeight:
+                                                              FontWeight.bold,
                                                           fontSize: 11,
                                                         ),
                                                       );
@@ -1378,25 +1604,30 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                   bottomTitles: AxisTitles(
                                                     sideTitles: SideTitles(
                                                       showTitles: true,
-                                                      getTitlesWidget: (val, meta) {
-                                                        final index = val.toInt();
+                                                      getTitlesWidget:
+                                                          (val, meta) {
+                                                        final index =
+                                                            val.toInt();
                                                         if (index >= 0 &&
                                                             index <
                                                                 totalChartPoints) {
                                                           final label =
-                                                              bottomAxisLabels[index];
+                                                              bottomAxisLabels[
+                                                                  index];
                                                           if (label.isEmpty) {
                                                             return const SizedBox();
                                                           }
                                                           return Padding(
                                                             padding:
-                                                                const EdgeInsets.only(
+                                                                const EdgeInsets
+                                                                    .only(
                                                                     top: 6.0),
                                                             child: Text(
                                                               label,
                                                               style: const TextStyle(
                                                                   fontSize: 9,
-                                                                  color: Colors.grey,
+                                                                  color: Colors
+                                                                      .grey,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold),
@@ -1408,57 +1639,92 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                     ),
                                                   ),
                                                 ),
-                                                gridData:
-                                                    const FlGridData(show: false),
-                                                borderData: FlBorderData(show: false),
+                                                gridData: const FlGridData(
+                                                    show: false),
+                                                borderData:
+                                                    FlBorderData(show: false),
                                                 barGroups: List.generate(
                                                     totalChartPoints, (index) {
-                                                  final incomeAmt = lineSpotsIncome[index].y;
-                                                  final expenseAmt = lineSpotsExpense[index].y;
-                                                  final rodWidth = isMonth ? 12.0 : 18.0;
-                                                  final rRadius = isMonth ? 4.0 : 6.0;
+                                                  final incomeAmt =
+                                                      lineSpotsIncome[index].y;
+                                                  final expenseAmt =
+                                                      lineSpotsExpense[index].y;
+                                                  final rodWidth =
+                                                      isMonth ? 12.0 : 18.0;
+                                                  final rRadius =
+                                                      isMonth ? 4.0 : 6.0;
 
                                                   return BarChartGroupData(
                                                     x: index,
                                                     barRods: [
-                                                      if (!_showAllocationChart || _allocationType == 'income')
+                                                      if (!_showAllocationChart ||
+                                                          _allocationType ==
+                                                              'income')
                                                         // Pemasukan Bar (Green Gradient)
                                                         BarChartRodData(
                                                           toY: incomeAmt,
                                                           width: rodWidth,
                                                           borderRadius:
-                                                              BorderRadius.circular(rRadius),
-                                                          gradient: const LinearGradient(
-                                                            colors: [AppColors.income, Color(0xFF2DD4BF)],
-                                                            begin: Alignment.bottomCenter,
-                                                            end: Alignment.topCenter,
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      rRadius),
+                                                          gradient:
+                                                              const LinearGradient(
+                                                            colors: [
+                                                              AppColors.income,
+                                                              Color(0xFF2DD4BF)
+                                                            ],
+                                                            begin: Alignment
+                                                                .bottomCenter,
+                                                            end: Alignment
+                                                                .topCenter,
                                                           ),
-                                                          backDrawRodData: BackgroundBarChartRodData(
+                                                          backDrawRodData:
+                                                              BackgroundBarChartRodData(
                                                             show: true,
                                                             toY: chartMaxY,
                                                             color: isDarkMode
-                                                                ? Colors.white.withOpacity(0.04)
-                                                                : Colors.black.withOpacity(0.04),
+                                                                ? Colors.white
+                                                                    .withOpacity(
+                                                                        0.04)
+                                                                : Colors.black
+                                                                    .withOpacity(
+                                                                        0.04),
                                                           ),
                                                         ),
-                                                      if (!_showAllocationChart || _allocationType == 'expense')
+                                                      if (!_showAllocationChart ||
+                                                          _allocationType ==
+                                                              'expense')
                                                         // Pengeluaran Bar (Red Gradient)
                                                         BarChartRodData(
                                                           toY: expenseAmt,
                                                           width: rodWidth,
                                                           borderRadius:
-                                                              BorderRadius.circular(rRadius),
-                                                          gradient: const LinearGradient(
-                                                            colors: [Color(0xFFDC2626), Color(0xFFF87171)],
-                                                            begin: Alignment.bottomCenter,
-                                                            end: Alignment.topCenter,
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      rRadius),
+                                                          gradient:
+                                                              const LinearGradient(
+                                                            colors: [
+                                                              Color(0xFFDC2626),
+                                                              Color(0xFFF87171)
+                                                            ],
+                                                            begin: Alignment
+                                                                .bottomCenter,
+                                                            end: Alignment
+                                                                .topCenter,
                                                           ),
-                                                          backDrawRodData: BackgroundBarChartRodData(
+                                                          backDrawRodData:
+                                                              BackgroundBarChartRodData(
                                                             show: true,
                                                             toY: chartMaxY,
                                                             color: isDarkMode
-                                                                ? Colors.white.withOpacity(0.04)
-                                                                : Colors.black.withOpacity(0.04),
+                                                                ? Colors.white
+                                                                    .withOpacity(
+                                                                        0.04)
+                                                                : Colors.black
+                                                                    .withOpacity(
+                                                                        0.04),
                                                           ),
                                                         ),
                                                     ],
@@ -1498,16 +1764,20 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        _allocationType == 'income' ? 'Alokasi Pemasukan' : 'Alokasi Pengeluaran',
+                                        _allocationType == 'income'
+                                            ? 'Alokasi Pemasukan'
+                                            : 'Alokasi Pengeluaran',
                                         style: const TextStyle(
                                             fontSize: 14.0,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       IconButton(
-                                        icon: const Icon(Icons.close_rounded, size: 20),
+                                        icon: const Icon(Icons.close_rounded,
+                                            size: 20),
                                         onPressed: () {
                                           setState(() {
                                             _showAllocationChart = false;
@@ -1530,7 +1800,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                           sectionsSpace: 4,
                                           centerSpaceRadius: 45,
                                           startDegreeOffset: -90,
-                                          sections: sortedAllocation.map((entry) {
+                                          sections:
+                                              sortedAllocation.map((entry) {
                                             final catId = entry.key;
                                             final amt = entry.value;
                                             final cat = categories.firstWhere(
@@ -1539,7 +1810,6 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                     name: 'Lain-lain',
                                                     type: _allocationType));
                                             final catColor = cat.color;
-
 
                                             return PieChartSectionData(
                                               color: catColor,
@@ -1584,10 +1854,12 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
 
                                       // Filter transactions of this category in the range
                                       final catTxs = filteredTxs
-                                          .where((tx) => tx.categoryId == cat.id)
+                                          .where(
+                                              (tx) => tx.categoryId == cat.id)
                                           .toList();
 
-                                      final dateRangeStr = _selectedDateRange != null
+                                      final dateRangeStr = _selectedDateRange !=
+                                              null
                                           ? '${DateFormat('dd MMM yyyy').format(_selectedDateRange!.start)} - ${DateFormat('dd MMM yyyy').format(_selectedDateRange!.end)}'
                                           : _timeframe == 'day'
                                               ? 'Hari Ini'
@@ -1598,7 +1870,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                       : 'Tahun Ini';
 
                                       return InkWell(
-                                        borderRadius: BorderRadius.circular(12.0),
+                                        borderRadius:
+                                            BorderRadius.circular(12.0),
                                         onTap: () {
                                           Navigator.push(
                                             context,
@@ -1672,7 +1945,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                     '${pct.toStringAsFixed(1)}%',
                                                     style: TextStyle(
                                                       fontSize: 12.0,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       color: isDarkMode
                                                           ? Colors.white
                                                           : Colors.black87,
@@ -1713,5 +1987,561 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
         ),
       ),
     );
+  }
+}
+
+class CustomDateRangePickerDialog extends StatefulWidget {
+  final DateTimeRange? initialDateRange;
+  final DateTime firstDate;
+  final DateTime lastDate;
+
+  const CustomDateRangePickerDialog({
+    super.key,
+    this.initialDateRange,
+    required this.firstDate,
+    required this.lastDate,
+  });
+
+  @override
+  State<CustomDateRangePickerDialog> createState() => _CustomDateRangePickerDialogState();
+}
+
+class _CustomDateRangePickerDialogState extends State<CustomDateRangePickerDialog> {
+  late DateTime _currentMonth;
+  DateTime? _selectedStart;
+  DateTime? _selectedEnd;
+  bool _isInputMode = false;
+
+  late TextEditingController _startInputController;
+  late TextEditingController _endInputController;
+  String? _startError;
+  String? _endError;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedStart = widget.initialDateRange?.start;
+    _selectedEnd = widget.initialDateRange?.end;
+    _currentMonth = _selectedStart ?? DateTime.now();
+    _currentMonth = DateTime(_currentMonth.year, _currentMonth.month, 1);
+
+    _startInputController = TextEditingController(
+      text: _selectedStart != null ? DateFormat('dd/MM/yyyy').format(_selectedStart!) : '',
+    );
+    _endInputController = TextEditingController(
+      text: _selectedEnd != null ? DateFormat('dd/MM/yyyy').format(_selectedEnd!) : '',
+    );
+  }
+
+  @override
+  void dispose() {
+    _startInputController.dispose();
+    _endInputController.dispose();
+    super.dispose();
+  }
+
+  void _onDaySelected(DateTime day) {
+    setState(() {
+      if (_selectedStart == null || (_selectedStart != null && _selectedEnd != null)) {
+        _selectedStart = day;
+        _selectedEnd = null;
+      } else {
+        if (day.isBefore(_selectedStart!)) {
+          _selectedStart = day;
+        } else {
+          _selectedEnd = day;
+        }
+      }
+      _startInputController.text = _selectedStart != null ? DateFormat('dd/MM/yyyy').format(_selectedStart!) : '';
+      _endInputController.text = _selectedEnd != null ? DateFormat('dd/MM/yyyy').format(_selectedEnd!) : '';
+      _startError = null;
+      _endError = null;
+    });
+  }
+
+  void _toggleInputMode() {
+    setState(() {
+      _isInputMode = !_isInputMode;
+      if (!_isInputMode && _selectedStart != null) {
+        _currentMonth = DateTime(_selectedStart!.year, _selectedStart!.month, 1);
+      }
+    });
+  }
+
+  DateTime? _parseDate(String text) {
+    try {
+      final parts = text.split('/');
+      if (parts.length == 3) {
+        final day = int.tryParse(parts[0]);
+        final month = int.tryParse(parts[1]);
+        final year = int.tryParse(parts[2]);
+        if (day != null && month != null && year != null) {
+          final parsed = DateTime(year, month, day);
+          if (parsed.year == year && parsed.month == month && parsed.day == day) {
+            return parsed;
+          }
+        }
+      }
+    } catch (_) {}
+    return null;
+  }
+
+  void _validateAndSetStartDate(String val) {
+    if (val.isEmpty) {
+      setState(() {
+        _startError = null;
+        _selectedStart = null;
+      });
+      return;
+    }
+    final parsed = _parseDate(val);
+    if (parsed == null) {
+      setState(() {
+        _startError = 'Format salah';
+      });
+    } else if (parsed.isBefore(widget.firstDate) || parsed.isAfter(widget.lastDate)) {
+      setState(() {
+        _startError = 'Di luar rentang';
+      });
+    } else {
+      setState(() {
+        _startError = null;
+        _selectedStart = parsed;
+      });
+    }
+  }
+
+  void _validateAndSetEndDate(String val) {
+    if (val.isEmpty) {
+      setState(() {
+        _endError = null;
+        _selectedEnd = null;
+      });
+      return;
+    }
+    final parsed = _parseDate(val);
+    if (parsed == null) {
+      setState(() {
+        _endError = 'Format salah';
+      });
+    } else if (parsed.isBefore(widget.firstDate) || parsed.isAfter(widget.lastDate)) {
+      setState(() {
+        _endError = 'Di luar rentang';
+      });
+    } else if (_selectedStart != null && parsed.isBefore(_selectedStart!)) {
+      setState(() {
+        _endError = 'Sebelum mulai';
+      });
+    } else {
+      setState(() {
+        _endError = null;
+        _selectedEnd = parsed;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = isDarkMode ? Colors.white : Colors.black;
+    final onPrimaryColor = isDarkMode ? Colors.black : Colors.white;
+    final surfaceColor = isDarkMode ? AppColors.darkModal : Colors.white;
+    final rangeHighlightColor = isDarkMode 
+        ? Colors.white.withValues(alpha: 0.12)
+        : Colors.black.withValues(alpha: 0.08);
+
+    final days = _generateDays(_currentMonth);
+    final weekdayLabels = ['M', 'S', 'S', 'R', 'K', 'J', 'S'];
+
+    final headerText = _selectedStart == null
+        ? 'Mulai – Selesai'
+        : _selectedEnd == null
+            ? '${DateFormat('E, d MMM', 'id_ID').format(_selectedStart!)} – ...'
+            : '${DateFormat('E, d MMM', 'id_ID').format(_selectedStart!)} – ${DateFormat('E, d MMM', 'id_ID').format(_selectedEnd!)}';
+
+    return Dialog(
+      backgroundColor: surfaceColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(28.0),
+      ),
+      elevation: 6,
+      clipBehavior: Clip.antiAlias,
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 328),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Standard M3 Date Picker Header Area
+            Padding(
+              padding: const EdgeInsets.only(left: 24.0, right: 12.0, top: 24.0, bottom: 16.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'PILIH RENTANG TANGGAL',
+                          style: TextStyle(
+                            fontSize: 11.0,
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: 1.5,
+                            color: isDarkMode ? Colors.white60 : Colors.black.withValues(alpha: 0.6),
+                          ),
+                        ),
+                        const SizedBox(height: 12.0),
+                        Text(
+                          headerText,
+                          style: TextStyle(
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.w400,
+                            color: primaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      _isInputMode ? Icons.calendar_today_outlined : Icons.edit_outlined,
+                      color: isDarkMode ? Colors.white70 : Colors.black.withValues(alpha: 0.6),
+                    ),
+                    onPressed: _toggleInputMode,
+                  ),
+                ],
+              ),
+            ),
+            
+            // Header-Body Divider
+            Divider(height: 1, color: isDarkMode ? Colors.white12 : Colors.black12),
+
+            if (_isInputMode)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: _startInputController,
+                            keyboardType: TextInputType.datetime,
+                            style: TextStyle(
+                              color: primaryColor,
+                              fontSize: 14.0,
+                            ),
+                            decoration: InputDecoration(
+                              labelText: 'Tanggal Mulai',
+                              labelStyle: TextStyle(
+                                color: isDarkMode ? Colors.white60 : Colors.black54,
+                                fontSize: 12.0,
+                              ),
+                              hintText: 'HH/BB/TTTT',
+                              hintStyle: TextStyle(
+                                color: isDarkMode ? Colors.white30 : Colors.black38,
+                              ),
+                              border: const OutlineInputBorder(),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: primaryColor, width: 2.0),
+                              ),
+                              errorText: _startError,
+                              errorStyle: const TextStyle(fontSize: 10.0),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                            ),
+                            onChanged: _validateAndSetStartDate,
+                          ),
+                        ),
+                        const SizedBox(width: 12.0),
+                        Expanded(
+                          child: TextFormField(
+                            controller: _endInputController,
+                            keyboardType: TextInputType.datetime,
+                            style: TextStyle(
+                              color: primaryColor,
+                              fontSize: 14.0,
+                            ),
+                            decoration: InputDecoration(
+                              labelText: 'Tanggal Selesai',
+                              labelStyle: TextStyle(
+                                color: isDarkMode ? Colors.white60 : Colors.black54,
+                                fontSize: 12.0,
+                              ),
+                              hintText: 'HH/BB/TTTT',
+                              hintStyle: TextStyle(
+                                color: isDarkMode ? Colors.white30 : Colors.black38,
+                              ),
+                              border: const OutlineInputBorder(),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: primaryColor, width: 2.0),
+                              ),
+                              errorText: _endError,
+                              errorStyle: const TextStyle(fontSize: 10.0),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                            ),
+                            onChanged: _validateAndSetEndDate,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12.0),
+                    Text(
+                      'Format: HH/BB/TTTT (misal: 05/07/2026)',
+                      style: TextStyle(
+                        fontSize: 11.0,
+                        color: isDarkMode ? Colors.white38 : Colors.black38,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            else
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Month Year & Navigation Row (M3 Style)
+                    Row(
+                      children: [
+                        const SizedBox(width: 12),
+                        Text(
+                          DateFormat('MMMM yyyy', 'id_ID').format(_currentMonth),
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w600,
+                            color: primaryColor,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(
+                          Icons.arrow_drop_down,
+                          color: isDarkMode ? Colors.white60 : Colors.black.withValues(alpha: 0.6),
+                          size: 20,
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          icon: Icon(Icons.chevron_left, color: primaryColor),
+                          onPressed: _currentMonth.isAfter(DateTime(widget.firstDate.year, widget.firstDate.month, 1))
+                              ? () {
+                                  setState(() {
+                                    _currentMonth = DateTime(_currentMonth.year, _currentMonth.month - 1, 1);
+                                  });
+                                }
+                              : null,
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.chevron_right, color: primaryColor),
+                          onPressed: _currentMonth.isBefore(DateTime(widget.lastDate.year, widget.lastDate.month, 1))
+                              ? () {
+                                  setState(() {
+                                    _currentMonth = DateTime(_currentMonth.year, _currentMonth.month + 1, 1);
+                                  });
+                                }
+                              : null,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4.0),
+
+                    // Weekday Labels Row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: weekdayLabels.map((label) {
+                        return SizedBox(
+                          width: 38,
+                          child: Text(
+                            label,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 11.0,
+                              fontWeight: FontWeight.bold,
+                              color: isDarkMode ? Colors.white38 : Colors.black38,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 6.0),
+
+                    // Calendar Days Grid
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 7,
+                        mainAxisSpacing: 2.0,
+                        crossAxisSpacing: 0.0,
+                        childAspectRatio: 1.0,
+                      ),
+                      itemCount: days.length,
+                      itemBuilder: (context, index) {
+                        final day = days[index];
+                        if (day == null) {
+                          return const SizedBox.shrink();
+                        }
+
+                        final isStart = _selectedStart != null && _isSameDay(day, _selectedStart!);
+                        final isEnd = _selectedEnd != null && _isSameDay(day, _selectedEnd!);
+                        final isInRange = _selectedStart != null &&
+                            _selectedEnd != null &&
+                            day.isAfter(_selectedStart!) &&
+                            day.isBefore(_selectedEnd!);
+                        final isToday = _isSameDay(day, DateTime.now());
+
+                        Widget dayWidget = Center(
+                          child: Text(
+                            day.day.toString(),
+                            style: TextStyle(
+                              fontSize: 12.0,
+                              fontWeight: (isStart || isEnd) ? FontWeight.bold : FontWeight.normal,
+                              color: (isStart || isEnd)
+                                  ? onPrimaryColor
+                                  : (isDarkMode ? Colors.white : Colors.black87),
+                            ),
+                          ),
+                        );
+
+                        if (isStart || isEnd) {
+                          dayWidget = Stack(
+                            children: [
+                              // Background Range Connector
+                              if (_selectedEnd != null)
+                                Positioned.fill(
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          color: isStart ? Colors.transparent : rangeHighlightColor,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          color: isEnd ? Colors.transparent : rangeHighlightColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              // Circular Indicator
+                              Center(
+                                child: Container(
+                                  width: 36,
+                                  height: 36,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: primaryColor,
+                                  ),
+                                  child: dayWidget,
+                                ),
+                              ),
+                            ],
+                          );
+                        } else if (isInRange) {
+                          dayWidget = Container(
+                            color: rangeHighlightColor,
+                            child: dayWidget,
+                          );
+                        } else if (isToday) {
+                          // Outline border for today if not selected
+                          dayWidget = Center(
+                            child: Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: isDarkMode ? Colors.white30 : Colors.black.withValues(alpha: 0.3),
+                                  width: 1.0,
+                                ),
+                              ),
+                              child: dayWidget,
+                            ),
+                          );
+                        }
+
+                        return GestureDetector(
+                          onTap: () => _onDaySelected(day),
+                          behavior: HitTestBehavior.opaque,
+                          child: dayWidget,
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            
+            const SizedBox(height: 8.0),
+
+            // Action Buttons Row (Standard Dialog Actions Alignment)
+            Padding(
+              padding: const EdgeInsets.only(right: 16.0, bottom: 12.0, left: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(
+                      'Batal',
+                      style: TextStyle(
+                        color: isDarkMode ? Colors.white70 : Colors.black54,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8.0),
+                  TextButton(
+                    onPressed: (_selectedStart != null && _startError == null && _endError == null)
+                        ? () {
+                            Navigator.pop(
+                              context,
+                              DateTimeRange(
+                                start: _selectedStart!,
+                                end: _selectedEnd ?? _selectedStart!,
+                              ),
+                            );
+                          }
+                        : null,
+                    child: Text(
+                      'Oke',
+                      style: TextStyle(
+                        color: (_selectedStart != null && _startError == null && _endError == null)
+                            ? (isDarkMode ? Colors.white : Colors.black)
+                            : Colors.grey,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<DateTime?> _generateDays(DateTime month) {
+    final firstDay = DateTime(month.year, month.month, 1);
+    final lastDay = DateTime(month.year, month.month + 1, 0);
+
+    final list = <DateTime?>[];
+    final emptyCells = firstDay.weekday % 7;
+    for (int i = 0; i < emptyCells; i++) {
+      list.add(null);
+    }
+
+    for (int i = 1; i <= lastDay.day; i++) {
+      list.add(DateTime(month.year, month.month, i));
+    }
+
+    return list;
+  }
+
+  bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 }
