@@ -203,5 +203,49 @@ void main() {
       );
       expect(r2.amount, equals(5000.0));
     });
+
+    test('Should split statements with multiple transactions correctly', () {
+      final inputSpace = 'beli makan 5 rebu beli ayam 20 rebu beli sotong 5k';
+      final statementsSpace = NlpParser.splitStatements(inputSpace);
+      expect(statementsSpace.length, equals(3));
+      expect(statementsSpace[0], equals('beli makan 5 rebu'));
+      expect(statementsSpace[1], equals('beli ayam 20 rebu'));
+      expect(statementsSpace[2], equals('beli sotong 5k'));
+
+      final inputNewline = 'beli makan 5 rebu\nbeli ayam 20 rebu\nbeli sotong 5k';
+      final statementsNewline = NlpParser.splitStatements(inputNewline);
+      expect(statementsNewline.length, equals(3));
+      expect(statementsNewline[0], equals('beli makan 5 rebu'));
+      expect(statementsNewline[1], equals('beli ayam 20 rebu'));
+      expect(statementsNewline[2], equals('beli sotong 5k'));
+    });
+
+    test('Should parse multiple transactions correctly using parseMultiple', () {
+      final input = 'beli makan 5 rebu makan ayam 20 rebu gaji bulanan 5jt';
+      final results = NlpParser.parseMultiple(
+        input,
+        categories: categories,
+        keywords: keywords,
+        defaultExpenseCategory: defaultExpense,
+        defaultIncomeCategory: defaultIncome,
+      );
+
+      expect(results.length, equals(3));
+
+      expect(results[0].amount, equals(5000.0));
+      expect(results[0].type, equals('expense'));
+      expect(results[0].category?.name, equals('Makanan'));
+      expect(results[0].note, equals('beli makan'));
+
+      expect(results[1].amount, equals(20000.0));
+      expect(results[1].type, equals('expense'));
+      expect(results[1].category?.name, equals('Makanan'));
+      expect(results[1].note, equals('makan ayam'));
+
+      expect(results[2].amount, equals(5000000.0));
+      expect(results[2].type, equals('income'));
+      expect(results[2].category?.name, equals('Gaji'));
+      expect(results[2].note, equals('gaji bulanan'));
+    });
   });
 }

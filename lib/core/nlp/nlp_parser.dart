@@ -23,6 +23,67 @@ class ParsedResult {
 }
 
 class NlpParser {
+  /// Splits a single input string containing potential multiple transaction clauses.
+  /// First, splits by newlines. If a line contains multiple numeric/amount patterns,
+  /// it splits the line into segments ending at the end of each amount phrase.
+  static List<String> splitStatements(String input) {
+    final lines = input.split('\n');
+    final List<String> statements = [];
+
+    for (final line in lines) {
+      final trimmedLine = line.trim();
+      if (trimmedLine.isEmpty) continue;
+
+      // Matches numbers optionally followed by suffixes like rb, ribu, rebu, k, jt, juta
+      final regExp = RegExp(
+        r'\b(\d+(?:[\.,]\d+)*)\s*(rb|ribu|rebu|k|jt|juta)?\b',
+        caseSensitive: false,
+      );
+      final matches = regExp.allMatches(trimmedLine).toList();
+
+      if (matches.length <= 1) {
+        statements.add(trimmedLine);
+      } else {
+        int lastIndex = 0;
+        for (int i = 0; i < matches.length; i++) {
+          final end = matches[i].end;
+          // For the last segment, consume until the end of the line
+          final segmentEnd = (i == matches.length - 1) ? trimmedLine.length : end;
+          final segment = trimmedLine.substring(lastIndex, segmentEnd).trim();
+          if (segment.isNotEmpty) {
+            statements.add(segment);
+          }
+          lastIndex = end;
+        }
+      }
+    }
+    return statements;
+  }
+
+  /// Parses a text that might contain multiple transaction clauses.
+  static List<ParsedResult> parseMultiple(
+    String input, {
+    required List<Category> categories,
+    required List<CategoryKeyword> keywords,
+    Category? defaultExpenseCategory,
+    Category? defaultIncomeCategory,
+  }) {
+    final statements = splitStatements(input);
+    final List<ParsedResult> results = [];
+    for (final stmt in statements) {
+      results.add(
+        parse(
+          stmt,
+          categories: categories,
+          keywords: keywords,
+          defaultExpenseCategory: defaultExpenseCategory,
+          defaultIncomeCategory: defaultIncomeCategory,
+        ),
+      );
+    }
+    return results;
+  }
+
   /// Parses a raw input text into a structured [ParsedResult].
   /// [categories] is the list of all available categories.
   /// [keywords] is the list of all keywords mapped to their category IDs.
@@ -136,10 +197,10 @@ class NlpParser {
 
   static _AmountMatch? _extractAmount(String text) {
     // Regex matches numbers, optional decimals/thousands separator, and abbreviations
-    // Supports suffix: rb, ribu, k, jt, juta (case insensitive)
-    // Matches expressions like: 15k, 15rb, 15.000, 2,5jt, 1.2juta, 15000
+    // Supports suffix: rb, ribu, rebu, k, jt, juta (case insensitive)
+    // Matches expressions like: 15k, 15rb, 15rebu, 15.000, 2,5jt, 1.2juta, 15000
     final regExp = RegExp(
-      r'\b(\d+(?:[\.,]\d+)*)\s*(rb|ribu|k|jt|juta)?\b',
+      r'\b(\d+(?:[\.,]\d+)*)\s*(rb|ribu|rebu|k|jt|juta)?\b',
       caseSensitive: false,
     );
 
