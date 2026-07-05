@@ -714,6 +714,9 @@ class HomeScreen extends ConsumerWidget {
                                                   onDismissed: (direction) {
                                                     if (tx.id != null) {
                                                       ref.read(transactionsNotifierProvider.notifier).deleteTransaction(tx.id!);
+                                                      
+                                                      bool isUndoClicked = false;
+                                                      
                                                       ScaffoldMessenger.of(context).showSnackBar(
                                                         SnackBar(
                                                           behavior: SnackBarBehavior.floating,
@@ -731,6 +734,8 @@ class HomeScreen extends ConsumerWidget {
                                                               ),
                                                               TextButton(
                                                                 onPressed: () {
+                                                                  if (isUndoClicked) return;
+                                                                  isUndoClicked = true;
                                                                   ref.read(transactionsNotifierProvider.notifier).addTransaction(tx);
                                                                   ScaffoldMessenger.of(context).hideCurrentSnackBar();
                                                                 },
