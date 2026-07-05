@@ -40,7 +40,7 @@ class BudgetNotifier extends AsyncNotifier<List<Budget>> {
     state = await AsyncValue.guard(() async {
       final db = DatabaseHelper.instance;
       final existing = await db.getBudgetForCategory(categoryId);
-      
+
       if (existing != null) {
         await db.updateBudget(existing.copyWith(
           amountLimit: limit,
@@ -82,17 +82,21 @@ final categoryBudgetProgressProvider =
   final transactionsAsync = ref.watch(transactionsNotifierProvider);
 
   // If any source provider is loading or error, propagate that state
-  if (categoriesAsync.isLoading || budgetsAsync.isLoading || transactionsAsync.isLoading) {
+  if (categoriesAsync.isLoading ||
+      budgetsAsync.isLoading ||
+      transactionsAsync.isLoading) {
     return const AsyncValue.loading();
   }
   if (categoriesAsync.hasError) {
-    return AsyncValue.error(categoriesAsync.error!, categoriesAsync.stackTrace!);
+    return AsyncValue.error(
+        categoriesAsync.error!, categoriesAsync.stackTrace!);
   }
   if (budgetsAsync.hasError) {
     return AsyncValue.error(budgetsAsync.error!, budgetsAsync.stackTrace!);
   }
   if (transactionsAsync.hasError) {
-    return AsyncValue.error(transactionsAsync.error!, transactionsAsync.stackTrace!);
+    return AsyncValue.error(
+        transactionsAsync.error!, transactionsAsync.stackTrace!);
   }
 
   final categories = categoriesAsync.value ?? [];
@@ -102,14 +106,15 @@ final categoryBudgetProgressProvider =
   final now = DateTime.now();
 
   // Helper to determine if a transaction date is within the current week
-  bool _isThisWeek(DateTime date) {
+  bool isThisWeek(DateTime date) {
     // Start of week: Monday
-    final startOfWeek = DateTime(now.year, now.month, now.day).subtract(Duration(days: now.weekday - 1));
+    final startOfWeek = DateTime(now.year, now.month, now.day)
+        .subtract(Duration(days: now.weekday - 1));
     return date.isAfter(startOfWeek) || date.isAtSameMomentAs(startOfWeek);
   }
 
   // Helper to determine if a transaction date is within the current month
-  bool _isThisMonth(DateTime date) {
+  bool isThisMonth(DateTime date) {
     return date.year == now.year && date.month == now.month;
   }
 
@@ -123,7 +128,12 @@ final categoryBudgetProgressProvider =
 
     final budget = budgets.firstWhere(
       (b) => b.categoryId == cat.id,
-      orElse: () => Budget(id: -1, categoryId: cat.id!, amountLimit: 0, period: 'monthly', startDate: now),
+      orElse: () => Budget(
+          id: -1,
+          categoryId: cat.id!,
+          amountLimit: 0,
+          period: 'monthly',
+          startDate: now),
     );
 
     final hasBudget = budget.id != -1;
@@ -133,11 +143,11 @@ final categoryBudgetProgressProvider =
     if (hasBudget) {
       final periodTransactions = transactions.where((tx) {
         if (tx.categoryId != cat.id || tx.type != 'expense') return false;
-        
+
         if (budget.period == 'weekly') {
-          return _isThisWeek(tx.createdAt);
+          return isThisWeek(tx.createdAt);
         } else {
-          return _isThisMonth(tx.createdAt);
+          return isThisMonth(tx.createdAt);
         }
       });
 

@@ -44,7 +44,8 @@ class NlpParser {
     }
 
     // Clean up "Rp" or "rp" prefix (with optional dot and spaces) to prevent word boundary issues (e.g. "Rp5.000" -> "5.000")
-    final cleanInput = input.replaceAll(RegExp(r'rp\.?\s*', caseSensitive: false), '').trim();
+    final cleanInput =
+        input.replaceAll(RegExp(r'rp\.?\s*', caseSensitive: false), '').trim();
     final lowercaseInput = cleanInput.toLowerCase();
 
     // 1. Extract Amount
@@ -70,11 +71,12 @@ class NlpParser {
     // If multiple keywords match, we choose the longest keyword to avoid partial matches (e.g. "transfer masuk" beats "transfer")
     for (final kw in keywords) {
       final keywordLower = kw.keyword.toLowerCase();
-      // Match keyword as word boundary or substring if appropriate. 
+      // Match keyword as word boundary or substring if appropriate.
       // For general parsing, a simple substring check or regex check is used.
       // E.g., check if the lowercase text contains the keyword.
       if (remainingLowercase.contains(keywordLower)) {
-        if (bestKeywordMatch == null || keywordLower.length > bestKeywordMatch.keyword.length) {
+        if (bestKeywordMatch == null ||
+            keywordLower.length > bestKeywordMatch.keyword.length) {
           bestKeywordMatch = kw;
         }
       }
@@ -93,17 +95,28 @@ class NlpParser {
       type = matchedCategory.type;
     } else {
       // If no category matched, guess type from general income/expense indicators in the text
-      final incomeIndicators = ['gaji', 'terima', 'masuk', 'dapat', 'bonus', 'payday', 'angpao', 'sallary', 'untung', 'cashback'];
-      final containsIncomeIndicator = incomeIndicators.any((indicator) => lowercaseInput.contains(indicator));
+      final incomeIndicators = [
+        'gaji',
+        'terima',
+        'masuk',
+        'dapat',
+        'bonus',
+        'payday',
+        'angpao',
+        'sallary',
+        'untung',
+        'cashback'
+      ];
+      final containsIncomeIndicator = incomeIndicators
+          .any((indicator) => lowercaseInput.contains(indicator));
       if (containsIncomeIndicator) {
         type = 'income';
       }
     }
 
     // Set default category if none matched
-    if (matchedCategory == null) {
-      matchedCategory = type == 'income' ? defaultIncomeCategory : defaultExpenseCategory;
-    }
+    matchedCategory ??=
+        type == 'income' ? defaultIncomeCategory : defaultExpenseCategory;
 
     // 4. Construct Note
     // The note is the remaining text. If the remaining text is empty, we fall back to the original input.
@@ -172,7 +185,7 @@ class NlpParser {
     } else {
       // If no suffix, determine if dot/comma is thousands or decimal
       // E.g. "15.000" -> thousands, "12,5" -> decimal
-      
+
       // If dot is followed by exactly 3 digits, and there are other digits, or it is standard thousands
       // Let's check: if there is a dot followed by exactly three digits at the end:
       final dotThreeDigits = RegExp(r'\.(\d{3})$');
@@ -181,7 +194,8 @@ class NlpParser {
       if (dotThreeDigits.hasMatch(normalized) && !normalized.contains(',')) {
         // Dot is thousands separator. E.g. 15.000 -> 15000, 1.500.000 -> 1500000
         normalized = normalized.replaceAll('.', '');
-      } else if (commaThreeDigits.hasMatch(normalized) && !normalized.contains('.')) {
+      } else if (commaThreeDigits.hasMatch(normalized) &&
+          !normalized.contains('.')) {
         // Comma is thousands separator. E.g. 15,000 -> 15000
         normalized = normalized.replaceAll(',', '');
       } else {
@@ -194,7 +208,10 @@ class NlpParser {
 
     // Apply multiplier based on suffix
     if (suffix != null) {
-      if (suffix == 'k' || suffix == 'rb' || suffix == 'ribu') {
+      if (suffix == 'k' ||
+          suffix == 'rb' ||
+          suffix == 'ribu' ||
+          suffix == 'rebu') {
         value *= 1000;
       } else if (suffix == 'jt' || suffix == 'juta') {
         value *= 1000000;

@@ -29,7 +29,8 @@ Color? _parseCustomColor(String? colorStr) {
   // Try parsing RGB (e.g. 255,0,85)
   try {
     if (colorStr.contains(',')) {
-      final parts = colorStr.split(',').map((p) => int.parse(p.trim())).toList();
+      final parts =
+          colorStr.split(',').map((p) => int.parse(p.trim())).toList();
       if (parts.length == 3) {
         return Color.fromARGB(255, parts[0], parts[1], parts[2]);
       }
@@ -47,7 +48,8 @@ class AccountsScreen extends ConsumerStatefulWidget {
 }
 
 class _AccountsScreenState extends ConsumerState<AccountsScreen> {
-  final _formatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
+  final _formatter =
+      NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
 
   // Transfer Form State
   int? _fromAccountId;
@@ -106,10 +108,14 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
 
   IconData _getAccountIcon(String? iconName) {
     switch (iconName) {
-      case 'wallet': return Icons.account_balance_wallet_outlined;
-      case 'account_balance': return Icons.account_balance_outlined;
-      case 'payment': return Icons.payment_outlined;
-      default: return Icons.credit_card_outlined;
+      case 'wallet':
+        return Icons.account_balance_wallet_outlined;
+      case 'account_balance':
+        return Icons.account_balance_outlined;
+      case 'payment':
+        return Icons.payment_outlined;
+      default:
+        return Icons.credit_card_outlined;
     }
   }
 
@@ -120,7 +126,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Kelola Dompet / Akun', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('Kelola Dompet / Akun',
+            style: TextStyle(fontWeight: FontWeight.bold)),
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
@@ -142,7 +149,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                     return GridView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
@@ -154,10 +162,14 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                         if (index == accounts.length) {
                           return Container(
                             decoration: BoxDecoration(
-                              color: isDarkMode ? const Color(0xFF1E222B) : Colors.white,
+                              color: isDarkMode
+                                  ? const Color(0xFF1E222B)
+                                  : Colors.white,
                               borderRadius: BorderRadius.circular(16.0),
                               border: Border.all(
-                                color: isDarkMode ? Colors.white.withOpacity(0.04) : Colors.black.withOpacity(0.05),
+                                color: isDarkMode
+                                    ? Colors.white.withValues(alpha: 0.04)
+                                    : Colors.black.withValues(alpha: 0.05),
                               ),
                             ),
                             child: InkWell(
@@ -166,11 +178,14 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                               child: const Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.add_circle_outline, size: 28.0, color: const Color(0xFF004D4D)),
+                                  Icon(Icons.add_circle_outline,
+                                      size: 28.0, color: Color(0xFF004D4D)),
                                   SizedBox(height: 6.0),
                                   Text(
                                     'Tambah Akun',
-                                    style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                        fontSize: 12.0,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
@@ -184,10 +199,14 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                         return Container(
                           padding: const EdgeInsets.all(12.0),
                           decoration: BoxDecoration(
-                            color: isDarkMode ? const Color(0xFF1E222B) : Colors.white,
+                            color: isDarkMode
+                                ? const Color(0xFF1E222B)
+                                : Colors.white,
                             borderRadius: BorderRadius.circular(16.0),
                             border: Border.all(
-                              color: isDarkMode ? Colors.white.withOpacity(0.04) : Colors.black.withOpacity(0.05),
+                              color: isDarkMode
+                                  ? Colors.white.withValues(alpha: 0.04)
+                                  : Colors.black.withValues(alpha: 0.05),
                             ),
                           ),
                           child: Column(
@@ -195,23 +214,35 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Icon(_getAccountIcon(acc.icon), color: isDarkMode ? Colors.white : Colors.black, size: 20),
+                                  Icon(_getAccountIcon(acc.icon),
+                                      color: isDarkMode
+                                          ? Colors.white
+                                          : Colors.black,
+                                      size: 20),
                                   Row(
                                     children: [
                                       IconButton(
-                                        icon: Icon(Icons.edit_outlined, size: 14, color: isDarkMode ? Colors.white70 : Colors.black87),
+                                        icon: Icon(Icons.edit_outlined,
+                                            size: 14,
+                                            color: isDarkMode
+                                                ? Colors.white70
+                                                : Colors.black87),
                                         padding: EdgeInsets.zero,
                                         constraints: const BoxConstraints(),
-                                        onPressed: () => _showEditAccountDialog(context, acc),
+                                        onPressed: () => _showEditAccountDialog(
+                                            context, acc),
                                       ),
                                       const SizedBox(width: 8),
                                       IconButton(
-                                        icon: const Icon(Icons.delete_outline, size: 14, color: Colors.redAccent),
+                                        icon: const Icon(Icons.delete_outline,
+                                            size: 14, color: Colors.redAccent),
                                         padding: EdgeInsets.zero,
                                         constraints: const BoxConstraints(),
-                                        onPressed: () => _confirmDeleteAccount(context, acc),
+                                        onPressed: () =>
+                                            _confirmDeleteAccount(context, acc),
                                       ),
                                     ],
                                   ),
@@ -224,12 +255,16 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                     acc.name,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontSize: 12.0,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                   const SizedBox(height: 2.0),
                                   Text(
                                     _formatter.format(accWithBal.balance),
-                                    style: const TextStyle(fontSize: 13.0, fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontSize: 13.0,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
@@ -239,8 +274,10 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                       },
                     );
                   },
-                  loading: () => const Center(child: CircularProgressIndicator()),
-                  error: (err, st) => Center(child: Text('Error loading akun: $err')),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (err, st) =>
+                      Center(child: Text('Error loading akun: $err')),
                 ),
                 const SizedBox(height: 24.0),
                 const Divider(),
@@ -253,7 +290,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
                     side: BorderSide(
-                      color: isDarkMode ? Colors.white.withOpacity(0.04) : Colors.black.withOpacity(0.03),
+                      color: isDarkMode
+                          ? Colors.white.withValues(alpha: 0.04)
+                          : Colors.black.withValues(alpha: 0.03),
                     ),
                   ),
                   child: Padding(
@@ -263,11 +302,12 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                       children: [
                         const Row(
                           children: [
-                            Icon(Icons.swap_horiz, color: const Color(0xFF004D4D)),
+                            Icon(Icons.swap_horiz, color: Color(0xFF004D4D)),
                             SizedBox(width: 8),
                             Text(
                               'Pindah Dana / Transfer',
-                              style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                  fontSize: 14.0, fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
@@ -278,10 +318,12 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                               children: [
                                 // Source Account selector
                                 DropdownButtonFormField<int>(
-                                  value: _fromAccountId,
+                                  initialValue: _fromAccountId,
                                   decoration: InputDecoration(
                                     labelText: 'Dari Akun / Dompet',
-                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12)),
                                   ),
                                   items: accounts.map((acc) {
                                     return DropdownMenuItem(
@@ -298,10 +340,12 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                 const SizedBox(height: 12.0),
                                 // Destination Account selector
                                 DropdownButtonFormField<int>(
-                                  value: _toAccountId,
+                                  initialValue: _toAccountId,
                                   decoration: InputDecoration(
                                     labelText: 'Ke Akun / Dompet',
-                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12)),
                                   ),
                                   items: accounts.map((acc) {
                                     return DropdownMenuItem(
@@ -328,7 +372,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             labelText: 'Nominal Transfer',
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12)),
                             prefixText: 'Rp ',
                           ),
                         ),
@@ -338,17 +383,22 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                           controller: _noteController,
                           decoration: InputDecoration(
                             labelText: 'Catatan (Opsional)',
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12)),
                           ),
                         ),
                         const SizedBox(height: 20.0),
                         ElevatedButton(
                           onPressed: _executeTransfer,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: isDarkMode ? Colors.white : const Color(0xFF2C2C2C),
-                            foregroundColor: isDarkMode ? Colors.black : Colors.white,
+                            backgroundColor: isDarkMode
+                                ? Colors.white
+                                : const Color(0xFF2C2C2C),
+                            foregroundColor:
+                                isDarkMode ? Colors.black : Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 14.0),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0)),
                             elevation: 0,
                           ),
                           child: const Text(
@@ -410,7 +460,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                       width: 2.5,
                     ),
                   ),
-                  child: isSelected ? const Icon(Icons.check, color: Colors.white, size: 16.0) : null,
+                  child: isSelected
+                      ? const Icon(Icons.check, color: Colors.white, size: 16.0)
+                      : null,
                 ),
               );
             }
@@ -424,37 +476,52 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                   children: [
                     TextField(
                       controller: nameController,
-                      decoration: const InputDecoration(labelText: 'Nama Dompet (cth: GoPay)'),
+                      decoration: const InputDecoration(
+                          labelText: 'Nama Dompet (cth: GoPay)'),
                     ),
                     TextField(
                       controller: balanceController,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(labelText: 'Saldo Awal (Rp)'),
+                      decoration:
+                          const InputDecoration(labelText: 'Saldo Awal (Rp)'),
                     ),
                     const SizedBox(height: 16.0),
-                    const Text('Pilih Icon:', style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold)),
+                    const Text('Pilih Icon:',
+                        style: TextStyle(
+                            fontSize: 12.0, fontWeight: FontWeight.bold)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         IconButton(
                           icon: Icon(Icons.account_balance_wallet,
-                              color: selectedIcon == 'wallet' ? const Color(0xFF004D4D) : Colors.grey),
-                          onPressed: () => setState(() => selectedIcon = 'wallet'),
+                              color: selectedIcon == 'wallet'
+                                  ? const Color(0xFF004D4D)
+                                  : Colors.grey),
+                          onPressed: () =>
+                              setState(() => selectedIcon = 'wallet'),
                         ),
                         IconButton(
                           icon: Icon(Icons.account_balance,
-                              color: selectedIcon == 'account_balance' ? const Color(0xFF004D4D) : Colors.grey),
-                          onPressed: () => setState(() => selectedIcon = 'account_balance'),
+                              color: selectedIcon == 'account_balance'
+                                  ? const Color(0xFF004D4D)
+                                  : Colors.grey),
+                          onPressed: () =>
+                              setState(() => selectedIcon = 'account_balance'),
                         ),
                         IconButton(
                           icon: Icon(Icons.payment,
-                              color: selectedIcon == 'payment' ? const Color(0xFF004D4D) : Colors.grey),
-                          onPressed: () => setState(() => selectedIcon = 'payment'),
+                              color: selectedIcon == 'payment'
+                                  ? const Color(0xFF004D4D)
+                                  : Colors.grey),
+                          onPressed: () =>
+                              setState(() => selectedIcon = 'payment'),
                         ),
                       ],
                     ),
                     const SizedBox(height: 16.0),
-                    const Text('Pilih Warna Kartu:', style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold)),
+                    const Text('Pilih Warna Kartu:',
+                        style: TextStyle(
+                            fontSize: 12.0, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 8.0),
                     Row(
                       children: [
@@ -469,14 +536,18 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                               width: 32.0,
                               height: 32.0,
                               decoration: BoxDecoration(
-                                color: _parseCustomColor(selectedColor) ?? const Color(0xFF0288D1),
+                                color: _parseCustomColor(selectedColor) ??
+                                    const Color(0xFF0288D1),
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: isDarkMode ? Colors.white : Colors.black87,
+                                  color: isDarkMode
+                                      ? Colors.white
+                                      : Colors.black87,
                                   width: 2.5,
                                 ),
                               ),
-                              child: const Icon(Icons.check, color: Colors.white, size: 16.0),
+                              child: const Icon(Icons.check,
+                                  color: Colors.white, size: 16.0),
                             ),
                           ),
                           const SizedBox(width: 12.0),
@@ -495,10 +566,16 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                             decoration: BoxDecoration(
                               color: _isSelectedCustom(selectedColor)
                                   ? Colors.transparent
-                                  : (isDarkMode ? Colors.grey[800] : Colors.grey[300]),
+                                  : (isDarkMode
+                                      ? Colors.grey[800]
+                                      : Colors.grey[300]),
                               shape: BoxShape.circle,
                               border: _isSelectedCustom(selectedColor)
-                                  ? Border.all(color: isDarkMode ? Colors.white : Colors.black87, width: 2.0)
+                                  ? Border.all(
+                                      color: isDarkMode
+                                          ? Colors.white
+                                          : Colors.black87,
+                                      width: 2.0)
                                   : null,
                             ),
                             child: Icon(
@@ -506,7 +583,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                               size: 18.0,
                               color: _isSelectedCustom(selectedColor)
                                   ? (isDarkMode ? Colors.white : Colors.black87)
-                                  : (isDarkMode ? Colors.white70 : Colors.black54),
+                                  : (isDarkMode
+                                      ? Colors.white70
+                                      : Colors.black54),
                             ),
                           ),
                         ),
@@ -514,7 +593,11 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                     ),
                     if (isCustomActive) ...[
                       const SizedBox(height: 16.0),
-                      const Text('Pilih Palet Kustom:', style: TextStyle(fontSize: 11.0, color: Colors.grey, fontWeight: FontWeight.bold)),
+                      const Text('Pilih Palet Kustom:',
+                          style: TextStyle(
+                              fontSize: 11.0,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold)),
                       const SizedBox(height: 6.0),
                       Wrap(
                         spacing: 10.0,
@@ -527,7 +610,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                           {'id': '#2C2C2C', 'color': const Color(0xFF2C2C2C)},
                           {'id': '#E91E63', 'color': const Color(0xFFE91E63)},
                         ].map((c) {
-                          final isThisSelected = selectedColor.toLowerCase() == (c['id'] as String).toLowerCase();
+                          final isThisSelected = selectedColor.toLowerCase() ==
+                              (c['id'] as String).toLowerCase();
                           return GestureDetector(
                             onTap: () {
                               setState(() {
@@ -543,12 +627,17 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                 shape: BoxShape.circle,
                                 border: Border.all(
                                   color: isThisSelected
-                                      ? (isDarkMode ? Colors.white : Colors.black87)
+                                      ? (isDarkMode
+                                          ? Colors.white
+                                          : Colors.black87)
                                       : Colors.transparent,
                                   width: 2.0,
                                 ),
                               ),
-                              child: isThisSelected ? const Icon(Icons.check, color: Colors.white, size: 14.0) : null,
+                              child: isThisSelected
+                                  ? const Icon(Icons.check,
+                                      color: Colors.white, size: 14.0)
+                                  : null,
                             ),
                           );
                         }).toList(),
@@ -560,10 +649,12 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                             child: TextField(
                               controller: hexController,
                               decoration: const InputDecoration(
-                                labelText: 'Kode Hex atau RGB (cth: #FF5722 atau 255,87,34)',
+                                labelText:
+                                    'Kode Hex atau RGB (cth: #FF5722 atau 255,87,34)',
                                 labelStyle: TextStyle(fontSize: 10.0),
                                 isDense: true,
-                                contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 10.0, vertical: 8.0),
                               ),
                               style: const TextStyle(fontSize: 11.0),
                               onChanged: (val) {
@@ -581,9 +672,11 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                             width: 28.0,
                             height: 28.0,
                             decoration: BoxDecoration(
-                              color: _parseCustomColor(selectedColor) ?? Colors.transparent,
+                              color: _parseCustomColor(selectedColor) ??
+                                  Colors.transparent,
                               shape: BoxShape.circle,
-                              border: Border.all(color: Colors.grey.shade400, width: 1.0),
+                              border: Border.all(
+                                  color: Colors.grey.shade400, width: 1.0),
                             ),
                           ),
                         ],
@@ -600,12 +693,15 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                 TextButton(
                   onPressed: () {
                     final name = nameController.text.trim();
-                    final balance = double.tryParse(balanceController.text) ?? 0.0;
+                    final balance =
+                        double.tryParse(balanceController.text) ?? 0.0;
                     if (name.isNotEmpty) {
-                      ref.read(accountsNotifierProvider.notifier).addAccount(name, balance, selectedIcon, selectedColor);
+                      ref.read(accountsNotifierProvider.notifier).addAccount(
+                          name, balance, selectedIcon, selectedColor);
                       Navigator.pop(context);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Dompet "$name" berhasil dibuat')),
+                        SnackBar(
+                            content: Text('Dompet "$name" berhasil dibuat')),
                       );
                     }
                   },
@@ -621,7 +717,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
 
   void _showEditAccountDialog(BuildContext context, Account acc) {
     final nameController = TextEditingController(text: acc.name);
-    final balanceController = TextEditingController(text: acc.initialBalance.toStringAsFixed(0));
+    final balanceController =
+        TextEditingController(text: acc.initialBalance.toStringAsFixed(0));
     String selectedIcon = acc.icon ?? 'wallet';
     String selectedColor = acc.color ?? 'teal';
 
@@ -629,8 +726,7 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
       context: context,
       builder: (context) {
         final hexController = TextEditingController(
-          text: _isSelectedCustom(selectedColor) ? selectedColor : ''
-        );
+            text: _isSelectedCustom(selectedColor) ? selectedColor : '');
         bool isCustomActive = _isSelectedCustom(selectedColor);
 
         return StatefulBuilder(
@@ -659,7 +755,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                       width: 2.5,
                     ),
                   ),
-                  child: isSelected ? const Icon(Icons.check, color: Colors.white, size: 16.0) : null,
+                  child: isSelected
+                      ? const Icon(Icons.check, color: Colors.white, size: 16.0)
+                      : null,
                 ),
               );
             }
@@ -673,37 +771,52 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                   children: [
                     TextField(
                       controller: nameController,
-                      decoration: const InputDecoration(labelText: 'Nama Dompet'),
+                      decoration:
+                          const InputDecoration(labelText: 'Nama Dompet'),
                     ),
                     TextField(
                       controller: balanceController,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(labelText: 'Saldo Awal (Rp)'),
+                      decoration:
+                          const InputDecoration(labelText: 'Saldo Awal (Rp)'),
                     ),
                     const SizedBox(height: 16.0),
-                    const Text('Pilih Icon:', style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold)),
+                    const Text('Pilih Icon:',
+                        style: TextStyle(
+                            fontSize: 12.0, fontWeight: FontWeight.bold)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         IconButton(
                           icon: Icon(Icons.account_balance_wallet,
-                              color: selectedIcon == 'wallet' ? const Color(0xFF004D4D) : Colors.grey),
-                          onPressed: () => setState(() => selectedIcon = 'wallet'),
+                              color: selectedIcon == 'wallet'
+                                  ? const Color(0xFF004D4D)
+                                  : Colors.grey),
+                          onPressed: () =>
+                              setState(() => selectedIcon = 'wallet'),
                         ),
                         IconButton(
                           icon: Icon(Icons.account_balance,
-                              color: selectedIcon == 'account_balance' ? const Color(0xFF004D4D) : Colors.grey),
-                          onPressed: () => setState(() => selectedIcon = 'account_balance'),
+                              color: selectedIcon == 'account_balance'
+                                  ? const Color(0xFF004D4D)
+                                  : Colors.grey),
+                          onPressed: () =>
+                              setState(() => selectedIcon = 'account_balance'),
                         ),
                         IconButton(
                           icon: Icon(Icons.payment,
-                              color: selectedIcon == 'payment' ? const Color(0xFF004D4D) : Colors.grey),
-                          onPressed: () => setState(() => selectedIcon = 'payment'),
+                              color: selectedIcon == 'payment'
+                                  ? const Color(0xFF004D4D)
+                                  : Colors.grey),
+                          onPressed: () =>
+                              setState(() => selectedIcon = 'payment'),
                         ),
                       ],
                     ),
                     const SizedBox(height: 16.0),
-                    const Text('Pilih Warna Kartu:', style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold)),
+                    const Text('Pilih Warna Kartu:',
+                        style: TextStyle(
+                            fontSize: 12.0, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 8.0),
                     Row(
                       children: [
@@ -718,14 +831,18 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                               width: 32.0,
                               height: 32.0,
                               decoration: BoxDecoration(
-                                color: _parseCustomColor(selectedColor) ?? const Color(0xFF0288D1),
+                                color: _parseCustomColor(selectedColor) ??
+                                    const Color(0xFF0288D1),
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: isDarkMode ? Colors.white : Colors.black87,
+                                  color: isDarkMode
+                                      ? Colors.white
+                                      : Colors.black87,
                                   width: 2.5,
                                 ),
                               ),
-                              child: const Icon(Icons.check, color: Colors.white, size: 16.0),
+                              child: const Icon(Icons.check,
+                                  color: Colors.white, size: 16.0),
                             ),
                           ),
                           const SizedBox(width: 12.0),
@@ -744,10 +861,16 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                             decoration: BoxDecoration(
                               color: _isSelectedCustom(selectedColor)
                                   ? Colors.transparent
-                                  : (isDarkMode ? Colors.grey[800] : Colors.grey[300]),
+                                  : (isDarkMode
+                                      ? Colors.grey[800]
+                                      : Colors.grey[300]),
                               shape: BoxShape.circle,
                               border: _isSelectedCustom(selectedColor)
-                                  ? Border.all(color: isDarkMode ? Colors.white : Colors.black87, width: 2.0)
+                                  ? Border.all(
+                                      color: isDarkMode
+                                          ? Colors.white
+                                          : Colors.black87,
+                                      width: 2.0)
                                   : null,
                             ),
                             child: Icon(
@@ -755,7 +878,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                               size: 18.0,
                               color: _isSelectedCustom(selectedColor)
                                   ? (isDarkMode ? Colors.white : Colors.black87)
-                                  : (isDarkMode ? Colors.white70 : Colors.black54),
+                                  : (isDarkMode
+                                      ? Colors.white70
+                                      : Colors.black54),
                             ),
                           ),
                         ),
@@ -763,7 +888,11 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                     ),
                     if (isCustomActive) ...[
                       const SizedBox(height: 16.0),
-                      const Text('Pilih Palet Kustom:', style: TextStyle(fontSize: 11.0, color: Colors.grey, fontWeight: FontWeight.bold)),
+                      const Text('Pilih Palet Kustom:',
+                          style: TextStyle(
+                              fontSize: 11.0,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold)),
                       const SizedBox(height: 6.0),
                       Wrap(
                         spacing: 10.0,
@@ -776,7 +905,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                           {'id': '#2C2C2C', 'color': const Color(0xFF2C2C2C)},
                           {'id': '#E91E63', 'color': const Color(0xFFE91E63)},
                         ].map((c) {
-                          final isThisSelected = selectedColor.toLowerCase() == (c['id'] as String).toLowerCase();
+                          final isThisSelected = selectedColor.toLowerCase() ==
+                              (c['id'] as String).toLowerCase();
                           return GestureDetector(
                             onTap: () {
                               setState(() {
@@ -792,12 +922,17 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                 shape: BoxShape.circle,
                                 border: Border.all(
                                   color: isThisSelected
-                                      ? (isDarkMode ? Colors.white : Colors.black87)
+                                      ? (isDarkMode
+                                          ? Colors.white
+                                          : Colors.black87)
                                       : Colors.transparent,
                                   width: 2.0,
                                 ),
                               ),
-                              child: isThisSelected ? const Icon(Icons.check, color: Colors.white, size: 14.0) : null,
+                              child: isThisSelected
+                                  ? const Icon(Icons.check,
+                                      color: Colors.white, size: 14.0)
+                                  : null,
                             ),
                           );
                         }).toList(),
@@ -809,10 +944,12 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                             child: TextField(
                               controller: hexController,
                               decoration: const InputDecoration(
-                                labelText: 'Kode Hex atau RGB (cth: #FF5722 atau 255,87,34)',
+                                labelText:
+                                    'Kode Hex atau RGB (cth: #FF5722 atau 255,87,34)',
                                 labelStyle: TextStyle(fontSize: 10.0),
                                 isDense: true,
-                                contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 10.0, vertical: 8.0),
                               ),
                               style: const TextStyle(fontSize: 11.0),
                               onChanged: (val) {
@@ -830,9 +967,11 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                             width: 28.0,
                             height: 28.0,
                             decoration: BoxDecoration(
-                              color: _parseCustomColor(selectedColor) ?? Colors.transparent,
+                              color: _parseCustomColor(selectedColor) ??
+                                  Colors.transparent,
                               shape: BoxShape.circle,
-                              border: Border.all(color: Colors.grey.shade400, width: 1.0),
+                              border: Border.all(
+                                  color: Colors.grey.shade400, width: 1.0),
                             ),
                           ),
                         ],
@@ -849,7 +988,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                 TextButton(
                   onPressed: () {
                     final name = nameController.text.trim();
-                    final balance = double.tryParse(balanceController.text) ?? 0.0;
+                    final balance =
+                        double.tryParse(balanceController.text) ?? 0.0;
                     if (name.isNotEmpty) {
                       ref.read(accountsNotifierProvider.notifier).updateAccount(
                             acc.copyWith(
@@ -861,7 +1001,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                           );
                       Navigator.pop(context);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Dompet "$name" berhasil diupdate')),
+                        SnackBar(
+                            content: Text('Dompet "$name" berhasil diupdate')),
                       );
                     }
                   },
@@ -881,7 +1022,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
       builder: (context) {
         return AlertDialog(
           title: const Text('Hapus Dompet'),
-          content: Text('Apakah Anda yakin ingin menghapus dompet "${acc.name}"? Semua data transaksi yang menggunakan dompet ini juga akan terhapus.'),
+          content: Text(
+              'Apakah Anda yakin ingin menghapus dompet "${acc.name}"? Semua data transaksi yang menggunakan dompet ini juga akan terhapus.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -890,10 +1032,13 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
             TextButton(
               onPressed: () {
                 if (acc.id != null) {
-                  ref.read(accountsNotifierProvider.notifier).deleteAccount(acc.id!);
+                  ref
+                      .read(accountsNotifierProvider.notifier)
+                      .deleteAccount(acc.id!);
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Dompet "${acc.name}" berhasil dihapus')),
+                    SnackBar(
+                        content: Text('Dompet "${acc.name}" berhasil dihapus')),
                   );
                 }
               },

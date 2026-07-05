@@ -16,14 +16,16 @@ class SettingsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pengaturan', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('Pengaturan',
+            style: TextStyle(fontWeight: FontWeight.bold)),
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
       body: SafeArea(
         bottom: false,
         child: ListView(
-          padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0, bottom: 100.0),
+          padding: const EdgeInsets.only(
+              left: 16.0, right: 16.0, top: 16.0, bottom: 100.0),
           children: [
             // Section 1: Accounts Management
             _buildSectionHeader('Akun & Dompet', isDarkMode),
@@ -34,12 +36,12 @@ class SettingsScreen extends ConsumerWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const AccountsScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => const AccountsScreen()),
                 );
               },
               isDarkMode: isDarkMode,
             ),
-
 
             // Section 2: Backup & Restore
             _buildSectionHeader('Cadangkan & Pulihkan', isDarkMode),
@@ -61,7 +63,7 @@ class SettingsScreen extends ConsumerWidget {
               },
               isDarkMode: isDarkMode,
             ),
-             _buildSettingsItem(
+            _buildSettingsItem(
               icon: Icons.file_download,
               title: 'Impor Data (Restore)',
               subtitle: 'Pulihkan data dari teks cadangan JSON',
@@ -77,7 +79,8 @@ class SettingsScreen extends ConsumerWidget {
             _buildSettingsItem(
               icon: Icons.delete_forever,
               title: 'Reset Semua Data',
-              subtitle: 'Hapus semua transaksi dan kembalikan ke pengaturan awal',
+              subtitle:
+                  'Hapus semua transaksi dan kembalikan ke pengaturan awal',
               iconColor: Colors.redAccent,
               onTap: () {
                 _confirmResetData(context, ref);
@@ -120,14 +123,21 @@ class SettingsScreen extends ConsumerWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.0),
         side: BorderSide(
-          color: isDarkMode ? Colors.white.withOpacity(0.04) : Colors.black.withOpacity(0.03),
+          color: isDarkMode
+              ? Colors.white.withValues(alpha: 0.04)
+              : Colors.black.withValues(alpha: 0.03),
         ),
       ),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
         leading: CircleAvatar(
-          backgroundColor: (iconColor ?? (isDarkMode ? Colors.white : Colors.black)).withOpacity(0.1),
-          child: Icon(icon, color: iconColor ?? (isDarkMode ? Colors.white : Colors.black), size: 20),
+          backgroundColor:
+              (iconColor ?? (isDarkMode ? Colors.white : Colors.black))
+                  .withValues(alpha: 0.1),
+          child: Icon(icon,
+              color: iconColor ?? (isDarkMode ? Colors.white : Colors.black),
+              size: 20),
         ),
         title: Text(
           title,
@@ -135,7 +145,9 @@ class SettingsScreen extends ConsumerWidget {
         ),
         subtitle: Text(
           subtitle,
-          style: TextStyle(fontSize: 11.0, color: isDarkMode ? Colors.grey[500] : Colors.grey[600]),
+          style: TextStyle(
+              fontSize: 11.0,
+              color: isDarkMode ? Colors.grey[500] : Colors.grey[600]),
         ),
         trailing: const Icon(Icons.chevron_right, size: 18.0),
         onTap: onTap,
@@ -165,7 +177,8 @@ class SettingsScreen extends ConsumerWidget {
                 maxLines: 6,
                 decoration: InputDecoration(
                   hintText: '{\n  "version": 1,\n  "accounts": [...]\n}',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12)),
                 ),
                 style: const TextStyle(fontSize: 11.0, fontFamily: 'monospace'),
               ),
@@ -181,7 +194,8 @@ class SettingsScreen extends ConsumerWidget {
                 final jsonStr = textController.text.trim();
                 if (jsonStr.isEmpty) return;
 
-                final success = await DatabaseBackupHelper.importFromJson(jsonStr);
+                final success =
+                    await DatabaseBackupHelper.importFromJson(jsonStr);
                 if (context.mounted) {
                   Navigator.pop(context);
                   if (success) {
@@ -189,10 +203,11 @@ class SettingsScreen extends ConsumerWidget {
                     ref.invalidate(transactionsNotifierProvider);
                     ref.invalidate(accountsNotifierProvider);
                     ref.invalidate(categoriesNotifierProvider);
-                    
+
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Data berhasil dipulihkan (Restore Sukses)!'),
+                        content:
+                            Text('Data berhasil dipulihkan (Restore Sukses)!'),
                         backgroundColor: Color(0xFF004D4D),
                       ),
                     );
@@ -220,7 +235,8 @@ class SettingsScreen extends ConsumerWidget {
       builder: (context) {
         return AlertDialog(
           title: const Text('Reset Data'),
-          content: const Text('Apakah Anda yakin ingin menghapus seluruh data? Seluruh transaksi dan anggaran akan hilang. Kategori default akan di-seed ulang.'),
+          content: const Text(
+              'Apakah Anda yakin ingin menghapus seluruh data? Seluruh transaksi dan anggaran akan hilang. Kategori default akan di-seed ulang.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -231,7 +247,9 @@ class SettingsScreen extends ConsumerWidget {
                 ref.read(transactionsNotifierProvider.notifier).resetAllData();
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Semua data berhasil direset ke kondisi awal')),
+                  const SnackBar(
+                      content:
+                          Text('Semua data berhasil direset ke kondisi awal')),
                 );
               },
               style: TextButton.styleFrom(foregroundColor: Colors.redAccent),

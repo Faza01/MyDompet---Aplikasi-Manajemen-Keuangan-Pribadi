@@ -56,8 +56,14 @@ class _MainNavigationHubState extends ConsumerState<MainNavigationHub> {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      (isDarkMode ? const Color(0xFF0F1115) : const Color(0xFFF8F9FA)).withOpacity(0.0),
-                      (isDarkMode ? const Color(0xFF0F1115) : const Color(0xFFF8F9FA)).withOpacity(0.95),
+                      (isDarkMode
+                              ? const Color(0xFF0F1115)
+                              : const Color(0xFFF8F9FA))
+                          .withValues(alpha: 0.0),
+                      (isDarkMode
+                              ? const Color(0xFF0F1115)
+                              : const Color(0xFFF8F9FA))
+                          .withValues(alpha: 0.95),
                     ],
                     stops: const [0.0, 0.8],
                   ),
@@ -81,7 +87,8 @@ class _MainNavigationHubState extends ConsumerState<MainNavigationHub> {
                           borderRadius: BorderRadius.circular(16.0),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(isDarkMode ? 0.3 : 0.15),
+                              color: Colors.black
+                                  .withValues(alpha: isDarkMode ? 0.3 : 0.15),
                               blurRadius: 16.0,
                               offset: const Offset(0, 8),
                             ),
@@ -91,10 +98,13 @@ class _MainNavigationHubState extends ConsumerState<MainNavigationHub> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             _buildNavItem(0, Icons.home_outlined, currentIndex),
-                            _buildNavItem(1, Icons.pie_chart_outline, currentIndex),
+                            _buildNavItem(
+                                1, Icons.pie_chart_outline, currentIndex),
                             _buildCenterPlusButton(),
-                            _buildNavItem(3, Icons.analytics_outlined, currentIndex),
-                            _buildNavItem(4, Icons.settings_outlined, currentIndex),
+                            _buildNavItem(
+                                3, Icons.analytics_outlined, currentIndex),
+                            _buildNavItem(
+                                4, Icons.settings_outlined, currentIndex),
                           ],
                         ),
                       ),

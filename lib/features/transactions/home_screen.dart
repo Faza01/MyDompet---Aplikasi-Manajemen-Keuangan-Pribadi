@@ -17,7 +17,8 @@ class DashboardTimeframeNotifier extends Notifier<String> {
   }
 }
 
-final dashboardTimeframeProvider = NotifierProvider.autoDispose<DashboardTimeframeNotifier, String>(
+final dashboardTimeframeProvider =
+    NotifierProvider.autoDispose<DashboardTimeframeNotifier, String>(
   DashboardTimeframeNotifier.new,
 );
 
@@ -46,27 +47,42 @@ String _formatRp(double val) {
 // Helper to get IconData based on string identifier
 IconData _getCategoryIcon(String? iconName) {
   switch (iconName) {
-    case 'work': return Icons.work_outline;
-    case 'card_giftcard': return Icons.card_giftcard_outlined;
-    case 'download': return Icons.download_outlined;
-    case 'add_circle': return Icons.add_circle_outline;
-    case 'restaurant': return Icons.restaurant_outlined;
-    case 'directions_car': return Icons.directions_car_outlined;
-    case 'shopping_bag': return Icons.shopping_bag_outlined;
-    case 'receipt_long': return Icons.receipt_long_outlined;
-    case 'sports_esports': return Icons.sports_esports_outlined;
-    case 'swap_horiz': return Icons.swap_horiz;
-    default: return Icons.help_outline;
+    case 'work':
+      return Icons.work_outline;
+    case 'card_giftcard':
+      return Icons.card_giftcard_outlined;
+    case 'download':
+      return Icons.download_outlined;
+    case 'add_circle':
+      return Icons.add_circle_outline;
+    case 'restaurant':
+      return Icons.restaurant_outlined;
+    case 'directions_car':
+      return Icons.directions_car_outlined;
+    case 'shopping_bag':
+      return Icons.shopping_bag_outlined;
+    case 'receipt_long':
+      return Icons.receipt_long_outlined;
+    case 'sports_esports':
+      return Icons.sports_esports_outlined;
+    case 'swap_horiz':
+      return Icons.swap_horiz;
+    default:
+      return Icons.help_outline;
   }
 }
 
 // Helper to get Account icon
 IconData _getAccountIcon(String? iconName) {
   switch (iconName) {
-    case 'wallet': return Icons.account_balance_wallet_outlined;
-    case 'account_balance': return Icons.account_balance_outlined;
-    case 'payment': return Icons.payment_outlined;
-    default: return Icons.credit_card_outlined;
+    case 'wallet':
+      return Icons.account_balance_wallet_outlined;
+    case 'account_balance':
+      return Icons.account_balance_outlined;
+    case 'payment':
+      return Icons.payment_outlined;
+    default:
+      return Icons.credit_card_outlined;
   }
 }
 
@@ -94,7 +110,8 @@ Color? _parseCustomColor(String? colorStr) {
   // Try parsing RGB (e.g. 255,0,85)
   try {
     if (colorStr.contains(',')) {
-      final parts = colorStr.split(',').map((p) => int.parse(p.trim())).toList();
+      final parts =
+          colorStr.split(',').map((p) => int.parse(p.trim())).toList();
       if (parts.length == 3) {
         return Color.fromARGB(255, parts[0], parts[1], parts[2]);
       }
@@ -112,7 +129,7 @@ List<Color> _generatePremiumGradient(Color baseColor) {
     (baseColor.green * darkenFactor).round(),
     (baseColor.blue * darkenFactor).round(),
   );
-  
+
   final double lightenFactor = 0.55;
   final Color lightColor = Color.fromARGB(
     255,
@@ -120,7 +137,7 @@ List<Color> _generatePremiumGradient(Color baseColor) {
     (baseColor.green + (255 - baseColor.green) * lightenFactor).round(),
     (baseColor.blue + (255 - baseColor.blue) * lightenFactor).round(),
   );
-  
+
   return [darkColor, baseColor, lightColor];
 }
 
@@ -163,7 +180,9 @@ class HomeScreen extends ConsumerWidget {
                             'Halo, Selamat Datang!',
                             style: TextStyle(
                               fontSize: 13.0,
-                              color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                              color: isDarkMode
+                                  ? Colors.grey[400]
+                                  : Colors.grey[600],
                             ),
                           ),
                           const Text(
@@ -180,10 +199,14 @@ class HomeScreen extends ConsumerWidget {
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: isDarkMode ? const Color(0xFF1E222B) : Colors.grey[100],
+                            color: isDarkMode
+                                ? const Color(0xFF1E222B)
+                                : Colors.grey[100],
                           ),
                           child: Icon(
-                            isDarkMode ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                            isDarkMode
+                                ? Icons.light_mode_rounded
+                                : Icons.dark_mode_rounded,
                             size: 20,
                             color: isDarkMode ? Colors.white : Colors.black87,
                           ),
@@ -206,7 +229,8 @@ class HomeScreen extends ConsumerWidget {
                     margin: const EdgeInsets.symmetric(vertical: 12.0),
                     child: accountsAsync.when(
                       data: (accounts) {
-                        final totalBalance = accounts.fold(0.0, (sum, acc) => sum + acc.balance);
+                        final totalBalance =
+                            accounts.fold(0.0, (sum, acc) => sum + acc.balance);
 
                         return AccountStackCarousel(
                           accounts: accounts,
@@ -215,13 +239,14 @@ class HomeScreen extends ConsumerWidget {
                           ref: ref,
                         );
                       },
-                      loading: () => const Center(child: CircularProgressIndicator()),
-                      error: (err, st) => Center(child: Text('Error loading akun: $err')),
+                      loading: () =>
+                          const Center(child: CircularProgressIndicator()),
+                      error: (err, st) =>
+                          Center(child: Text('Error loading akun: $err')),
                     ),
                   ),
                 ),
               ),
-
 
               // Timeframe selector pills (Capsule style)
               SliverPadding(
@@ -232,15 +257,21 @@ class HomeScreen extends ConsumerWidget {
                       width: 280.0,
                       padding: const EdgeInsets.all(4.0),
                       decoration: BoxDecoration(
-                        color: isDarkMode ? const Color(0xFF131D1D) : const Color(0xFFECEEEE),
+                        color: isDarkMode
+                            ? const Color(0xFF131D1D)
+                            : const Color(0xFFECEEEE),
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       child: Row(
                         children: [
-                          _buildTimeframePill(context, ref, 'day', 'Hari', dashboardTimeframe),
-                          _buildTimeframePill(context, ref, 'week', 'Minggu', dashboardTimeframe),
-                          _buildTimeframePill(context, ref, 'month', 'Bulan', dashboardTimeframe),
-                          _buildTimeframePill(context, ref, 'year', 'Tahun', dashboardTimeframe),
+                          _buildTimeframePill(
+                              context, ref, 'day', 'Hari', dashboardTimeframe),
+                          _buildTimeframePill(context, ref, 'week', 'Minggu',
+                              dashboardTimeframe),
+                          _buildTimeframePill(context, ref, 'month', 'Bulan',
+                              dashboardTimeframe),
+                          _buildTimeframePill(context, ref, 'year', 'Tahun',
+                              dashboardTimeframe),
                         ],
                       ),
                     ),
@@ -259,12 +290,13 @@ class HomeScreen extends ConsumerWidget {
                         data: (cats) => cats,
                         orElse: () => <Category>[],
                       );
-                      
+
                       // Filter transactions of current selected account AND current selected timeframe
                       final filteredTxs = transactions.where((tx) {
                         // If selectedAccountId is null, we sum all accounts
-                        final matchesAccount = selectedAccountId == null || tx.accountId == selectedAccountId;
-                        
+                        final matchesAccount = selectedAccountId == null ||
+                            tx.accountId == selectedAccountId;
+
                         // Date filter
                         bool matchesDate = false;
                         if (dashboardTimeframe == 'day') {
@@ -272,21 +304,29 @@ class HomeScreen extends ConsumerWidget {
                               tx.createdAt.month == now.month &&
                               tx.createdAt.day == now.day;
                         } else if (dashboardTimeframe == 'week') {
-                          final startOfWeek = DateTime(now.year, now.month, now.day).subtract(Duration(days: now.weekday - 1));
-                          matchesDate = tx.createdAt.isAfter(startOfWeek.subtract(const Duration(seconds: 1)));
+                          final startOfWeek =
+                              DateTime(now.year, now.month, now.day)
+                                  .subtract(Duration(days: now.weekday - 1));
+                          matchesDate = tx.createdAt.isAfter(
+                              startOfWeek.subtract(const Duration(seconds: 1)));
                         } else if (dashboardTimeframe == 'month') {
-                          matchesDate = tx.createdAt.year == now.year && tx.createdAt.month == now.month;
+                          matchesDate = tx.createdAt.year == now.year &&
+                              tx.createdAt.month == now.month;
                         } else if (dashboardTimeframe == 'year') {
                           matchesDate = tx.createdAt.year == now.year;
                         }
-                        
+
                         // Exclude "Transfer" transactions from stats
                         final isNotTransfer = tx.categoryId != null &&
                             categoriesList.isNotEmpty &&
-                            categoriesList.firstWhere(
-                              (c) => c.id == tx.categoryId,
-                              orElse: () => categoriesList.first,
-                            ).name.toLowerCase() != 'transfer';
+                            categoriesList
+                                    .firstWhere(
+                                      (c) => c.id == tx.categoryId,
+                                      orElse: () => categoriesList.first,
+                                    )
+                                    .name
+                                    .toLowerCase() !=
+                                'transfer';
 
                         return matchesDate && matchesAccount && isNotTransfer;
                       }).toList();
@@ -304,14 +344,19 @@ class HomeScreen extends ConsumerWidget {
                             child: Container(
                               padding: const EdgeInsets.all(16.0),
                               decoration: BoxDecoration(
-                                color: isDarkMode ? const Color(0xFF131D1D) : Colors.white,
+                                color: isDarkMode
+                                    ? const Color(0xFF131D1D)
+                                    : Colors.white,
                                 borderRadius: BorderRadius.circular(20.0),
                                 border: Border.all(
-                                  color: isDarkMode ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05),
+                                  color: isDarkMode
+                                      ? Colors.white.withValues(alpha: 0.05)
+                                      : Colors.black.withValues(alpha: 0.05),
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.015),
+                                    color:
+                                        Colors.black.withValues(alpha: 0.015),
                                     blurRadius: 10.0,
                                     offset: const Offset(0, 4),
                                   ),
@@ -323,7 +368,8 @@ class HomeScreen extends ConsumerWidget {
                                   Container(
                                     padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFFEF4444).withOpacity(0.1),
+                                      color: const Color(0xFFEF4444)
+                                          .withValues(alpha: 0.1),
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
                                     child: const Icon(
@@ -338,7 +384,9 @@ class HomeScreen extends ConsumerWidget {
                                     style: TextStyle(
                                       fontSize: 12.0,
                                       fontWeight: FontWeight.w500,
-                                      color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                                      color: isDarkMode
+                                          ? Colors.grey[400]
+                                          : Colors.grey[600],
                                     ),
                                   ),
                                   const SizedBox(height: 4.0),
@@ -360,7 +408,9 @@ class HomeScreen extends ConsumerWidget {
                                                 : 'Tahun ini',
                                     style: TextStyle(
                                       fontSize: 9.5,
-                                      color: isDarkMode ? Colors.grey[500] : Colors.grey[400],
+                                      color: isDarkMode
+                                          ? Colors.grey[500]
+                                          : Colors.grey[400],
                                     ),
                                   ),
                                 ],
@@ -372,14 +422,19 @@ class HomeScreen extends ConsumerWidget {
                             child: Container(
                               padding: const EdgeInsets.all(16.0),
                               decoration: BoxDecoration(
-                                color: isDarkMode ? const Color(0xFF131D1D) : Colors.white,
+                                color: isDarkMode
+                                    ? const Color(0xFF131D1D)
+                                    : Colors.white,
                                 borderRadius: BorderRadius.circular(20.0),
                                 border: Border.all(
-                                  color: isDarkMode ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05),
+                                  color: isDarkMode
+                                      ? Colors.white.withValues(alpha: 0.05)
+                                      : Colors.black.withValues(alpha: 0.05),
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.015),
+                                    color:
+                                        Colors.black.withValues(alpha: 0.015),
                                     blurRadius: 10.0,
                                     offset: const Offset(0, 4),
                                   ),
@@ -391,7 +446,8 @@ class HomeScreen extends ConsumerWidget {
                                   Container(
                                     padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFF10B981).withOpacity(0.1),
+                                      color: const Color(0xFF10B981)
+                                          .withValues(alpha: 0.1),
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
                                     child: const Icon(
@@ -406,7 +462,9 @@ class HomeScreen extends ConsumerWidget {
                                     style: TextStyle(
                                       fontSize: 12.0,
                                       fontWeight: FontWeight.w500,
-                                      color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                                      color: isDarkMode
+                                          ? Colors.grey[400]
+                                          : Colors.grey[600],
                                     ),
                                   ),
                                   const SizedBox(height: 4.0),
@@ -428,7 +486,9 @@ class HomeScreen extends ConsumerWidget {
                                                 : 'Tahun ini',
                                     style: TextStyle(
                                       fontSize: 9.5,
-                                      color: isDarkMode ? Colors.grey[500] : Colors.grey[400],
+                                      color: isDarkMode
+                                          ? Colors.grey[500]
+                                          : Colors.grey[400],
                                     ),
                                   ),
                                 ],
@@ -438,7 +498,8 @@ class HomeScreen extends ConsumerWidget {
                         ],
                       );
                     },
-                    loading: () => const Center(child: LinearProgressIndicator()),
+                    loading: () =>
+                        const Center(child: LinearProgressIndicator()),
                     error: (err, st) => Text('Error loading ringkasan: $err'),
                   ),
                 ),
@@ -448,36 +509,43 @@ class HomeScreen extends ConsumerWidget {
               transactionsAsync.when(
                 data: (allTransactions) {
                   final now = DateTime.now();
-                  
+
                   // Filter by Account and Timeframe
                   final transactions = allTransactions.where((tx) {
-                    final matchesAccount = selectedAccountId == null || tx.accountId == selectedAccountId;
-                    
+                    final matchesAccount = selectedAccountId == null ||
+                        tx.accountId == selectedAccountId;
+
                     bool matchesDate = false;
                     if (dashboardTimeframe == 'day') {
                       matchesDate = tx.createdAt.year == now.year &&
                           tx.createdAt.month == now.month &&
                           tx.createdAt.day == now.day;
                     } else if (dashboardTimeframe == 'week') {
-                      final startOfWeek = DateTime(now.year, now.month, now.day).subtract(Duration(days: now.weekday - 1));
-                      matchesDate = tx.createdAt.isAfter(startOfWeek.subtract(const Duration(seconds: 1)));
+                      final startOfWeek = DateTime(now.year, now.month, now.day)
+                          .subtract(Duration(days: now.weekday - 1));
+                      matchesDate = tx.createdAt.isAfter(
+                          startOfWeek.subtract(const Duration(seconds: 1)));
                     } else if (dashboardTimeframe == 'month') {
-                      matchesDate = tx.createdAt.year == now.year && tx.createdAt.month == now.month;
+                      matchesDate = tx.createdAt.year == now.year &&
+                          tx.createdAt.month == now.month;
                     } else if (dashboardTimeframe == 'year') {
                       matchesDate = tx.createdAt.year == now.year;
                     }
-                    
+
                     return matchesAccount && matchesDate;
                   }).toList();
 
                   // Sort transactions by date descending
-                  transactions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-                  
+                  transactions
+                      .sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
                   const itemsPerPage = 10;
                   final totalItems = transactions.length;
                   final totalPages = (totalItems / itemsPerPage).ceil();
-                  final activePage = currentPage > totalPages ? (totalPages > 0 ? totalPages : 1) : currentPage;
-                  
+                  final activePage = currentPage > totalPages
+                      ? (totalPages > 0 ? totalPages : 1)
+                      : currentPage;
+
                   final startIndex = (activePage - 1) * itemsPerPage;
                   final endIndex = startIndex + itemsPerPage;
                   final displayTransactions = transactions.sublist(
@@ -487,7 +555,8 @@ class HomeScreen extends ConsumerWidget {
 
                   if (transactions.isEmpty) {
                     return const SliverPadding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 16.0),
                       sliver: SliverToBoxAdapter(
                         child: Card(
                           elevation: 0,
@@ -497,7 +566,8 @@ class HomeScreen extends ConsumerWidget {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.receipt_long_outlined, size: 48, color: Colors.grey),
+                                  Icon(Icons.receipt_long_outlined,
+                                      size: 48, color: Colors.grey),
                                   SizedBox(height: 8),
                                   Text(
                                     'Belum ada transaksi.',
@@ -515,15 +585,20 @@ class HomeScreen extends ConsumerWidget {
                   return categoriesAsync.when(
                     data: (categories) {
                       return SliverPadding(
-                        padding: const EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 24.0),
+                        padding:
+                            const EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 24.0),
                         sliver: SliverToBoxAdapter(
                           child: Card(
                             elevation: 0,
-                            color: isDarkMode ? const Color(0xFF1E222B) : Colors.white,
+                            color: isDarkMode
+                                ? const Color(0xFF1E222B)
+                                : Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20.0),
                               side: BorderSide(
-                                color: isDarkMode ? Colors.white.withOpacity(0.04) : Colors.black.withOpacity(0.03),
+                                color: isDarkMode
+                                    ? Colors.white.withValues(alpha: 0.04)
+                                    : Colors.black.withValues(alpha: 0.03),
                               ),
                             ),
                             child: Padding(
@@ -537,12 +612,17 @@ class HomeScreen extends ConsumerWidget {
                                       Container(
                                         padding: const EdgeInsets.all(8),
                                         decoration: BoxDecoration(
-                                          color: isDarkMode ? const Color(0xFF003434) : const Color(0xFFE0F2F1),
-                                          borderRadius: BorderRadius.circular(10.0),
+                                          color: isDarkMode
+                                              ? const Color(0xFF003434)
+                                              : const Color(0xFFE0F2F1),
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
                                         ),
                                         child: Icon(
                                           Icons.history_outlined,
-                                          color: isDarkMode ? const Color(0xFF94D1D1) : const Color(0xFF004D4D),
+                                          color: isDarkMode
+                                              ? const Color(0xFF94D1D1)
+                                              : const Color(0xFF004D4D),
                                           size: 22.0,
                                         ),
                                       ),
@@ -557,146 +637,230 @@ class HomeScreen extends ConsumerWidget {
                                     ],
                                   ),
                                   const SizedBox(height: 16.0),
-                                  
+
                                   // Transactions list items inside Column
                                   Column(
                                     children: [
-                                      ...List.generate(displayTransactions.length, (idx) {
+                                      ...List.generate(
+                                          displayTransactions.length, (idx) {
                                         final tx = displayTransactions[idx];
-                                      final category = categories.firstWhere(
-                                        (c) => c.id == tx.categoryId,
-                                        orElse: () => Category(name: 'Lain-lain', type: tx.type),
-                                      );
+                                        final category = categories.firstWhere(
+                                          (c) => c.id == tx.categoryId,
+                                          orElse: () => Category(
+                                              name: 'Lain-lain', type: tx.type),
+                                        );
 
-                                      // Time subtitle formatting
-                                      String timeStr = DateFormat('HH:mm').format(tx.createdAt);
-                                      String dateSubtitle;
-                                      final txDate = DateTime(tx.createdAt.year, tx.createdAt.month, tx.createdAt.day);
-                                      final today = DateTime(now.year, now.month, now.day);
-                                      final yesterday = today.subtract(const Duration(days: 1));
-                                      
-                                      if (txDate == today) {
-                                        dateSubtitle = 'Hari ini, $timeStr';
-                                      } else if (txDate == yesterday) {
-                                        dateSubtitle = 'Kemarin, $timeStr';
-                                      } else {
-                                        dateSubtitle = DateFormat('d MMM yyyy, HH:mm', 'id_ID').format(tx.createdAt);
-                                      }
+                                        // Time subtitle formatting
+                                        String timeStr = DateFormat('HH:mm')
+                                            .format(tx.createdAt);
+                                        String dateSubtitle;
+                                        final txDate = DateTime(
+                                            tx.createdAt.year,
+                                            tx.createdAt.month,
+                                            tx.createdAt.day);
+                                        final today = DateTime(
+                                            now.year, now.month, now.day);
+                                        final yesterday = today
+                                            .subtract(const Duration(days: 1));
 
+                                        if (txDate == today) {
+                                          dateSubtitle = 'Hari ini, $timeStr';
+                                        } else if (txDate == yesterday) {
+                                          dateSubtitle = 'Kemarin, $timeStr';
+                                        } else {
+                                          dateSubtitle = DateFormat(
+                                                  'd MMM yyyy, HH:mm', 'id_ID')
+                                              .format(tx.createdAt);
+                                        }
 
-                                      return Dismissible(
-                                        key: Key('tx-${tx.id}'),
-                                        direction: DismissDirection.endToStart,
-                                        background: Container(
-                                          color: Colors.redAccent,
-                                          alignment: Alignment.centerRight,
-                                          padding: const EdgeInsets.only(right: 20.0),
-                                          child: const Icon(Icons.delete_outline, color: Colors.white),
-                                        ),
-                                        onDismissed: (direction) {
-                                          if (tx.id != null) {
-                                            ref.read(transactionsNotifierProvider.notifier).deleteTransaction(tx.id!);
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              SnackBar(
-                                                behavior: SnackBarBehavior.floating,
-                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-                                                backgroundColor: isDarkMode ? const Color(0xFF131D1D) : const Color(0xFF2E3131),
-                                                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                                                duration: const Duration(seconds: 5),
-                                                content: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: Text(
-                                                        'Transaksi "${tx.note}" dihapus',
-                                                        style: const TextStyle(color: Colors.white, fontSize: 13.0),
-                                                      ),
-                                                    ),
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        ref.read(transactionsNotifierProvider.notifier).addTransaction(tx);
-                                                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                                                      },
-                                                      child: const Text(
-                                                        'Urungkan',
-                                                        style: TextStyle(color: Color(0xFFFC8A40), fontWeight: FontWeight.bold, fontSize: 13.0),
-                                                      ),
-                                                    ),
-                                                    IconButton(
-                                                      icon: const Icon(Icons.close, color: Colors.white70, size: 16.0),
-                                                      padding: EdgeInsets.zero,
-                                                      constraints: const BoxConstraints(),
-                                                      onPressed: () {
-                                                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                                                      },
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            );
-                                          }
-                                        },
-                                        child: InkWell(
-                                          onTap: () {
-                                            _showEditDialog(context, ref, tx, categories);
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(vertical: 12.0),
-                                            child: Row(
-                                              children: [
-                                                Container(
-                                                  width: 38.0,
-                                                  height: 38.0,
-                                                  decoration: BoxDecoration(
-                                                    color: isDarkMode ? const Color(0xFF131D1D) : const Color(0xFFECEEEE),
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  child: Icon(
-                                                    _getCategoryIcon(category.icon),
-                                                    color: isDarkMode ? Colors.white : Colors.black,
-                                                    size: 18.0,
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 12.0),
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                        return Dismissible(
+                                          key: Key('tx-${tx.id}'),
+                                          direction:
+                                              DismissDirection.endToStart,
+                                          background: Container(
+                                            color: Colors.redAccent,
+                                            alignment: Alignment.centerRight,
+                                            padding: const EdgeInsets.only(
+                                                right: 20.0),
+                                            child: const Icon(
+                                                Icons.delete_outline,
+                                                color: Colors.white),
+                                          ),
+                                          onDismissed: (direction) {
+                                            if (tx.id != null) {
+                                              ref
+                                                  .read(
+                                                      transactionsNotifierProvider
+                                                          .notifier)
+                                                  .deleteTransaction(tx.id!);
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  behavior:
+                                                      SnackBarBehavior.floating,
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              16.0)),
+                                                  backgroundColor: isDarkMode
+                                                      ? const Color(0xFF131D1D)
+                                                      : const Color(0xFF2E3131),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 16.0,
+                                                      vertical: 8.0),
+                                                  duration: const Duration(
+                                                      seconds: 5),
+                                                  content: Row(
                                                     children: [
-                                                      Text(
-                                                        (tx.note == null || tx.note!.isEmpty) ? category.name : tx.note!,
-                                                        maxLines: 1,
-                                                        overflow: TextOverflow.ellipsis,
-                                                        style: const TextStyle(
-                                                          fontSize: 13.0,
-                                                          fontWeight: FontWeight.w500,
+                                                      Expanded(
+                                                        child: Text(
+                                                          'Transaksi "${tx.note}" dihapus',
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize:
+                                                                      13.0),
                                                         ),
                                                       ),
-                                                      const SizedBox(height: 2.0),
-                                                      Text(
-                                                        dateSubtitle,
-                                                        style: TextStyle(
-                                                          fontSize: 10.5,
-                                                          color: isDarkMode ? Colors.grey[400] : Colors.grey[500],
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          ref
+                                                              .read(
+                                                                  transactionsNotifierProvider
+                                                                      .notifier)
+                                                              .addTransaction(
+                                                                  tx);
+                                                          ScaffoldMessenger.of(
+                                                                  context)
+                                                              .hideCurrentSnackBar();
+                                                        },
+                                                        child: const Text(
+                                                          'Urungkan',
+                                                          style: TextStyle(
+                                                              color: Color(
+                                                                  0xFFFC8A40),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 13.0),
                                                         ),
+                                                      ),
+                                                      IconButton(
+                                                        icon: const Icon(
+                                                            Icons.close,
+                                                            color:
+                                                                Colors.white70,
+                                                            size: 16.0),
+                                                        padding:
+                                                            EdgeInsets.zero,
+                                                        constraints:
+                                                            const BoxConstraints(),
+                                                        onPressed: () {
+                                                          ScaffoldMessenger.of(
+                                                                  context)
+                                                              .hideCurrentSnackBar();
+                                                        },
                                                       ),
                                                     ],
                                                   ),
                                                 ),
-                                                const SizedBox(width: 8.0),
-                                                Text(
-                                                  (tx.type == 'income' ? '+ ' : '- ') + _formatRp(tx.amount),
-                                                  style: TextStyle(
-                                                    fontSize: 13.0,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: tx.type == 'income'
-                                                        ? const Color(0xFF10B981) // Green for Income!
-                                                        : const Color(0xFFEF4444), // Red for Expense!
+                                              );
+                                            }
+                                          },
+                                          child: InkWell(
+                                            onTap: () {
+                                              _showEditDialog(
+                                                  context, ref, tx, categories);
+                                            },
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 12.0),
+                                              child: Row(
+                                                children: [
+                                                  Container(
+                                                    width: 38.0,
+                                                    height: 38.0,
+                                                    decoration: BoxDecoration(
+                                                      color: isDarkMode
+                                                          ? const Color(
+                                                              0xFF131D1D)
+                                                          : const Color(
+                                                              0xFFECEEEE),
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                    child: Icon(
+                                                      _getCategoryIcon(
+                                                          category.icon),
+                                                      color: isDarkMode
+                                                          ? Colors.white
+                                                          : Colors.black,
+                                                      size: 18.0,
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
+                                                  const SizedBox(width: 12.0),
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          (tx.note == null ||
+                                                                  tx.note!
+                                                                      .isEmpty)
+                                                              ? category.name
+                                                              : tx.note!,
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 13.0,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 2.0),
+                                                        Text(
+                                                          dateSubtitle,
+                                                          style: TextStyle(
+                                                            fontSize: 10.5,
+                                                            color: isDarkMode
+                                                                ? Colors
+                                                                    .grey[400]
+                                                                : Colors
+                                                                    .grey[500],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 8.0),
+                                                  Text(
+                                                    (tx.type == 'income'
+                                                            ? '+ '
+                                                            : '- ') +
+                                                        _formatRp(tx.amount),
+                                                    style: TextStyle(
+                                                      fontSize: 13.0,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: tx.type == 'income'
+                                                          ? const Color(
+                                                              0xFF10B981) // Green for Income!
+                                                          : const Color(
+                                                              0xFFEF4444), // Red for Expense!
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      );
+                                        );
                                       }),
                                       _buildPaginationRow(
                                         context,
@@ -714,12 +878,16 @@ class HomeScreen extends ConsumerWidget {
                         ),
                       );
                     },
-                    loading: () => const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator())),
-                    error: (err, st) => SliverToBoxAdapter(child: Text('Error: $err')),
+                    loading: () => const SliverToBoxAdapter(
+                        child: Center(child: CircularProgressIndicator())),
+                    error: (err, st) =>
+                        SliverToBoxAdapter(child: Text('Error: $err')),
                   );
                 },
-                loading: () => const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator())),
-                error: (err, st) => SliverToBoxAdapter(child: Text('Error: $err')),
+                loading: () => const SliverToBoxAdapter(
+                    child: Center(child: CircularProgressIndicator())),
+                error: (err, st) =>
+                    SliverToBoxAdapter(child: Text('Error: $err')),
               ),
               const SliverToBoxAdapter(
                 child: SizedBox(height: 100.0),
@@ -731,10 +899,13 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  void _showEditDialog(BuildContext context, WidgetRef ref, TransactionModel tx, List<Category> categories) {
+  void _showEditDialog(BuildContext context, WidgetRef ref, TransactionModel tx,
+      List<Category> categories) {
     final noteController = TextEditingController(text: tx.note);
-    final amountController = TextEditingController(text: tx.amount.toStringAsFixed(0));
-    Category? selectedCat = categories.firstWhere((c) => c.id == tx.categoryId, orElse: () => categories.first);
+    final amountController =
+        TextEditingController(text: tx.amount.toStringAsFixed(0));
+    Category? selectedCat = categories.firstWhere((c) => c.id == tx.categoryId,
+        orElse: () => categories.first);
     String type = tx.type;
     final accounts = ref.read(accountsNotifierProvider).value ?? [];
     int? selectedAccId = tx.accountId;
@@ -744,7 +915,8 @@ class HomeScreen extends ConsumerWidget {
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            final filteredCats = categories.where((c) => c.type == type).toList();
+            final filteredCats =
+                categories.where((c) => c.type == type).toList();
             if (!filteredCats.contains(selectedCat)) {
               selectedCat = filteredCats.isNotEmpty ? filteredCats.first : null;
             }
@@ -780,7 +952,7 @@ class HomeScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 12),
                     DropdownButtonFormField<Category>(
-                      value: selectedCat,
+                      initialValue: selectedCat,
                       decoration: const InputDecoration(labelText: 'Kategori'),
                       items: filteredCats.map((c) {
                         return DropdownMenuItem(value: c, child: Text(c.name));
@@ -789,8 +961,9 @@ class HomeScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 8),
                     DropdownButtonFormField<int>(
-                      value: selectedAccId,
-                      decoration: const InputDecoration(labelText: 'Dompet / Akun'),
+                      initialValue: selectedAccId,
+                      decoration:
+                          const InputDecoration(labelText: 'Dompet / Akun'),
                       items: accounts.map((a) {
                         return DropdownMenuItem<int>(
                           value: a.account.id,
@@ -821,7 +994,9 @@ class HomeScreen extends ConsumerWidget {
                   onPressed: () {
                     final amt = double.tryParse(amountController.text) ?? 0.0;
                     if (amt > 0) {
-                      ref.read(transactionsNotifierProvider.notifier).updateTransaction(
+                      ref
+                          .read(transactionsNotifierProvider.notifier)
+                          .updateTransaction(
                             tx.copyWith(
                               amount: amt,
                               type: type,
@@ -843,10 +1018,11 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildTimeframePill(BuildContext context, WidgetRef ref, String timeframe, String label, String activeTimeframe) {
+  Widget _buildTimeframePill(BuildContext context, WidgetRef ref,
+      String timeframe, String label, String activeTimeframe) {
     final isSelected = activeTimeframe == timeframe;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Expanded(
       child: GestureDetector(
         onTap: () {
@@ -1007,12 +1183,16 @@ class HomeScreen extends ConsumerWidget {
         decoration: BoxDecoration(
           color: isActive
               ? (isDarkMode ? Colors.white : const Color(0xFF2C2C2C))
-              : (isDarkMode ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04)),
+              : (isDarkMode
+                  ? Colors.white.withValues(alpha: 0.06)
+                  : Colors.black.withValues(alpha: 0.04)),
           borderRadius: BorderRadius.circular(6.0),
           border: Border.all(
             color: isActive
                 ? (isDarkMode ? Colors.white : const Color(0xFF2C2C2C))
-                : (isDarkMode ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.05)),
+                : (isDarkMode
+                    ? Colors.white.withValues(alpha: 0.08)
+                    : Colors.black.withValues(alpha: 0.05)),
             width: 1.0,
           ),
         ),
@@ -1044,10 +1224,14 @@ class HomeScreen extends ConsumerWidget {
         width: 28.0,
         height: 28.0,
         decoration: BoxDecoration(
-          color: isDarkMode ? Colors.white.withOpacity(0.03) : Colors.black.withOpacity(0.02),
+          color: isDarkMode
+              ? Colors.white.withValues(alpha: 0.03)
+              : Colors.black.withValues(alpha: 0.02),
           borderRadius: BorderRadius.circular(6.0),
           border: Border.all(
-            color: isDarkMode ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.03),
+            color: isDarkMode
+                ? Colors.white.withValues(alpha: 0.05)
+                : Colors.black.withValues(alpha: 0.03),
             width: 1.0,
           ),
         ),
@@ -1091,7 +1275,8 @@ class _AccountStackCarouselState extends State<AccountStackCarousel> {
     super.initState();
     int initialPage = 0;
     if (widget.selectedAccountId != null) {
-      final index = widget.accounts.indexWhere((a) => a.account.id == widget.selectedAccountId);
+      final index = widget.accounts
+          .indexWhere((a) => a.account.id == widget.selectedAccountId);
       if (index != -1) {
         initialPage = index + 1;
       }
@@ -1114,12 +1299,14 @@ class _AccountStackCarouselState extends State<AccountStackCarousel> {
     if (widget.selectedAccountId != oldWidget.selectedAccountId) {
       int targetPage = 0;
       if (widget.selectedAccountId != null) {
-        final index = widget.accounts.indexWhere((a) => a.account.id == widget.selectedAccountId);
+        final index = widget.accounts
+            .indexWhere((a) => a.account.id == widget.selectedAccountId);
         if (index != -1) {
           targetPage = index + 1;
         }
       }
-      if (_pageController.hasClients && _pageController.page?.round() != targetPage) {
+      if (_pageController.hasClients &&
+          _pageController.page?.round() != targetPage) {
         _pageController.animateToPage(
           targetPage,
           duration: const Duration(milliseconds: 300),
@@ -1142,17 +1329,23 @@ class _AccountStackCarouselState extends State<AccountStackCarousel> {
       itemCount: widget.accounts.length + 1,
       onPageChanged: (index) {
         final isAllAccounts = index == 0;
-        final selectedId = isAllAccounts ? null : widget.accounts[index - 1].account.id;
+        final selectedId =
+            isAllAccounts ? null : widget.accounts[index - 1].account.id;
         widget.ref.read(selectedAccountIdProvider.notifier).select(selectedId);
       },
       itemBuilder: (context, index) {
         final isAllAccounts = index == 0;
-        final String title = isAllAccounts ? 'Semua Akun' : widget.accounts[index - 1].account.name;
-        final double balance = isAllAccounts ? widget.totalBalance : widget.accounts[index - 1].balance;
+        final String title = isAllAccounts
+            ? 'Semua Akun'
+            : widget.accounts[index - 1].account.name;
+        final double balance = isAllAccounts
+            ? widget.totalBalance
+            : widget.accounts[index - 1].balance;
         final IconData icon = isAllAccounts
             ? Icons.all_inclusive_rounded
             : _getAccountIcon(widget.accounts[index - 1].account.icon);
-        final String? cardColor = isAllAccounts ? 'teal' : widget.accounts[index - 1].account.color;
+        final String? cardColor =
+            isAllAccounts ? 'teal' : widget.accounts[index - 1].account.color;
 
         final double difference = index - _currentPage;
         final double scale = (1 - (difference.abs() * 0.08)).clamp(0.8, 1.0);
@@ -1166,7 +1359,8 @@ class _AccountStackCarouselState extends State<AccountStackCarousel> {
           child: PremiumStackCard(
             title: title,
             balance: balance,
-            isSelected: index == _pageController.initialPage || (difference.abs() < 0.5),
+            isSelected: index == _pageController.initialPage ||
+                (difference.abs() < 0.5),
             icon: icon,
             isAllAccounts: isAllAccounts,
             color: cardColor,
@@ -1199,7 +1393,8 @@ class PremiumStackCard extends StatefulWidget {
   State<PremiumStackCard> createState() => _PremiumStackCardState();
 }
 
-class _PremiumStackCardState extends State<PremiumStackCard> with SingleTickerProviderStateMixin {
+class _PremiumStackCardState extends State<PremiumStackCard>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -1234,13 +1429,21 @@ class _PremiumStackCardState extends State<PremiumStackCard> with SingleTickerPr
     List<Color> gradientColors;
 
     if (widget.isAllAccounts) {
-      gradientColors = [const Color(0xFF111111), const Color(0xFF2C2C2C), const Color(0xFF555555)];
+      gradientColors = [
+        const Color(0xFF111111),
+        const Color(0xFF2C2C2C),
+        const Color(0xFF555555)
+      ];
     } else {
       final parsedColor = _parseCustomColor(colorId);
       if (parsedColor != null) {
         gradientColors = _generatePremiumGradient(parsedColor);
       } else {
-        gradientColors = [const Color(0xFF002222), const Color(0xFF004D4D), const Color(0xFF4DB6B5)];
+        gradientColors = [
+          const Color(0xFF002222),
+          const Color(0xFF004D4D),
+          const Color(0xFF4DB6B5)
+        ];
       }
     }
 
@@ -1259,7 +1462,7 @@ class _PremiumStackCardState extends State<PremiumStackCard> with SingleTickerPr
           stops: const [0.0, 0.5, 1.0],
         ),
         border: Border.all(
-          color: Colors.white.withOpacity(0.15),
+          color: Colors.white.withValues(alpha: 0.15),
           width: 1.0,
         ),
       ),
@@ -1275,7 +1478,7 @@ class _PremiumStackCardState extends State<PremiumStackCard> with SingleTickerPr
                 height: 140,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.06),
+                  color: Colors.white.withValues(alpha: 0.06),
                 ),
               ),
             ),
@@ -1287,7 +1490,7 @@ class _PremiumStackCardState extends State<PremiumStackCard> with SingleTickerPr
                 height: 120,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.04),
+                  color: Colors.white.withValues(alpha: 0.04),
                 ),
               ),
             ),
@@ -1301,9 +1504,10 @@ class _PremiumStackCardState extends State<PremiumStackCard> with SingleTickerPr
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 4.0),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12.0),
                         ),
                         child: Text(
@@ -1323,7 +1527,7 @@ class _PremiumStackCardState extends State<PremiumStackCard> with SingleTickerPr
                             width: 16.0,
                             height: 16.0,
                             decoration: BoxDecoration(
-                              color: Colors.red.withOpacity(0.8),
+                              color: Colors.red.withValues(alpha: 0.8),
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -1333,7 +1537,7 @@ class _PremiumStackCardState extends State<PremiumStackCard> with SingleTickerPr
                               width: 16.0,
                               height: 16.0,
                               decoration: BoxDecoration(
-                                color: Colors.amber.withOpacity(0.8),
+                                color: Colors.amber.withValues(alpha: 0.8),
                                 shape: BoxShape.circle,
                               ),
                             ),
@@ -1370,7 +1574,7 @@ class _PremiumStackCardState extends State<PremiumStackCard> with SingleTickerPr
                               style: TextStyle(
                                 fontSize: 12.0,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.white.withOpacity(0.7),
+                                color: Colors.white.withValues(alpha: 0.7),
                               ),
                             ),
                           ],
@@ -1378,7 +1582,7 @@ class _PremiumStackCardState extends State<PremiumStackCard> with SingleTickerPr
                       ),
                       Icon(
                         Icons.wifi_tethering_rounded,
-                        color: Colors.white.withOpacity(0.7),
+                        color: Colors.white.withValues(alpha: 0.7),
                         size: 20.0,
                       ),
                     ],
@@ -1398,9 +1602,9 @@ class _PremiumStackCardState extends State<PremiumStackCard> with SingleTickerPr
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Colors.white.withOpacity(0.0),
-                            Colors.white.withOpacity(0.15),
-                            Colors.white.withOpacity(0.0),
+                            Colors.white.withValues(alpha: 0.0),
+                            Colors.white.withValues(alpha: 0.15),
+                            Colors.white.withValues(alpha: 0.0),
                           ],
                           stops: const [0.35, 0.5, 0.65],
                           begin: const Alignment(-1.0, -0.5),

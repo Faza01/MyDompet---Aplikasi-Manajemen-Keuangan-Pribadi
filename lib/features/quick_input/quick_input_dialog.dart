@@ -48,13 +48,13 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
     _speech = stt.SpeechToText();
     _initSpeech();
     _inputController.addListener(_onTextChanged);
-    
+
     // Select the active account from the home filter as the default account,
     // or fallback to the first available account.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final accountsAsync = ref.read(accountsNotifierProvider);
       final activeAccountId = ref.read(selectedAccountIdProvider);
-      
+
       accountsAsync.whenData((accounts) {
         if (accounts.isNotEmpty) {
           setState(() {
@@ -99,7 +99,7 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
 
   void _startListening() async {
     if (!_speechAvailable) return;
-    
+
     setState(() {
       _isListening = true;
       _lastWords = '';
@@ -136,7 +136,8 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
   }
 
   // Smart Account Detection based on keywords in text
-  AccountWithBalance? _detectAccount(String text, List<AccountWithBalance> accounts) {
+  AccountWithBalance? _detectAccount(
+      String text, List<AccountWithBalance> accounts) {
     final lowerText = text.toLowerCase();
 
     // 1. Specific matches: check if text contains "gopay", "shopeepay", "dana", "ovo"
@@ -148,24 +149,30 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
           orElse: () => accounts.first, // fallback if not found
         ),
       );
-      if (found.account.name.toLowerCase().contains('gopay') || found.account.name.toLowerCase().contains('go-pay')) {
+      if (found.account.name.toLowerCase().contains('gopay') ||
+          found.account.name.toLowerCase().contains('go-pay')) {
         return found;
       }
     }
 
     if (lowerText.contains('shopeepay') || lowerText.contains('shopee pay')) {
       final found = accounts.firstWhere(
-        (a) => a.account.name.toLowerCase().contains('shopeepay') || a.account.name.toLowerCase().contains('shopee pay'),
+        (a) =>
+            a.account.name.toLowerCase().contains('shopeepay') ||
+            a.account.name.toLowerCase().contains('shopee pay'),
         orElse: () => accounts.first,
       );
-      if (found.account.name.toLowerCase().contains('shopeepay') || found.account.name.toLowerCase().contains('shopee pay')) {
+      if (found.account.name.toLowerCase().contains('shopeepay') ||
+          found.account.name.toLowerCase().contains('shopee pay')) {
         return found;
       }
     }
 
     if (lowerText.contains('dana')) {
       final found = accounts.firstWhere(
-        (a) => a.account.name.toLowerCase() == 'dana' || a.account.name.toLowerCase().contains('dana'),
+        (a) =>
+            a.account.name.toLowerCase() == 'dana' ||
+            a.account.name.toLowerCase().contains('dana'),
         orElse: () => accounts.first,
       );
       if (found.account.name.toLowerCase().contains('dana')) {
@@ -188,28 +195,35 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
     if (lowerText.contains('qris')) {
       // Look for E-Wallet first
       final eWallet = accounts.firstWhere(
-        (a) => a.account.name.toLowerCase().contains('e-wallet') || a.account.name.toLowerCase().contains('ewallet'),
+        (a) =>
+            a.account.name.toLowerCase().contains('e-wallet') ||
+            a.account.name.toLowerCase().contains('ewallet'),
         orElse: () => accounts.first,
       );
-      if (eWallet.account.name.toLowerCase().contains('e-wallet') || eWallet.account.name.toLowerCase().contains('ewallet')) {
+      if (eWallet.account.name.toLowerCase().contains('e-wallet') ||
+          eWallet.account.name.toLowerCase().contains('ewallet')) {
         return eWallet;
       }
 
       // Fallback to GoPay as the default e-wallet
       final gopay = accounts.firstWhere(
-        (a) => a.account.name.toLowerCase().contains('gopay') || a.account.name.toLowerCase().contains('go-pay'),
+        (a) =>
+            a.account.name.toLowerCase().contains('gopay') ||
+            a.account.name.toLowerCase().contains('go-pay'),
         orElse: () => accounts.first,
       );
-      if (gopay.account.name.toLowerCase().contains('gopay') || gopay.account.name.toLowerCase().contains('go-pay')) {
+      if (gopay.account.name.toLowerCase().contains('gopay') ||
+          gopay.account.name.toLowerCase().contains('go-pay')) {
         return gopay;
       }
 
       // Fallback to any other e-wallet
       final otherWallet = accounts.firstWhere(
-        (a) => a.account.name.toLowerCase().contains('dana') ||
-               a.account.name.toLowerCase().contains('ovo') ||
-               a.account.name.toLowerCase().contains('shopeepay') ||
-               a.account.name.toLowerCase().contains('shopee pay'),
+        (a) =>
+            a.account.name.toLowerCase().contains('dana') ||
+            a.account.name.toLowerCase().contains('ovo') ||
+            a.account.name.toLowerCase().contains('shopeepay') ||
+            a.account.name.toLowerCase().contains('shopee pay'),
         orElse: () => accounts.first,
       );
       if (otherWallet.account.name.toLowerCase().contains('dana') ||
@@ -234,9 +248,9 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
       }
       if (nameLower == 'tunai' &&
           (lowerText.contains('cash') ||
-           lowerText.contains('tunai') ||
-           lowerText.contains('dompet') ||
-           lowerText.contains('kantong'))) {
+              lowerText.contains('tunai') ||
+              lowerText.contains('dompet') ||
+              lowerText.contains('kantong'))) {
         return acc;
       }
     }
@@ -250,7 +264,9 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
       final keywordsAsync = ref.read(keywordsNotifierProvider);
       final accountsAsync = ref.read(accountsNotifierProvider);
 
-      if (categoriesAsync.hasValue && keywordsAsync.hasValue && accountsAsync.hasValue) {
+      if (categoriesAsync.hasValue &&
+          keywordsAsync.hasValue &&
+          accountsAsync.hasValue) {
         final categories = categoriesAsync.value ?? [];
         final keywords = keywordsAsync.value ?? [];
         final accounts = accountsAsync.value ?? [];
@@ -267,7 +283,8 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
           (c) => c.name.toLowerCase().contains('lain') && c.type == 'income',
           orElse: () => categories.firstWhere(
             (c) => c.type == 'income',
-            orElse: () => Category(id: 98, name: 'Lain-lain (Masuk)', type: 'income'),
+            orElse: () =>
+                Category(id: 98, name: 'Lain-lain (Masuk)', type: 'income'),
           ),
         );
 
@@ -293,7 +310,8 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
 
           // Safely update sub-controllers without breaking input focus
           _noteController.text = _note;
-          _amountController.text = _amount > 0 ? _amount.toStringAsFixed(0) : '';
+          _amountController.text =
+              _amount > 0 ? _amount.toStringAsFixed(0) : '';
         });
       }
     } catch (e, st) {
@@ -315,7 +333,8 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
     if (_selectedAccount == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Silakan buat akun/dompet terlebih dahulu di pengaturan'),
+          content:
+              Text('Silakan buat akun/dompet terlebih dahulu di pengaturan'),
           backgroundColor: Colors.redAccent,
         ),
       );
@@ -346,10 +365,13 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     // Show loading spinner while Riverpod loads database records
-    if (categoriesAsync.isLoading || keywordsAsync.isLoading || accountsAsync.isLoading) {
+    if (categoriesAsync.isLoading ||
+        keywordsAsync.isLoading ||
+        accountsAsync.isLoading) {
       return Dialog(
         backgroundColor: isDarkMode ? const Color(0xFF1E222B) : Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)),
         child: const Padding(
           padding: EdgeInsets.all(40.0),
           child: Center(
@@ -364,11 +386,14 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24.0),
         side: BorderSide(
-          color: isDarkMode ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.05),
+          color: isDarkMode
+              ? Colors.white.withValues(alpha: 0.08)
+              : Colors.black.withValues(alpha: 0.05),
           width: 1,
         ),
       ),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+      insetPadding:
+          const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -389,7 +414,9 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.close_outlined, size: 20, color: isDarkMode ? Colors.white : Colors.black),
+                    icon: Icon(Icons.close_outlined,
+                        size: 20,
+                        color: isDarkMode ? Colors.white : Colors.black),
                     onPressed: () => Navigator.of(context).pop(),
                   )
                 ],
@@ -408,12 +435,16 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                       decoration: InputDecoration(
                         hintText: 'e.g. beli bakso 15rb atau gaji 3jt',
                         hintStyle: TextStyle(
-                          color: isDarkMode ? Colors.grey[500] : Colors.grey[400],
+                          color:
+                              isDarkMode ? Colors.grey[500] : Colors.grey[400],
                           fontSize: 13.0,
                         ),
                         filled: true,
-                        fillColor: isDarkMode ? const Color(0xFF12161A) : Colors.grey[100],
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 12.0),
+                        fillColor: isDarkMode
+                            ? const Color(0xFF12161A)
+                            : Colors.grey[100],
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 14.0, vertical: 12.0),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14.0),
                           borderSide: BorderSide.none,
@@ -425,7 +456,9 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14.0),
                           borderSide: BorderSide(
-                            color: _type == 'income' ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+                            color: _type == 'income'
+                                ? const Color(0xFF10B981)
+                                : const Color(0xFFEF4444),
                             width: 1.5,
                           ),
                         ),
@@ -453,15 +486,17 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                           boxShadow: [
                             BoxShadow(
                               color: _isListening
-                                  ? Colors.red.withOpacity(0.2)
-                                  : Colors.black.withOpacity(0.15),
+                                  ? Colors.red.withValues(alpha: 0.2)
+                                  : Colors.black.withValues(alpha: 0.15),
                               blurRadius: 6,
                               offset: const Offset(0, 3),
                             ),
                           ],
                         ),
                         child: Icon(
-                          _isListening ? Icons.mic_off_outlined : Icons.mic_outlined,
+                          _isListening
+                              ? Icons.mic_off_outlined
+                              : Icons.mic_outlined,
                           color: Colors.white,
                           size: 18,
                         ),
@@ -480,7 +515,7 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                         color: Colors.black,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.15),
+                            color: Colors.black.withValues(alpha: 0.15),
                             blurRadius: 6,
                             offset: const Offset(0, 3),
                           ),
@@ -525,7 +560,9 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                   color: isDarkMode ? const Color(0xFF12161A) : Colors.grey[50],
                   borderRadius: BorderRadius.circular(12.0),
                   border: Border.all(
-                    color: isDarkMode ? Colors.white.withOpacity(0.04) : Colors.black.withOpacity(0.03),
+                    color: isDarkMode
+                        ? Colors.white.withValues(alpha: 0.04)
+                        : Colors.black.withValues(alpha: 0.03),
                   ),
                 ),
                 child: Column(
@@ -536,7 +573,9 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                       style: TextStyle(
                         fontSize: 22.0,
                         fontWeight: FontWeight.w900,
-                        color: _type == 'income' ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+                        color: _type == 'income'
+                            ? const Color(0xFF10B981)
+                            : const Color(0xFFEF4444),
                       ),
                     ),
                     const SizedBox(height: 6.0),
@@ -544,15 +583,21 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                     const SizedBox(height: 6.0),
                     Row(
                       children: [
-                        Icon(Icons.notes_outlined, size: 16, color: isDarkMode ? Colors.white70 : Colors.black54),
+                        Icon(Icons.notes_outlined,
+                            size: 16,
+                            color:
+                                isDarkMode ? Colors.white70 : Colors.black54),
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
                             _note.isEmpty ? '(Belum ada catatan)' : _note,
                             style: TextStyle(
                               fontSize: 12.0,
-                              fontStyle: _note.isEmpty ? FontStyle.italic : FontStyle.normal,
-                              color: isDarkMode ? Colors.white70 : Colors.black87,
+                              fontStyle: _note.isEmpty
+                                  ? FontStyle.italic
+                                  : FontStyle.normal,
+                              color:
+                                  isDarkMode ? Colors.white70 : Colors.black87,
                             ),
                           ),
                         ),
@@ -579,22 +624,30 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                 children: [
                   Expanded(
                     child: ChoiceChip(
-                      label: const Center(child: Text('Pengeluaran', style: TextStyle(fontSize: 12.0))),
+                      label: const Center(
+                          child: Text('Pengeluaran',
+                              style: TextStyle(fontSize: 12.0))),
                       selected: _type == 'expense',
-                      selectedColor: const Color(0xFFEF4444).withOpacity(0.15),
+                      selectedColor:
+                          const Color(0xFFEF4444).withValues(alpha: 0.15),
                       checkmarkColor: const Color(0xFFEF4444),
                       labelStyle: TextStyle(
-                        color: _type == 'expense' ? const Color(0xFFEF4444) : Colors.grey,
+                        color: _type == 'expense'
+                            ? const Color(0xFFEF4444)
+                            : Colors.grey,
                         fontWeight: FontWeight.bold,
                       ),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
                       onSelected: (val) {
                         if (val) {
                           setState(() {
                             _type = 'expense';
                             if (_selectedCategory?.type == 'income') {
                               categoriesAsync.whenData((cats) {
-                                final expenseCats = cats.where((c) => c.type == 'expense').toList();
+                                final expenseCats = cats
+                                    .where((c) => c.type == 'expense')
+                                    .toList();
                                 if (expenseCats.isNotEmpty) {
                                   _selectedCategory = expenseCats.first;
                                 }
@@ -608,22 +661,30 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                   const SizedBox(width: 6),
                   Expanded(
                     child: ChoiceChip(
-                      label: const Center(child: Text('Pemasukan', style: TextStyle(fontSize: 12.0))),
+                      label: const Center(
+                          child: Text('Pemasukan',
+                              style: TextStyle(fontSize: 12.0))),
                       selected: _type == 'income',
-                      selectedColor: const Color(0xFF10B981).withOpacity(0.15),
+                      selectedColor:
+                          const Color(0xFF10B981).withValues(alpha: 0.15),
                       checkmarkColor: const Color(0xFF10B981),
                       labelStyle: TextStyle(
-                        color: _type == 'income' ? const Color(0xFF10B981) : Colors.grey,
+                        color: _type == 'income'
+                            ? const Color(0xFF10B981)
+                            : Colors.grey,
                         fontWeight: FontWeight.bold,
                       ),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
                       onSelected: (val) {
                         if (val) {
                           setState(() {
                             _type = 'income';
                             if (_selectedCategory?.type == 'expense') {
                               categoriesAsync.whenData((cats) {
-                                final incomeCats = cats.where((c) => c.type == 'income').toList();
+                                final incomeCats = cats
+                                    .where((c) => c.type == 'income')
+                                    .toList();
                                 if (incomeCats.isNotEmpty) {
                                   _selectedCategory = incomeCats.first;
                                 }
@@ -642,19 +703,24 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
               accountsAsync.when(
                 data: (accounts) {
                   return DropdownButtonFormField<AccountWithBalance>(
-                    value: accounts.any((a) => a.account.id == _selectedAccount?.account.id)
-                        ? accounts.firstWhere((a) => a.account.id == _selectedAccount?.account.id)
+                    initialValue: accounts.any(
+                            (a) => a.account.id == _selectedAccount?.account.id)
+                        ? accounts.firstWhere(
+                            (a) => a.account.id == _selectedAccount?.account.id)
                         : (accounts.isNotEmpty ? accounts.first : null),
                     decoration: InputDecoration(
                       labelText: 'Dompet/Akun',
                       labelStyle: const TextStyle(fontSize: 11.0),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12.0, vertical: 8.0),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10)),
                     ),
                     items: accounts.map((acc) {
                       return DropdownMenuItem<AccountWithBalance>(
                         value: acc,
-                        child: Text(acc.account.name, style: const TextStyle(fontSize: 12.0)),
+                        child: Text(acc.account.name,
+                            style: const TextStyle(fontSize: 12.0)),
                       );
                     }).toList(),
                     onChanged: (val) {
@@ -668,26 +734,32 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                 error: (err, st) => const Text('Error load akun'),
               ),
               const SizedBox(height: 10.0),
-              
+
               categoriesAsync.when(
                 data: (cats) {
-                  final filteredCats = cats.where((c) => c.type == _type).toList();
-                  final validCategory = filteredCats.any((c) => c.id == _selectedCategory?.id)
-                      ? filteredCats.firstWhere((c) => c.id == _selectedCategory?.id)
+                  final filteredCats =
+                      cats.where((c) => c.type == _type).toList();
+                  final validCategory = filteredCats
+                          .any((c) => c.id == _selectedCategory?.id)
+                      ? filteredCats
+                          .firstWhere((c) => c.id == _selectedCategory?.id)
                       : (filteredCats.isNotEmpty ? filteredCats.first : null);
 
                   return DropdownButtonFormField<Category>(
-                    value: validCategory,
+                    initialValue: validCategory,
                     decoration: InputDecoration(
                       labelText: 'Kategori',
                       labelStyle: const TextStyle(fontSize: 11.0),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12.0, vertical: 8.0),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10)),
                     ),
                     items: filteredCats.map((cat) {
                       return DropdownMenuItem<Category>(
                         value: cat,
-                        child: Text(cat.name, style: const TextStyle(fontSize: 12.0)),
+                        child: Text(cat.name,
+                            style: const TextStyle(fontSize: 12.0)),
                       );
                     }).toList(),
                     onChanged: (val) {
@@ -712,8 +784,10 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                       decoration: InputDecoration(
                         labelText: 'Edit Catatan',
                         labelStyle: const TextStyle(fontSize: 11.0),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12.0, vertical: 10.0),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10)),
                       ),
                       style: const TextStyle(fontSize: 12.0),
                       onChanged: (val) {
@@ -730,8 +804,10 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                       decoration: InputDecoration(
                         labelText: 'Nominal',
                         labelStyle: const TextStyle(fontSize: 11.0),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12.0, vertical: 10.0),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10)),
                       ),
                       style: const TextStyle(fontSize: 12.0),
                       onChanged: (val) {
@@ -749,7 +825,8 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
               ElevatedButton(
                 onPressed: _saveTransaction,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: isDarkMode ? Colors.white : const Color(0xFF2C2C2C),
+                  backgroundColor:
+                      isDarkMode ? Colors.white : const Color(0xFF2C2C2C),
                   foregroundColor: isDarkMode ? Colors.black : Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
                   shape: RoundedRectangleBorder(

@@ -47,7 +47,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Laporan Keuangan', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('Laporan Keuangan',
+            style: TextStyle(fontWeight: FontWeight.bold)),
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
@@ -55,7 +56,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
         bottom: false,
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0, bottom: 100.0),
+            padding: const EdgeInsets.only(
+                left: 16.0, right: 16.0, top: 16.0, bottom: 100.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -67,21 +69,25 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                       child: accountsAsync.when(
                         data: (accounts) {
                           return DropdownButtonFormField<int?>(
-                            value: _localAccountId,
+                            initialValue: _localAccountId,
                             decoration: InputDecoration(
                               labelText: 'Dompet/Akun',
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12.0, vertical: 8.0),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12)),
                             ),
                             items: [
                               const DropdownMenuItem<int?>(
                                 value: null,
-                                child: Text('Semua Akun', style: TextStyle(fontSize: 12.0)),
+                                child: Text('Semua Akun',
+                                    style: TextStyle(fontSize: 12.0)),
                               ),
                               ...accounts.map((acc) {
                                 return DropdownMenuItem<int?>(
                                   value: acc.account.id,
-                                  child: Text(acc.account.name, style: const TextStyle(fontSize: 12.0)),
+                                  child: Text(acc.account.name,
+                                      style: const TextStyle(fontSize: 12.0)),
                                 );
                               }),
                             ],
@@ -92,7 +98,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                             },
                           );
                         },
-                        loading: () => const Center(child: LinearProgressIndicator()),
+                        loading: () =>
+                            const Center(child: LinearProgressIndicator()),
                         error: (err, st) => const Text('Error load akun'),
                       ),
                     ),
@@ -100,28 +107,34 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                     // Timeframe Dropdown
                     Expanded(
                       child: DropdownButtonFormField<String>(
-                        value: _timeframe,
+                        initialValue: _timeframe,
                         decoration: InputDecoration(
                           labelText: 'Periode',
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12.0, vertical: 8.0),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12)),
                         ),
                         items: const [
                           DropdownMenuItem(
                             value: 'day',
-                            child: Text('Hari Ini', style: TextStyle(fontSize: 12.0)),
+                            child: Text('Hari Ini',
+                                style: TextStyle(fontSize: 12.0)),
                           ),
                           DropdownMenuItem(
                             value: 'week',
-                            child: Text('Minggu Ini', style: TextStyle(fontSize: 12.0)),
+                            child: Text('Minggu Ini',
+                                style: TextStyle(fontSize: 12.0)),
                           ),
                           DropdownMenuItem(
                             value: 'month',
-                            child: Text('Bulan Ini', style: TextStyle(fontSize: 12.0)),
+                            child: Text('Bulan Ini',
+                                style: TextStyle(fontSize: 12.0)),
                           ),
                           DropdownMenuItem(
                             value: 'year',
-                            child: Text('Tahun Ini', style: TextStyle(fontSize: 12.0)),
+                            child: Text('Tahun Ini',
+                                style: TextStyle(fontSize: 12.0)),
                           ),
                         ],
                         onChanged: (val) {
@@ -145,8 +158,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                     // Apply filters to transactions
                     final now = DateTime.now();
                     final filteredTxs = transactions.where((tx) {
-                      final matchesAccount = _localAccountId == null || tx.accountId == _localAccountId;
-                      
+                      final matchesAccount = _localAccountId == null ||
+                          tx.accountId == _localAccountId;
+
                       // Filter by Date
                       bool matchesDate = false;
                       if (_timeframe == 'day') {
@@ -154,10 +168,14 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                             tx.createdAt.month == now.month &&
                             tx.createdAt.day == now.day;
                       } else if (_timeframe == 'week') {
-                        final startOfWeek = DateTime(now.year, now.month, now.day).subtract(Duration(days: now.weekday - 1));
-                        matchesDate = tx.createdAt.isAfter(startOfWeek.subtract(const Duration(seconds: 1)));
+                        final startOfWeek =
+                            DateTime(now.year, now.month, now.day)
+                                .subtract(Duration(days: now.weekday - 1));
+                        matchesDate = tx.createdAt.isAfter(
+                            startOfWeek.subtract(const Duration(seconds: 1)));
                       } else if (_timeframe == 'month') {
-                        matchesDate = tx.createdAt.year == now.year && tx.createdAt.month == now.month;
+                        matchesDate = tx.createdAt.year == now.year &&
+                            tx.createdAt.month == now.month;
                       } else if (_timeframe == 'year') {
                         matchesDate = tx.createdAt.year == now.year;
                       }
@@ -165,9 +183,11 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                       // Exclude Transfer transactions from financial reports to avoid distorted stats
                       final category = categories.firstWhere(
                         (c) => c.id == tx.categoryId,
-                        orElse: () => Category(name: 'Lain-lain', type: tx.type),
+                        orElse: () =>
+                            Category(name: 'Lain-lain', type: tx.type),
                       );
-                      final isNotTransfer = category.name.toLowerCase() != 'transfer';
+                      final isNotTransfer =
+                          category.name.toLowerCase() != 'transfer';
 
                       return matchesAccount && matchesDate && isNotTransfer;
                     }).toList();
@@ -184,7 +204,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                     final Map<int, double> expenseByCategory = {};
                     for (final tx in filteredTxs) {
                       if (tx.type == 'expense' && tx.categoryId != null) {
-                        expenseByCategory[tx.categoryId!] = (expenseByCategory[tx.categoryId!] ?? 0.0) + tx.amount;
+                        expenseByCategory[tx.categoryId!] =
+                            (expenseByCategory[tx.categoryId!] ?? 0.0) +
+                                tx.amount;
                       }
                     }
 
@@ -195,7 +217,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
 
                     if (_timeframe == 'day' || _timeframe == 'week') {
                       // Show 7 days (Monday to Sunday) for the current week
-                      final startOfWeek = DateTime(now.year, now.month, now.day).subtract(Duration(days: now.weekday - 1));
+                      final startOfWeek = DateTime(now.year, now.month, now.day)
+                          .subtract(Duration(days: now.weekday - 1));
                       final List<DateTime> weekDays = List.generate(7, (i) {
                         final d = startOfWeek.add(Duration(days: i));
                         return DateTime(d.year, d.month, d.day);
@@ -211,7 +234,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         if (tx.type == 'expense') {
                           final key = df.format(tx.createdAt);
                           if (dailyExpenses.containsKey(key)) {
-                            dailyExpenses[key] = dailyExpenses[key]! + tx.amount;
+                            dailyExpenses[key] =
+                                dailyExpenses[key]! + tx.amount;
                           }
                         }
                       }
@@ -225,11 +249,12 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                       bottomAxisLabels = weekDays.map((day) {
                         return DateFormat('E', 'id_ID').format(day);
                       }).toList();
-
                     } else if (_timeframe == 'month') {
                       // Show daily trend for the current month
-                      final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
-                      final List<DateTime> monthDays = List.generate(daysInMonth, (i) {
+                      final daysInMonth =
+                          DateTime(now.year, now.month + 1, 0).day;
+                      final List<DateTime> monthDays =
+                          List.generate(daysInMonth, (i) {
                         return DateTime(now.year, now.month, i + 1);
                       });
 
@@ -243,7 +268,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         if (tx.type == 'expense') {
                           final key = df.format(tx.createdAt);
                           if (dailyExpenses.containsKey(key)) {
-                            dailyExpenses[key] = dailyExpenses[key]! + tx.amount;
+                            dailyExpenses[key] =
+                                dailyExpenses[key]! + tx.amount;
                           }
                         }
                       }
@@ -256,12 +282,17 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
 
                       bottomAxisLabels = List.generate(daysInMonth, (i) {
                         final dayNum = i + 1;
-                        if (dayNum == 1 || dayNum == 5 || dayNum == 10 || dayNum == 15 || dayNum == 20 || dayNum == 25 || dayNum == daysInMonth) {
+                        if (dayNum == 1 ||
+                            dayNum == 5 ||
+                            dayNum == 10 ||
+                            dayNum == 15 ||
+                            dayNum == 20 ||
+                            dayNum == 25 ||
+                            dayNum == daysInMonth) {
                           return dayNum.toString();
                         }
                         return '';
                       });
-
                     } else if (_timeframe == 'year') {
                       // Show monthly trend for the current year (12 months)
                       final Map<int, double> monthlyExpenses = {};
@@ -279,10 +310,24 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                       totalChartPoints = 12;
                       lineSpots = List.generate(12, (i) {
                         final monthNum = i + 1;
-                        return FlSpot(i.toDouble(), monthlyExpenses[monthNum] ?? 0.0);
+                        return FlSpot(
+                            i.toDouble(), monthlyExpenses[monthNum] ?? 0.0);
                       });
 
-                      bottomAxisLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+                      bottomAxisLabels = [
+                        'Jan',
+                        'Feb',
+                        'Mar',
+                        'Apr',
+                        'Mei',
+                        'Jun',
+                        'Jul',
+                        'Ags',
+                        'Sep',
+                        'Okt',
+                        'Nov',
+                        'Des'
+                      ];
                     }
 
                     return Column(
@@ -315,11 +360,15 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         // Line chart: Daily Trend
                         Card(
                           elevation: 0,
-                          color: isDarkMode ? const Color(0xFF1E222B) : Colors.white,
+                          color: isDarkMode
+                              ? const Color(0xFF1E222B)
+                              : Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                             side: BorderSide(
-                              color: isDarkMode ? Colors.white.withOpacity(0.04) : Colors.black.withOpacity(0.03),
+                              color: isDarkMode
+                                  ? Colors.white.withValues(alpha: 0.04)
+                                  : Colors.black.withValues(alpha: 0.03),
                             ),
                           ),
                           child: Padding(
@@ -329,7 +378,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                               children: [
                                 const Text(
                                   'Tren Pengeluaran Harian',
-                                  style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 const SizedBox(height: 24.0),
                                 SizedBox(
@@ -338,45 +389,75 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                     builder: (context) {
                                       final double maxAmount = lineSpots.isEmpty
                                           ? 1000.0
-                                          : lineSpots.map((s) => s.y).reduce((a, b) => a > b ? a : b);
-                                      final double chartMaxY = maxAmount == 0 ? 1000.0 : maxAmount * 1.15;
+                                          : lineSpots
+                                              .map((s) => s.y)
+                                              .reduce((a, b) => a > b ? a : b);
+                                      final double chartMaxY = maxAmount == 0
+                                          ? 1000.0
+                                          : maxAmount * 1.15;
 
                                       return BarChart(
                                         BarChartData(
-                                          alignment: BarChartAlignment.spaceAround,
+                                          alignment:
+                                              BarChartAlignment.spaceAround,
                                           maxY: chartMaxY,
                                           barTouchData: BarTouchData(
                                             enabled: true,
-                                            touchTooltipData: BarTouchTooltipData(
-                                              getTooltipColor: (_) => isDarkMode ? const Color(0xFF131D1D) : const Color(0xFF004D4D),
-                                              tooltipBorderRadius: BorderRadius.circular(8),
-                                              getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                                            touchTooltipData:
+                                                BarTouchTooltipData(
+                                              getTooltipColor: (_) => isDarkMode
+                                                  ? const Color(0xFF131D1D)
+                                                  : const Color(0xFF004D4D),
+                                              tooltipBorderRadius:
+                                                  BorderRadius.circular(8),
+                                              getTooltipItem: (group,
+                                                  groupIndex, rod, rodIndex) {
                                                 return BarTooltipItem(
                                                   _formatRp(rod.toY),
-                                                  const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 11),
+                                                  const TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 11),
                                                 );
                                               },
                                             ),
                                           ),
                                           titlesData: FlTitlesData(
-                                            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                                            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                                            leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                                            rightTitles: const AxisTitles(
+                                                sideTitles: SideTitles(
+                                                    showTitles: false)),
+                                            topTitles: const AxisTitles(
+                                                sideTitles: SideTitles(
+                                                    showTitles: false)),
+                                            leftTitles: const AxisTitles(
+                                                sideTitles: SideTitles(
+                                                    showTitles: false)),
                                             bottomTitles: AxisTitles(
                                               sideTitles: SideTitles(
                                                 showTitles: true,
                                                 getTitlesWidget: (val, meta) {
                                                   final index = val.toInt();
-                                                  if (index >= 0 && index < totalChartPoints) {
-                                                    final label = bottomAxisLabels[index];
+                                                  if (index >= 0 &&
+                                                      index <
+                                                          totalChartPoints) {
+                                                    final label =
+                                                        bottomAxisLabels[index];
                                                     if (label.isEmpty) {
                                                       return const SizedBox();
                                                     }
                                                     return Padding(
-                                                      padding: const EdgeInsets.only(top: 6.0),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 6.0),
                                                       child: Text(
                                                         label,
-                                                        style: const TextStyle(fontSize: 9, color: Colors.grey, fontWeight: FontWeight.bold),
+                                                        style: const TextStyle(
+                                                            fontSize: 9,
+                                                            color: Colors.grey,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
                                                       ),
                                                     );
                                                   }
@@ -385,26 +466,44 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                               ),
                                             ),
                                           ),
-                                          gridData: const FlGridData(show: false),
+                                          gridData:
+                                              const FlGridData(show: false),
                                           borderData: FlBorderData(show: false),
-                                          barGroups: List.generate(totalChartPoints, (index) {
+                                          barGroups: List.generate(
+                                              totalChartPoints, (index) {
                                             final amount = lineSpots[index].y;
                                             return BarChartGroupData(
                                               x: index,
                                               barRods: [
                                                 BarChartRodData(
                                                   toY: amount,
-                                                  width: _timeframe == 'month' ? 6 : 14,
-                                                  borderRadius: BorderRadius.circular(4.0),
-                                                  gradient: const LinearGradient(
-                                                    colors: [Color(0xFFEF4444), Color(0xFFFF8A80)],
-                                                    begin: Alignment.bottomCenter,
+                                                  width: _timeframe == 'month'
+                                                      ? 6
+                                                      : 14,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          4.0),
+                                                  gradient:
+                                                      const LinearGradient(
+                                                    colors: [
+                                                      Color(0xFFEF4444),
+                                                      Color(0xFFFF8A80)
+                                                    ],
+                                                    begin:
+                                                        Alignment.bottomCenter,
                                                     end: Alignment.topCenter,
                                                   ),
-                                                  backDrawRodData: BackgroundBarChartRodData(
+                                                  backDrawRodData:
+                                                      BackgroundBarChartRodData(
                                                     show: true,
                                                     toY: chartMaxY,
-                                                    color: isDarkMode ? Colors.white.withOpacity(0.04) : Colors.black.withOpacity(0.04),
+                                                    color: isDarkMode
+                                                        ? Colors.white
+                                                            .withValues(
+                                                                alpha: 0.04)
+                                                        : Colors.black
+                                                            .withValues(
+                                                                alpha: 0.04),
                                                   ),
                                                 ),
                                               ],
@@ -424,11 +523,15 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         // Pie chart: Breakdown
                         Card(
                           elevation: 0,
-                          color: isDarkMode ? const Color(0xFF1E222B) : Colors.white,
+                          color: isDarkMode
+                              ? const Color(0xFF1E222B)
+                              : Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                             side: BorderSide(
-                              color: isDarkMode ? Colors.white.withOpacity(0.04) : Colors.black.withOpacity(0.03),
+                              color: isDarkMode
+                                  ? Colors.white.withValues(alpha: 0.04)
+                                  : Colors.black.withValues(alpha: 0.03),
                             ),
                           ),
                           child: Padding(
@@ -438,7 +541,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                               children: [
                                 const Text(
                                   'Alokasi Pengeluaran',
-                                  style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 const SizedBox(height: 20.0),
                                 if (expenseByCategory.isEmpty)
@@ -447,7 +552,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                     child: Center(
                                       child: Text(
                                         'Tidak ada data pengeluaran.',
-                                        style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+                                        style: TextStyle(
+                                            color: Colors.grey,
+                                            fontStyle: FontStyle.italic),
                                       ),
                                     ),
                                   )
@@ -459,13 +566,19 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                       PieChartData(
                                         sectionsSpace: 4,
                                         centerSpaceRadius: 40,
-                                        sections: expenseByCategory.entries.map((entry) {
+                                        sections: expenseByCategory.entries
+                                            .map((entry) {
                                           final catId = entry.key;
                                           final amt = entry.value;
-                                          final cat = categories.firstWhere((c) => c.id == catId);
-                                          final index = categories.indexOf(cat) % _chartColors.length;
+                                          final cat = categories
+                                              .firstWhere((c) => c.id == catId);
+                                          final index =
+                                              categories.indexOf(cat) %
+                                                  _chartColors.length;
 
-                                          final pct = totalExpense > 0 ? (amt / totalExpense) * 100 : 0.0;
+                                          final pct = totalExpense > 0
+                                              ? (amt / totalExpense) * 100
+                                              : 0.0;
 
                                           return PieChartSectionData(
                                             value: amt,
@@ -487,13 +600,17 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                   ...expenseByCategory.entries.map((entry) {
                                     final catId = entry.key;
                                     final amt = entry.value;
-                                    final cat = categories.firstWhere((c) => c.id == catId);
-                                    final index = categories.indexOf(cat) % _chartColors.length;
+                                    final cat = categories
+                                        .firstWhere((c) => c.id == catId);
+                                    final index = categories.indexOf(cat) %
+                                        _chartColors.length;
 
                                     return Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 4.0),
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Row(
                                             children: [
@@ -508,13 +625,16 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                               const SizedBox(width: 8.0),
                                               Text(
                                                 cat.name,
-                                                style: const TextStyle(fontSize: 12.0),
+                                                style: const TextStyle(
+                                                    fontSize: 12.0),
                                               ),
                                             ],
                                           ),
                                           Text(
                                             _formatRp(amt),
-                                            style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
+                                            style: const TextStyle(
+                                                fontSize: 12.0,
+                                                fontWeight: FontWeight.bold),
                                           ),
                                         ],
                                       ),
@@ -528,8 +648,10 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                       ],
                     );
                   },
-                  loading: () => const Center(child: CircularProgressIndicator()),
-                  error: (err, st) => Center(child: Text('Error loading report: $err')),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (err, st) =>
+                      Center(child: Text('Error loading report: $err')),
                 ),
               ],
             ),
@@ -551,7 +673,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
         color: isDarkMode ? const Color(0xFF1E222B) : Colors.white,
         borderRadius: BorderRadius.circular(16.0),
         border: Border.all(
-          color: isDarkMode ? Colors.white.withOpacity(0.04) : Colors.black.withOpacity(0.03),
+          color: isDarkMode
+              ? Colors.white.withValues(alpha: 0.04)
+              : Colors.black.withValues(alpha: 0.03),
         ),
       ),
       child: Column(

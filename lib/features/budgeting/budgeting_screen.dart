@@ -19,13 +19,20 @@ class BudgetingScreen extends ConsumerWidget {
 
   IconData _getCategoryIcon(String? iconName) {
     switch (iconName) {
-      case 'restaurant': return Icons.restaurant_outlined;
-      case 'directions_car': return Icons.directions_car_outlined;
-      case 'shopping_bag': return Icons.shopping_bag_outlined;
-      case 'receipt_long': return Icons.receipt_long_outlined;
-      case 'sports_esports': return Icons.sports_esports_outlined;
-      case 'remove_circle': return Icons.remove_circle_outline;
-      default: return Icons.help_outline;
+      case 'restaurant':
+        return Icons.restaurant_outlined;
+      case 'directions_car':
+        return Icons.directions_car_outlined;
+      case 'shopping_bag':
+        return Icons.shopping_bag_outlined;
+      case 'receipt_long':
+        return Icons.receipt_long_outlined;
+      case 'sports_esports':
+        return Icons.sports_esports_outlined;
+      case 'remove_circle':
+        return Icons.remove_circle_outline;
+      default:
+        return Icons.help_outline;
     }
   }
 
@@ -36,7 +43,8 @@ class BudgetingScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Anggaran & Kategori', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('Anggaran & Kategori',
+            style: TextStyle(fontWeight: FontWeight.bold)),
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
@@ -45,14 +53,16 @@ class BudgetingScreen extends ConsumerWidget {
         child: progressAsync.when(
           data: (progressList) {
             return ListView.builder(
-              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 100.0),
+              padding: const EdgeInsets.only(
+                  left: 16.0, right: 16.0, top: 8.0, bottom: 100.0),
               itemCount: progressList.length,
               itemBuilder: (context, index) {
                 final prog = progressList[index];
                 final hasBudget = prog.budget != null;
 
                 // Color based on budget percentage
-                Color progressColor = Theme.of(context).colorScheme.primary; // Core Ledger Teal
+                Color progressColor =
+                    Theme.of(context).colorScheme.primary; // Core Ledger Teal
                 if (prog.percentage >= 1.0) {
                   progressColor = const Color(0xFFEF4444); // Coral Red
                 } else if (prog.percentage >= 0.75) {
@@ -66,13 +76,16 @@ class BudgetingScreen extends ConsumerWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
                     side: BorderSide(
-                      color: isDarkMode ? Colors.white.withOpacity(0.04) : Colors.black.withOpacity(0.03),
+                      color: isDarkMode
+                          ? Colors.white.withValues(alpha: 0.04)
+                          : Colors.black.withValues(alpha: 0.03),
                     ),
                   ),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(20.0),
                     onTap: () {
-                      _showCategoryDetailBottomSheet(context, ref, prog.category, prog);
+                      _showCategoryDetailBottomSheet(
+                          context, ref, prog.category, prog);
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(18.0),
@@ -85,12 +98,15 @@ class BudgetingScreen extends ConsumerWidget {
                                 width: 40.0,
                                 height: 40.0,
                                 decoration: BoxDecoration(
-                                  color: isDarkMode ? const Color(0xFF131D1D) : const Color(0xFFECEEEE),
+                                  color: isDarkMode
+                                      ? const Color(0xFF131D1D)
+                                      : const Color(0xFFECEEEE),
                                   borderRadius: BorderRadius.circular(12.0),
                                 ),
                                 child: Icon(
                                   _getCategoryIcon(prog.category.icon),
-                                  color: isDarkMode ? Colors.white : Colors.black,
+                                  color:
+                                      isDarkMode ? Colors.white : Colors.black,
                                   size: 20.0,
                                 ),
                               ),
@@ -111,7 +127,9 @@ class BudgetingScreen extends ConsumerWidget {
                                         'Budget ${prog.budget!.period == 'weekly' ? 'Mingguan' : 'Bulanan'}',
                                         style: TextStyle(
                                           fontSize: 11.0,
-                                          color: isDarkMode ? Colors.grey[500] : Colors.grey[600],
+                                          color: isDarkMode
+                                              ? Colors.grey[500]
+                                              : Colors.grey[600],
                                         ),
                                       )
                                     else
@@ -119,7 +137,9 @@ class BudgetingScreen extends ConsumerWidget {
                                         'Belum diset budget',
                                         style: TextStyle(
                                           fontSize: 11.0,
-                                          color: isDarkMode ? Colors.grey[500] : Colors.grey[600],
+                                          color: isDarkMode
+                                              ? Colors.grey[500]
+                                              : Colors.grey[600],
                                           fontStyle: FontStyle.italic,
                                         ),
                                       ),
@@ -155,7 +175,9 @@ class BudgetingScreen extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(4),
                               child: LinearProgressIndicator(
                                 value: prog.percentage.clamp(0.0, 1.0),
-                                backgroundColor: isDarkMode ? const Color(0xFF12161A) : Colors.grey[200],
+                                backgroundColor: isDarkMode
+                                    ? const Color(0xFF12161A)
+                                    : Colors.grey[200],
                                 color: progressColor,
                                 minHeight: 6,
                               ),
@@ -170,7 +192,8 @@ class BudgetingScreen extends ConsumerWidget {
             );
           },
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (err, st) => Center(child: Text('Error loading budgets: $err')),
+          error: (err, st) =>
+              Center(child: Text('Error loading budgets: $err')),
         ),
       ),
     );
@@ -217,7 +240,8 @@ class _CategoryDetailPanel extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<_CategoryDetailPanel> createState() => _CategoryDetailPanelState();
+  ConsumerState<_CategoryDetailPanel> createState() =>
+      _CategoryDetailPanelState();
 }
 
 class _CategoryDetailPanelState extends ConsumerState<_CategoryDetailPanel> {
@@ -229,7 +253,8 @@ class _CategoryDetailPanelState extends ConsumerState<_CategoryDetailPanel> {
   void initState() {
     super.initState();
     if (widget.prog.budget != null) {
-      _budgetController.text = widget.prog.budget!.amountLimit.toStringAsFixed(0);
+      _budgetController.text =
+          widget.prog.budget!.amountLimit.toStringAsFixed(0);
       _period = widget.prog.budget!.period;
     } else {
       _period = 'monthly';
@@ -259,14 +284,18 @@ class _CategoryDetailPanelState extends ConsumerState<_CategoryDetailPanel> {
         );
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Budget untuk ${widget.category.name} berhasil disimpan')),
+      SnackBar(
+          content:
+              Text('Budget untuk ${widget.category.name} berhasil disimpan')),
     );
     Navigator.pop(context);
   }
 
   void _removeBudget() {
     if (widget.prog.budget?.id != null) {
-      ref.read(budgetNotifierProvider.notifier).removeBudget(widget.prog.budget!.id!);
+      ref
+          .read(budgetNotifierProvider.notifier)
+          .removeBudget(widget.prog.budget!.id!);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Budget untuk ${widget.category.name} dihapus')),
       );
@@ -278,7 +307,9 @@ class _CategoryDetailPanelState extends ConsumerState<_CategoryDetailPanel> {
     final kw = _keywordController.text.trim();
     if (kw.isEmpty) return;
 
-    ref.read(keywordsNotifierProvider.notifier).addKeyword(widget.category.id!, kw);
+    ref
+        .read(keywordsNotifierProvider.notifier)
+        .addKeyword(widget.category.id!, kw);
     _keywordController.clear();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Kata kunci "$kw" ditambahkan')),
@@ -291,7 +322,8 @@ class _CategoryDetailPanelState extends ConsumerState<_CategoryDetailPanel> {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      padding: EdgeInsets.fromLTRB(20.0, 12.0, 20.0, MediaQuery.of(context).viewInsets.bottom + 24.0),
+      padding: EdgeInsets.fromLTRB(
+          20.0, 12.0, 20.0, MediaQuery.of(context).viewInsets.bottom + 24.0),
       decoration: BoxDecoration(
         color: isDarkMode ? const Color(0xFF1E222B) : Colors.white,
         borderRadius: const BorderRadius.only(
@@ -350,16 +382,18 @@ class _CategoryDetailPanelState extends ConsumerState<_CategoryDetailPanel> {
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'Nominal Limit',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 prefixText: 'Rp ',
               ),
             ),
             const SizedBox(height: 10.0),
             DropdownButtonFormField<String>(
-              value: _period,
+              initialValue: _period,
               decoration: InputDecoration(
                 labelText: 'Periode Anggaran',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
               items: const [
                 DropdownMenuItem(value: 'weekly', child: Text('Mingguan')),
@@ -382,7 +416,8 @@ class _CategoryDetailPanelState extends ConsumerState<_CategoryDetailPanel> {
                 if (widget.prog.budget != null)
                   TextButton(
                     onPressed: _removeBudget,
-                    style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+                    style:
+                        TextButton.styleFrom(foregroundColor: Colors.redAccent),
                     child: const Text('Hapus Budget'),
                   ),
                 ElevatedButton(
@@ -390,7 +425,8 @@ class _CategoryDetailPanelState extends ConsumerState<_CategoryDetailPanel> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
                   child: const Text('Simpan Budget'),
                 ),
@@ -413,7 +449,8 @@ class _CategoryDetailPanelState extends ConsumerState<_CategoryDetailPanel> {
                     controller: _keywordController,
                     decoration: InputDecoration(
                       hintText: 'Tambah kata kunci kustom (cth: indomaret)',
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)),
                     ),
                     onSubmitted: (_) => _addKeyword(),
                   ),
@@ -433,11 +470,13 @@ class _CategoryDetailPanelState extends ConsumerState<_CategoryDetailPanel> {
               ],
             ),
             const SizedBox(height: 12.0),
-            
+
             // List of keywords
             keywordsAsync.when(
               data: (keywords) {
-                final filteredKws = keywords.where((k) => k.categoryId == widget.category.id).toList();
+                final filteredKws = keywords
+                    .where((k) => k.categoryId == widget.category.id)
+                    .toList();
 
                 if (filteredKws.isEmpty) {
                   return const Center(
@@ -445,7 +484,8 @@ class _CategoryDetailPanelState extends ConsumerState<_CategoryDetailPanel> {
                       padding: EdgeInsets.symmetric(vertical: 12.0),
                       child: Text(
                         'Belum ada kata kunci kustom untuk kategori ini.',
-                        style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
+                        style: TextStyle(
+                            fontStyle: FontStyle.italic, color: Colors.grey),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -463,9 +503,13 @@ class _CategoryDetailPanelState extends ConsumerState<_CategoryDetailPanel> {
                         deleteIcon: const Icon(Icons.close, size: 16),
                         onDeleted: () {
                           if (kw.id != null) {
-                            ref.read(keywordsNotifierProvider.notifier).deleteKeyword(kw.id!);
+                            ref
+                                .read(keywordsNotifierProvider.notifier)
+                                .deleteKeyword(kw.id!);
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Kata kunci "${kw.keyword}" dihapus')),
+                              SnackBar(
+                                  content: Text(
+                                      'Kata kunci "${kw.keyword}" dihapus')),
                             );
                           }
                         },

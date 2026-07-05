@@ -7,20 +7,20 @@ import 'features/main_navigation_hub.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Precache inspire blur shaders
   await Inspire.warmUp();
-  
+
   // Set system overlays to transparent for a truly edge-to-edge floating UI
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     systemNavigationBarColor: Colors.transparent,
     systemNavigationBarDividerColor: Colors.transparent,
   ));
-  
+
   // Enable edge-to-edge mode
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  
+
   // Initialize Indonesian locale formatting
   await initializeDateFormatting('id_ID', null);
 
@@ -67,7 +67,7 @@ class KeuanganApp extends ConsumerWidget {
     return MaterialApp(
       title: 'MyDompet',
       debugShowCheckedModeBanner: false,
-      
+
       // Modern Premium Dark Theme (Core Ledger)
       darkTheme: ThemeData(
         useMaterial3: true,
@@ -78,8 +78,7 @@ class KeuanganApp extends ConsumerWidget {
           primary: Colors.white, // White primary for dark mode
           secondary: Color(0xFFFC8A40), // Vibrant Orange
           surface: Color(0xFF131D1D), // Dark Card Surface
-          error: Color(0xFFBA1A1A), // Red
-          background: Color(0xFF090F0F),
+          error: Color(0xFFBA1A1A),
         ),
         appBarTheme: const AppBarTheme(
           backgroundColor: Color(0xFF090F0F),
@@ -103,7 +102,7 @@ class KeuanganApp extends ConsumerWidget {
           ),
         ),
       ),
-      
+
       // Matching Clean Light Theme (Core Ledger)
       theme: ThemeData(
         useMaterial3: true,
@@ -115,7 +114,6 @@ class KeuanganApp extends ConsumerWidget {
           secondary: Color(0xFF9B4500), // Dark Orange
           surface: Color(0xFFECEEEE), // Soft Mint-Gray surface
           error: Color(0xFFBA1A1A),
-          background: Color(0xFFF8FAFA),
         ),
         appBarTheme: const AppBarTheme(
           backgroundColor: Color(0xFFF8FAFA),
@@ -139,7 +137,7 @@ class KeuanganApp extends ConsumerWidget {
           ),
         ),
       ),
-      
+
       themeMode: themeMode, // Controlled dynamically
       home: const MainNavigationHub(),
     );
