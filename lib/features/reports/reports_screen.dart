@@ -756,124 +756,128 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                 ),
                                 const SizedBox(height: 24.0),
 
-                                // Bar chart
+                                // Bar chart (with 210 container height, top and horizontal padding to prevent tooltip overlap/clipping)
                                 if (isSingleDay)
-                                  // Enlarged Bar Chart with exactly 2 comparison bars (Shortened height 180)
                                   SizedBox(
-                                    height: 180,
-                                    child: BarChart(
-                                      BarChartData(
-                                        alignment: BarChartAlignment.spaceEvenly,
-                                        maxY: max(totalIncome, totalExpense) == 0
-                                            ? 1000.0
-                                            : max(totalIncome, totalExpense) *
-                                                1.35, // increased headroom to prevent top overlap/clipping
-                                        barTouchData: BarTouchData(
-                                          enabled: true,
-                                          touchTooltipData: BarTouchTooltipData(
-                                            getTooltipColor: (_) => isDarkMode
-                                                ? const Color(0xFF1E222B)
-                                                : const Color(0xFFECEEEE),
-                                            tooltipBorderRadius:
-                                                BorderRadius.circular(8),
-                                            getTooltipItem: (group, groupIndex,
-                                                rod, rodIndex) {
-                                              return BarTooltipItem(
-                                                _formatRp(rod.toY),
-                                                TextStyle(
-                                                  color: isDarkMode
+                                    height: 210,
+                                    child: Container(
+                                      padding: const EdgeInsets.only(top: 28.0, left: 16.0, right: 16.0),
+                                      child: BarChart(
+                                        BarChartData(
+                                          alignment: BarChartAlignment.spaceEvenly,
+                                          maxY: max(totalIncome, totalExpense) == 0
+                                              ? 1000.0
+                                              : max(totalIncome, totalExpense) *
+                                                  1.35, // increased headroom
+                                          barTouchData: BarTouchData(
+                                            enabled: true,
+                                            touchTooltipData: BarTouchTooltipData(
+                                              fitInsideHorizontally: true,
+                                              fitInsideVertically: true,
+                                              getTooltipColor: (_) => isDarkMode
+                                                  ? const Color(0xFF1E222B)
+                                                  : const Color(0xFFECEEEE),
+                                              tooltipBorderRadius:
+                                                  BorderRadius.circular(8),
+                                              getTooltipItem: (group, groupIndex,
+                                                  rod, rodIndex) {
+                                                return BarTooltipItem(
+                                                  _formatRp(rod.toY),
+                                                  TextStyle(
+                                                    color: isDarkMode
                                                       ? Colors.white
                                                       : Colors.black87,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 11,
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                        titlesData: FlTitlesData(
-                                          rightTitles: const AxisTitles(
-                                              sideTitles:
-                                                  SideTitles(showTitles: false)),
-                                          topTitles: const AxisTitles(
-                                              sideTitles:
-                                                  SideTitles(showTitles: false)),
-                                          leftTitles: const AxisTitles(
-                                              sideTitles:
-                                                  SideTitles(showTitles: false)),
-                                          bottomTitles: AxisTitles(
-                                            sideTitles: SideTitles(
-                                              showTitles: true,
-                                              getTitlesWidget: (val, meta) {
-                                                if (val == 0) {
-                                                  return const Padding(
-                                                    padding:
-                                                        EdgeInsets.only(top: 8.0),
-                                                    child: Text(
-                                                      'Pemasukan',
-                                                      style: TextStyle(
-                                                        fontSize: 11,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.grey,
-                                                      ),
-                                                    ),
-                                                  );
-                                                } else if (val == 1) {
-                                                  return const Padding(
-                                                    padding:
-                                                        EdgeInsets.only(top: 8.0),
-                                                    child: Text(
-                                                      'Pengeluaran',
-                                                      style: TextStyle(
-                                                        fontSize: 11,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.grey,
-                                                      ),
-                                                    ),
-                                                  );
-                                                }
-                                                return const SizedBox();
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 11,
+                                                  ),
+                                                );
                                               },
                                             ),
                                           ),
+                                          titlesData: FlTitlesData(
+                                            rightTitles: const AxisTitles(
+                                                sideTitles:
+                                                    SideTitles(showTitles: false)),
+                                            topTitles: const AxisTitles(
+                                                sideTitles:
+                                                    SideTitles(showTitles: false)),
+                                            leftTitles: const AxisTitles(
+                                                sideTitles:
+                                                    SideTitles(showTitles: false)),
+                                            bottomTitles: AxisTitles(
+                                              sideTitles: SideTitles(
+                                                showTitles: true,
+                                                getTitlesWidget: (val, meta) {
+                                                  if (val == 0) {
+                                                    return const Padding(
+                                                      padding:
+                                                          EdgeInsets.only(top: 8.0),
+                                                      child: Text(
+                                                        'Pemasukan',
+                                                        style: TextStyle(
+                                                          fontSize: 11,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.grey,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  } else if (val == 1) {
+                                                    return const Padding(
+                                                      padding:
+                                                          EdgeInsets.only(top: 8.0),
+                                                      child: Text(
+                                                        'Pengeluaran',
+                                                        style: TextStyle(
+                                                          fontSize: 11,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.grey,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }
+                                                  return const SizedBox();
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                          gridData: const FlGridData(show: false),
+                                          borderData: FlBorderData(show: false),
+                                          barGroups: [
+                                            BarChartGroupData(
+                                              x: 0,
+                                              barRods: [
+                                                BarChartRodData(
+                                                  toY: totalIncome,
+                                                  width: 44,
+                                                  borderRadius:
+                                                      BorderRadius.circular(8.0),
+                                                  color: const Color(0xFF10B981),
+                                                ),
+                                              ],
+                                            ),
+                                            BarChartGroupData(
+                                              x: 1,
+                                              barRods: [
+                                                BarChartRodData(
+                                                  toY: totalExpense,
+                                                  width: 44,
+                                                  borderRadius:
+                                                      BorderRadius.circular(8.0),
+                                                  color: const Color(0xFFEF4444),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
-                                        gridData: const FlGridData(show: false),
-                                        borderData: FlBorderData(show: false),
-                                        barGroups: [
-                                          BarChartGroupData(
-                                            x: 0,
-                                            barRods: [
-                                              BarChartRodData(
-                                                toY: totalIncome,
-                                                width: 44,
-                                                borderRadius:
-                                                    BorderRadius.circular(8.0),
-                                                color: const Color(0xFF10B981),
-                                              ),
-                                            ],
-                                          ),
-                                          BarChartGroupData(
-                                            x: 1,
-                                            barRods: [
-                                              BarChartRodData(
-                                                toY: totalExpense,
-                                                width: 44,
-                                                borderRadius:
-                                                    BorderRadius.circular(8.0),
-                                                color: const Color(0xFFEF4444),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
                                       ),
                                     ),
                                   )
                                 else
                                   // Scrollable Trend Bar Chart showing both Income and Expense side-by-side
                                   SizedBox(
-                                    height: 180,
+                                    height: 210,
                                     child: Builder(
                                       builder: (context) {
                                         final double maxAmount = lineSpotsExpense.isEmpty
@@ -890,12 +894,13 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                               );
                                         final double chartMaxY = maxAmount == 0
                                             ? 1000.0
-                                            : maxAmount * 1.35; // increased headroom to prevent top overlap/clipping
+                                            : maxAmount * 1.35; // increased headroom
 
                                         return SingleChildScrollView(
                                           scrollDirection: Axis.horizontal,
-                                          child: SizedBox(
-                                            width: max(MediaQuery.of(context).size.width - 80.0, totalChartPoints * 32.0),
+                                          child: Container(
+                                            width: max(MediaQuery.of(context).size.width - 80.0, totalChartPoints * 48.0),
+                                            padding: const EdgeInsets.only(top: 28.0, left: 16.0, right: 16.0),
                                             child: BarChart(
                                               BarChartData(
                                                 alignment: BarChartAlignment.spaceAround,
@@ -903,6 +908,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                 barTouchData: BarTouchData(
                                                   enabled: true,
                                                   touchTooltipData: BarTouchTooltipData(
+                                                    fitInsideHorizontally: true,
+                                                    fitInsideVertically: true,
                                                     getTooltipColor: (_) => isDarkMode
                                                         ? const Color(0xFF1E222B)
                                                         : const Color(0xFF004D4D),
@@ -978,7 +985,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                       // Pemasukan Bar (Green)
                                                       BarChartRodData(
                                                         toY: incomeAmt,
-                                                        width: isMonth ? 8 : 12,
+                                                        width: isMonth ? 10 : 14,
                                                         borderRadius:
                                                             BorderRadius.circular(2.0),
                                                         color: const Color(0xFF10B981),
@@ -986,7 +993,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                       // Pengeluaran Bar (Red)
                                                       BarChartRodData(
                                                         toY: expenseAmt,
-                                                        width: isMonth ? 8 : 12,
+                                                        width: isMonth ? 10 : 14,
                                                         borderRadius:
                                                             BorderRadius.circular(2.0),
                                                         color: const Color(0xFFEF4444),
