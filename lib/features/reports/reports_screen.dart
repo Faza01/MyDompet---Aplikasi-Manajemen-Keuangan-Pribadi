@@ -68,6 +68,129 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     }
   }
 
+  void _showAccountSelectorBottomSheet(
+      BuildContext context, WidgetRef ref, List<AccountWithBalance> accounts) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: isDarkMode ? const Color(0xFF1E222B) : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(20.0),
+        ),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Pilih Dompet / Akun',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: isDarkMode ? Colors.white : Colors.black87,
+                  ),
+                ),
+              ),
+              const Divider(),
+              ListTile(
+                leading: Icon(
+                  Icons.account_balance_wallet_outlined,
+                  color: isDarkMode ? Colors.white70 : Colors.black87,
+                ),
+                title: const Text('Semua Akun', style: TextStyle(fontSize: 14.0)),
+                trailing: _localAccountId == null
+                    ? const Icon(Icons.check, color: Color(0xFF10B981))
+                    : null,
+                onTap: () {
+                  setState(() {
+                    _localAccountId = null;
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ...accounts.map((acc) {
+                return ListTile(
+                  leading: Icon(
+                    Icons.account_balance_wallet_outlined,
+                    color: isDarkMode ? Colors.white70 : Colors.black87,
+                  ),
+                  title: Text(acc.account.name, style: const TextStyle(fontSize: 14.0)),
+                  trailing: _localAccountId == acc.account.id
+                      ? const Icon(Icons.check, color: Color(0xFF10B981))
+                      : null,
+                  onTap: () {
+                    setState(() {
+                      _localAccountId = acc.account.id;
+                    });
+                    Navigator.pop(context);
+                  },
+                );
+              }),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showTimeframeSelectorBottomSheet(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: isDarkMode ? const Color(0xFF1E222B) : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(20.0),
+        ),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Pilih Periode',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: isDarkMode ? Colors.white : Colors.black87,
+                  ),
+                ),
+              ),
+              const Divider(),
+              _buildTimeframeTile(context, 'day', 'Hari Ini'),
+              _buildTimeframeTile(context, 'week', 'Minggu Ini'),
+              _buildTimeframeTile(context, 'month', 'Bulan Ini'),
+              _buildTimeframeTile(context, 'year', 'Tahun Ini'),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTimeframeTile(BuildContext context, String value, String label) {
+    final isSelected = _timeframe == value;
+    return ListTile(
+      title: Text(label, style: const TextStyle(fontSize: 14.0)),
+      trailing: isSelected ? const Icon(Icons.check, color: Color(0xFF10B981)) : null,
+      onTap: () {
+        setState(() {
+          _timeframe = value;
+        });
+        Navigator.pop(context);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final transactionsAsync = ref.watch(transactionsNotifierProvider);
@@ -91,126 +214,158 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // 1. Filters Row (outside, styled consistently, with calendar icon next to Period Dropdown)
-                Row(
-                  children: [
-                    // Account Dropdown
-                    Expanded(
-                      child: accountsAsync.when(
-                        data: (accounts) {
-                          return DropdownButtonFormField<int?>(
-                            value: _localAccountId,
-                            decoration: InputDecoration(
-                              labelText: 'Dompet / Akun',
-                              contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 12.0, vertical: 8.0),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                            ),
-                            items: [
-                              const DropdownMenuItem<int?>(
-                                value: null,
-                                child: Text('Semua Akun',
-                                    style: TextStyle(fontSize: 12.0)),
+                // 1. Filters Row with rounded card selection boxes matching dashboard dialog styles
+                accountsAsync.when(
+                  data: (accounts) {
+                    final selectedAccName = _localAccountId == null
+                        ? 'Semua Akun'
+                        : accounts
+                            .firstWhere((a) => a.account.id == _localAccountId,
+                                orElse: () => accounts.first)
+                            .account
+                            .name;
+
+                    return Row(
+                      children: [
+                        // Account select box
+                        Expanded(
+                          child: InkWell(
+                            onTap: () => _showAccountSelectorBottomSheet(
+                                context, ref, accounts),
+                            borderRadius: BorderRadius.circular(12.0),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 14.0, vertical: 10.0),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: isDarkMode
+                                      ? Colors.white10
+                                      : Colors.black.withOpacity(0.08),
+                                ),
+                                borderRadius: BorderRadius.circular(12.0),
                               ),
-                              ...accounts.map((acc) {
-                                return DropdownMenuItem<int?>(
-                                  value: acc.account.id,
-                                  child: Text(acc.account.name,
-                                      style: const TextStyle(fontSize: 12.0)),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      selectedAccName,
+                                      style: TextStyle(
+                                        fontSize: 12.0,
+                                        fontWeight: FontWeight.w500,
+                                        color: isDarkMode
+                                            ? Colors.white70
+                                            : Colors.black87,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.unfold_more,
+                                    size: 16.0,
+                                    color: isDarkMode
+                                        ? Colors.white54
+                                        : Colors.black54,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8.0),
+                        // Timeframe select box
+                        Expanded(
+                          child: InkWell(
+                            onTap: _selectedDateRange != null
+                                ? null
+                                : () => _showTimeframeSelectorBottomSheet(context),
+                            borderRadius: BorderRadius.circular(12.0),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 14.0, vertical: 10.0),
+                              decoration: BoxDecoration(
+                                color: _selectedDateRange != null
+                                    ? (isDarkMode
+                                        ? Colors.white.withOpacity(0.04)
+                                        : Colors.black.withOpacity(0.03))
+                                    : null,
+                                border: Border.all(
+                                  color: isDarkMode
+                                      ? Colors.white10
+                                      : Colors.black.withOpacity(0.08),
+                                ),
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      _selectedDateRange != null
+                                          ? 'Kustom (Aktif)'
+                                          : _timeframe == 'day'
+                                              ? 'Hari Ini'
+                                              : _timeframe == 'week'
+                                                  ? 'Minggu Ini'
+                                                  : _timeframe == 'month'
+                                                      ? 'Bulan Ini'
+                                                      : 'Tahun Ini',
+                                      style: TextStyle(
+                                        fontSize: 12.0,
+                                        fontWeight: FontWeight.w500,
+                                        color: isDarkMode
+                                            ? Colors.white70
+                                            : Colors.black87,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.unfold_more,
+                                    size: 16.0,
+                                    color: isDarkMode
+                                        ? Colors.white54
+                                        : Colors.black54,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 4.0),
+                        // Calendar icon
+                        IconButton(
+                          icon: const Icon(Icons.calendar_month_outlined),
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                          onPressed: () async {
+                            final DateTimeRange? pickedRange =
+                                await showDateRangePicker(
+                              context: context,
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2100),
+                              initialDateRange: _selectedDateRange,
+                              builder: (context, child) {
+                                return Theme(
+                                  data: isDarkMode
+                                      ? ThemeData.dark()
+                                      : ThemeData.light(),
+                                  child: child!,
                                 );
-                              }),
-                            ],
-                            onChanged: (val) {
-                              setState(() {
-                                _localAccountId = val;
-                              });
-                            },
-                          );
-                        },
-                        loading: () => const Center(child: LinearProgressIndicator()),
-                        error: (err, st) => const Text('Error load akun'),
-                      ),
-                    ),
-                    const SizedBox(width: 8.0),
-                    // Timeframe Dropdown
-                    Expanded(
-                      child: DropdownButtonFormField<String>(
-                        value: _selectedDateRange != null ? null : _timeframe,
-                        disabledHint: Text(
-                          'Kustom (Aktif)',
-                          style: TextStyle(
-                            color: isDarkMode ? Colors.white60 : Colors.black54,
-                            fontSize: 12.0,
-                          ),
-                        ),
-                        decoration: InputDecoration(
-                          labelText: 'Periode',
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 12.0, vertical: 8.0),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                        ),
-                        items: const [
-                          DropdownMenuItem(
-                            value: 'day',
-                            child: Text('Hari Ini',
-                                style: TextStyle(fontSize: 12.0)),
-                          ),
-                          DropdownMenuItem(
-                            value: 'week',
-                            child: Text('Minggu Ini',
-                                style: TextStyle(fontSize: 12.0)),
-                          ),
-                          DropdownMenuItem(
-                            value: 'month',
-                            child: Text('Bulan Ini',
-                                style: TextStyle(fontSize: 12.0)),
-                          ),
-                          DropdownMenuItem(
-                            value: 'year',
-                            child: Text('Tahun Ini',
-                                style: TextStyle(fontSize: 12.0)),
-                          ),
-                        ],
-                        onChanged: _selectedDateRange != null
-                            ? null
-                            : (val) {
-                                if (val != null) {
-                                  setState(() {
-                                    _timeframe = val;
-                                  });
-                                }
                               },
-                      ),
-                    ),
-                    const SizedBox(width: 4.0),
-                    // Calendar icon button
-                    IconButton(
-                      icon: const Icon(Icons.calendar_month_outlined),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                      onPressed: () async {
-                        final DateTimeRange? pickedRange = await showDateRangePicker(
-                          context: context,
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2100),
-                          initialDateRange: _selectedDateRange,
-                          builder: (context, child) {
-                            return Theme(
-                              data: isDarkMode ? ThemeData.dark() : ThemeData.light(),
-                              child: child!,
                             );
+                            if (pickedRange != null) {
+                              setState(() {
+                                _selectedDateRange = pickedRange;
+                              });
+                            }
                           },
-                        );
-                        if (pickedRange != null) {
-                          setState(() {
-                            _selectedDateRange = pickedRange;
-                          });
-                        }
-                      },
-                    ),
-                  ],
+                        ),
+                      ],
+                    );
+                  },
+                  loading: () => const Center(child: LinearProgressIndicator()),
+                  error: (err, st) => const Text('Error loading accounts'),
                 ),
                 if (_selectedDateRange != null) ...[
                   const SizedBox(height: 10.0),
@@ -298,7 +453,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                             _selectedDateRange!.start.day == _selectedDateRange!.end.day);
 
                     // Trend Line/Bar calculations for multi-day periods
-                    List<FlSpot> lineSpots = [];
+                    List<FlSpot> lineSpotsIncome = [];
+                    List<FlSpot> lineSpotsExpense = [];
                     List<String> bottomAxisLabels = [];
                     int totalChartPoints = 0;
 
@@ -314,24 +470,32 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         });
 
                         final Map<String, double> dailyExpenses = {};
+                        final Map<String, double> dailyIncome = {};
                         final df = DateFormat('yyyy-MM-dd');
                         for (final day in rangeDays) {
                           dailyExpenses[df.format(day)] = 0.0;
+                          dailyIncome[df.format(day)] = 0.0;
                         }
 
                         for (final tx in filteredTxs) {
-                          if (tx.type == 'expense') {
-                            final key = df.format(tx.createdAt);
-                            if (dailyExpenses.containsKey(key)) {
+                          final key = df.format(tx.createdAt);
+                          if (dailyExpenses.containsKey(key)) {
+                            if (tx.type == 'expense') {
                               dailyExpenses[key] = dailyExpenses[key]! + tx.amount;
+                            } else if (tx.type == 'income') {
+                              dailyIncome[key] = dailyIncome[key]! + tx.amount;
                             }
                           }
                         }
 
                         totalChartPoints = daysInRange;
-                        lineSpots = List.generate(daysInRange, (i) {
+                        lineSpotsExpense = List.generate(daysInRange, (i) {
                           final key = df.format(rangeDays[i]);
                           return FlSpot(i.toDouble(), dailyExpenses[key] ?? 0.0);
+                        });
+                        lineSpotsIncome = List.generate(daysInRange, (i) {
+                          final key = df.format(rangeDays[i]);
+                          return FlSpot(i.toDouble(), dailyIncome[key] ?? 0.0);
                         });
 
                         bottomAxisLabels = List.generate(daysInRange, (i) {
@@ -354,25 +518,32 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         });
 
                         final Map<String, double> dailyExpenses = {};
+                        final Map<String, double> dailyIncome = {};
                         final df = DateFormat('yyyy-MM-dd');
                         for (final day in weekDays) {
                           dailyExpenses[df.format(day)] = 0.0;
+                          dailyIncome[df.format(day)] = 0.0;
                         }
 
                         for (final tx in filteredTxs) {
-                          if (tx.type == 'expense') {
-                            final key = df.format(tx.createdAt);
-                            if (dailyExpenses.containsKey(key)) {
-                              dailyExpenses[key] =
-                                  dailyExpenses[key]! + tx.amount;
+                          final key = df.format(tx.createdAt);
+                          if (dailyExpenses.containsKey(key)) {
+                            if (tx.type == 'expense') {
+                              dailyExpenses[key] = dailyExpenses[key]! + tx.amount;
+                            } else if (tx.type == 'income') {
+                              dailyIncome[key] = dailyIncome[key]! + tx.amount;
                             }
                           }
                         }
 
                         totalChartPoints = 7;
-                        lineSpots = List.generate(7, (i) {
+                        lineSpotsExpense = List.generate(7, (i) {
                           final key = df.format(weekDays[i]);
                           return FlSpot(i.toDouble(), dailyExpenses[key] ?? 0.0);
+                        });
+                        lineSpotsIncome = List.generate(7, (i) {
+                          final key = df.format(weekDays[i]);
+                          return FlSpot(i.toDouble(), dailyIncome[key] ?? 0.0);
                         });
 
                         bottomAxisLabels = weekDays.map((day) {
@@ -387,25 +558,32 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         });
 
                         final Map<String, double> dailyExpenses = {};
+                        final Map<String, double> dailyIncome = {};
                         final df = DateFormat('yyyy-MM-dd');
                         for (final day in monthDays) {
                           dailyExpenses[df.format(day)] = 0.0;
+                          dailyIncome[df.format(day)] = 0.0;
                         }
 
                         for (final tx in filteredTxs) {
-                          if (tx.type == 'expense') {
-                            final key = df.format(tx.createdAt);
-                            if (dailyExpenses.containsKey(key)) {
-                              dailyExpenses[key] =
-                                  dailyExpenses[key]! + tx.amount;
+                          final key = df.format(tx.createdAt);
+                          if (dailyExpenses.containsKey(key)) {
+                            if (tx.type == 'expense') {
+                              dailyExpenses[key] = dailyExpenses[key]! + tx.amount;
+                            } else if (tx.type == 'income') {
+                              dailyIncome[key] = dailyIncome[key]! + tx.amount;
                             }
                           }
                         }
 
                         totalChartPoints = daysInMonth;
-                        lineSpots = List.generate(daysInMonth, (i) {
+                        lineSpotsExpense = List.generate(daysInMonth, (i) {
                           final key = df.format(monthDays[i]);
                           return FlSpot(i.toDouble(), dailyExpenses[key] ?? 0.0);
+                        });
+                        lineSpotsIncome = List.generate(daysInMonth, (i) {
+                          final key = df.format(monthDays[i]);
+                          return FlSpot(i.toDouble(), dailyIncome[key] ?? 0.0);
                         });
 
                         bottomAxisLabels = List.generate(daysInMonth, (i) {
@@ -423,37 +601,34 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         });
                       } else if (_timeframe == 'year') {
                         final Map<int, double> monthlyExpenses = {};
+                        final Map<int, double> monthlyIncome = {};
                         for (int i = 1; i <= 12; i++) {
                           monthlyExpenses[i] = 0.0;
+                          monthlyIncome[i] = 0.0;
                         }
 
                         for (final tx in filteredTxs) {
+                          final m = tx.createdAt.month;
                           if (tx.type == 'expense') {
-                            final m = tx.createdAt.month;
                             monthlyExpenses[m] = monthlyExpenses[m]! + tx.amount;
+                          } else if (tx.type == 'income') {
+                            monthlyIncome[m] = monthlyIncome[m]! + tx.amount;
                           }
                         }
 
                         totalChartPoints = 12;
-                        lineSpots = List.generate(12, (i) {
+                        lineSpotsExpense = List.generate(12, (i) {
                           final monthNum = i + 1;
-                          return FlSpot(
-                              i.toDouble(), monthlyExpenses[monthNum] ?? 0.0);
+                          return FlSpot(i.toDouble(), monthlyExpenses[monthNum] ?? 0.0);
+                        });
+                        lineSpotsIncome = List.generate(12, (i) {
+                          final monthNum = i + 1;
+                          return FlSpot(i.toDouble(), monthlyIncome[monthNum] ?? 0.0);
                         });
 
                         bottomAxisLabels = [
-                          'Jan',
-                          'Feb',
-                          'Mar',
-                          'Apr',
-                          'Mei',
-                          'Jun',
-                          'Jul',
-                          'Ags',
-                          'Sep',
-                          'Okt',
-                          'Nov',
-                          'Des'
+                          'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
+                          'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'
                         ];
                       }
                     }
@@ -505,7 +680,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 Text(
-                                  isSingleDay ? 'Tren Keuangan Hari Ini' : 'Tren Pengeluaran',
+                                  isSingleDay ? 'Tren Keuangan Hari Ini' : 'Tren Keuangan',
                                   style: const TextStyle(
                                       fontSize: 14.0,
                                       fontWeight: FontWeight.bold),
@@ -641,7 +816,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
 
                                 // Bar chart
                                 if (isSingleDay)
-                                  // Enlarged Bar Chart with exactly 2 comparison bars (Shortened height 180 as requested)
+                                  // Enlarged Bar Chart with exactly 2 comparison bars (Shortened height 180)
                                   SizedBox(
                                     height: 180,
                                     child: BarChart(
@@ -754,131 +929,130 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                     ),
                                   )
                                 else
-                                  // Trend Bar Chart (multi-bar with shortened height 180)
+                                  // Scrollable Trend Bar Chart showing both Income and Expense side-by-side
                                   SizedBox(
                                     height: 180,
                                     child: Builder(
                                       builder: (context) {
-                                        final double maxAmount = lineSpots.isEmpty
+                                        final double maxAmount = lineSpotsExpense.isEmpty
                                             ? 1000.0
-                                            : lineSpots
-                                                .map((s) => s.y)
-                                                .reduce((a, b) => a > b ? a : b);
+                                            : max(
+                                                lineSpotsExpense
+                                                    .map((s) => s.y)
+                                                    .reduce((a, b) => a > b ? a : b),
+                                                lineSpotsIncome.isEmpty
+                                                    ? 0.0
+                                                    : lineSpotsIncome
+                                                        .map((s) => s.y)
+                                                        .reduce((a, b) => a > b ? a : b),
+                                              );
                                         final double chartMaxY = maxAmount == 0
                                             ? 1000.0
                                             : maxAmount * 1.15;
 
-                                        return BarChart(
-                                          BarChartData(
-                                            alignment: BarChartAlignment.spaceAround,
-                                            maxY: chartMaxY,
-                                            barTouchData: BarTouchData(
-                                              enabled: true,
-                                              touchTooltipData: BarTouchTooltipData(
-                                                getTooltipColor: (_) => isDarkMode
-                                                    ? const Color(0xFF1E222B)
-                                                    : const Color(0xFF004D4D),
-                                                tooltipBorderRadius:
-                                                    BorderRadius.circular(8),
-                                                getTooltipItem: (group,
-                                                    groupIndex, rod, rodIndex) {
-                                                  return BarTooltipItem(
-                                                    _formatRp(rod.toY),
-                                                    const TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 11),
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                            titlesData: FlTitlesData(
-                                              rightTitles: const AxisTitles(
-                                                  sideTitles: SideTitles(
-                                                      showTitles: false)),
-                                              topTitles: const AxisTitles(
-                                                  sideTitles: SideTitles(
-                                                      showTitles: false)),
-                                              leftTitles: const AxisTitles(
-                                                  sideTitles: SideTitles(
-                                                      showTitles: false)),
-                                              bottomTitles: AxisTitles(
-                                                sideTitles: SideTitles(
-                                                  showTitles: true,
-                                                  getTitlesWidget: (val, meta) {
-                                                    final index = val.toInt();
-                                                    if (index >= 0 &&
-                                                        index <
-                                                            totalChartPoints) {
-                                                      final label =
-                                                          bottomAxisLabels[index];
-                                                      if (label.isEmpty) {
-                                                        return const SizedBox();
-                                                      }
-                                                      return Padding(
-                                                        padding:
-                                                            const EdgeInsets.only(
-                                                                top: 6.0),
-                                                        child: Text(
-                                                          label,
-                                                          style: const TextStyle(
-                                                              fontSize: 9,
-                                                              color: Colors.grey,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
+                                        return SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: SizedBox(
+                                            width: max(320.0, totalChartPoints * 44.0),
+                                            child: BarChart(
+                                              BarChartData(
+                                                alignment: BarChartAlignment.spaceAround,
+                                                maxY: chartMaxY,
+                                                barTouchData: BarTouchData(
+                                                  enabled: true,
+                                                  touchTooltipData: BarTouchTooltipData(
+                                                    getTooltipColor: (_) => isDarkMode
+                                                        ? const Color(0xFF1E222B)
+                                                        : const Color(0xFF004D4D),
+                                                    tooltipBorderRadius:
+                                                        BorderRadius.circular(8),
+                                                    getTooltipItem: (group,
+                                                        groupIndex, rod, rodIndex) {
+                                                      return BarTooltipItem(
+                                                        _formatRp(rod.toY),
+                                                        const TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 11),
                                                       );
-                                                    }
-                                                    return const SizedBox();
-                                                  },
+                                                    },
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                            gridData:
-                                                const FlGridData(show: false),
-                                            borderData: FlBorderData(show: false),
-                                            barGroups: List.generate(
-                                                totalChartPoints, (index) {
-                                              final amount = lineSpots[index].y;
-                                              return BarChartGroupData(
-                                                x: index,
-                                                barRods: [
-                                                  BarChartRodData(
-                                                    toY: amount,
-                                                    width: _timeframe == 'month' || totalChartPoints > 15
-                                                        ? 5
-                                                        : 12,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            4.0),
-                                                    gradient:
-                                                        const LinearGradient(
-                                                      colors: [
-                                                        Color(0xFFEF4444),
-                                                        Color(0xFFFF8A80)
-                                                      ],
-                                                      begin:
-                                                          Alignment.bottomCenter,
-                                                      end: Alignment.topCenter,
-                                                    ),
-                                                    backDrawRodData:
-                                                        BackgroundBarChartRodData(
-                                                      show: true,
-                                                      toY: chartMaxY,
-                                                      color: isDarkMode
-                                                          ? Colors.white
-                                                              .withOpacity(
-                                                                  0.04)
-                                                          : Colors.black
-                                                              .withOpacity(
-                                                                  0.04),
+                                                titlesData: FlTitlesData(
+                                                  rightTitles: const AxisTitles(
+                                                      sideTitles: SideTitles(
+                                                          showTitles: false)),
+                                                  topTitles: const AxisTitles(
+                                                      sideTitles: SideTitles(
+                                                          showTitles: false)),
+                                                  leftTitles: const AxisTitles(
+                                                      sideTitles: SideTitles(
+                                                          showTitles: false)),
+                                                  bottomTitles: AxisTitles(
+                                                    sideTitles: SideTitles(
+                                                      showTitles: true,
+                                                      getTitlesWidget: (val, meta) {
+                                                        final index = val.toInt();
+                                                        if (index >= 0 &&
+                                                            index <
+                                                                totalChartPoints) {
+                                                          final label =
+                                                              bottomAxisLabels[index];
+                                                          if (label.isEmpty) {
+                                                            return const SizedBox();
+                                                          }
+                                                          return Padding(
+                                                            padding:
+                                                                const EdgeInsets.only(
+                                                                    top: 6.0),
+                                                            child: Text(
+                                                              label,
+                                                              style: const TextStyle(
+                                                                  fontSize: 9,
+                                                                  color: Colors.grey,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
+                                                          );
+                                                        }
+                                                        return const SizedBox();
+                                                      },
                                                     ),
                                                   ),
-                                                ],
-                                              );
-                                            }),
+                                                ),
+                                                gridData:
+                                                    const FlGridData(show: false),
+                                                borderData: FlBorderData(show: false),
+                                                barGroups: List.generate(
+                                                    totalChartPoints, (index) {
+                                                  final incomeAmt = lineSpotsIncome[index].y;
+                                                  final expenseAmt = lineSpotsExpense[index].y;
+                                                  return BarChartGroupData(
+                                                    x: index,
+                                                    barRods: [
+                                                      // Pemasukan Bar (Green)
+                                                      BarChartRodData(
+                                                        toY: incomeAmt,
+                                                        width: 6,
+                                                        borderRadius:
+                                                            BorderRadius.circular(2.0),
+                                                        color: const Color(0xFF10B981),
+                                                      ),
+                                                      // Pengeluaran Bar (Red)
+                                                      BarChartRodData(
+                                                        toY: expenseAmt,
+                                                        width: 6,
+                                                        borderRadius:
+                                                            BorderRadius.circular(2.0),
+                                                        color: const Color(0xFFEF4444),
+                                                      ),
+                                                    ],
+                                                  );
+                                                }),
+                                              ),
+                                            ),
                                           ),
                                         );
                                       },
