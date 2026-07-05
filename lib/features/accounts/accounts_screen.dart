@@ -468,247 +468,386 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
               );
             }
 
-            return AlertDialog(
-              title: const Text('Tambah Dompet Baru'),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextField(
-                      controller: nameController,
-                      decoration: const InputDecoration(
-                          labelText: 'Nama Dompet (cth: GoPay)'),
-                    ),
-                    TextField(
-                      controller: balanceController,
-                      keyboardType: TextInputType.number,
-                      decoration:
-                          const InputDecoration(labelText: 'Saldo Awal (Rp)'),
-                    ),
-                    const SizedBox(height: 16.0),
-                    const Text('Pilih Icon:',
-                        style: TextStyle(
-                            fontSize: 12.0, fontWeight: FontWeight.bold)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.account_balance_wallet,
-                              color: selectedIcon == 'wallet'
-                                  ? AppColors.accentTeal
-                                  : Colors.grey),
-                          onPressed: () =>
-                              setState(() => selectedIcon = 'wallet'),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.account_balance,
-                              color: selectedIcon == 'account_balance'
-                                  ? AppColors.accentTeal
-                                  : Colors.grey),
-                          onPressed: () =>
-                              setState(() => selectedIcon = 'account_balance'),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.payment,
-                              color: selectedIcon == 'payment'
-                                  ? AppColors.accentTeal
-                                  : Colors.grey),
-                          onPressed: () =>
-                              setState(() => selectedIcon = 'payment'),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16.0),
-                    const Text('Pilih Warna Kartu:',
-                        style: TextStyle(
-                            fontSize: 12.0, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 8.0),
-                    Row(
-                      children: [
-                        buildColorDot('teal', AppColors.accentTeal),
-                        const SizedBox(width: 12.0),
-                        buildColorDot('orange', AppColors.accentOrange),
-                        const SizedBox(width: 12.0),
-                        if (isCustomActive) ...[
-                          GestureDetector(
-                            onTap: () => setState(() => isCustomActive = true),
-                            child: Container(
-                              width: 32.0,
-                              height: 32.0,
-                              decoration: BoxDecoration(
-                                color: _parseCustomColor(selectedColor) ??
-                                    AppColors.accentTeal,
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: isDarkMode
-                                      ? Colors.white
-                                      : Colors.black87,
-                                  width: 2.5,
-                                ),
-                              ),
-                              child: const Icon(Icons.check,
-                                  color: Colors.white, size: 16.0),
-                            ),
-                          ),
-                          const SizedBox(width: 12.0),
-                        ],
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              isCustomActive = true;
-                              selectedColor = '#0288D1';
-                              hexController.text = '#0288D1';
-                            });
-                          },
-                          child: Container(
-                            width: 32.0,
-                            height: 32.0,
-                            decoration: BoxDecoration(
-                              color: _isSelectedCustom(selectedColor)
-                                  ? Colors.transparent
-                                  : (isDarkMode
-                                      ? Colors.grey[800]
-                                      : Colors.grey[300]),
-                              shape: BoxShape.circle,
-                              border: _isSelectedCustom(selectedColor)
-                                  ? Border.all(
-                                      color: isDarkMode
-                                          ? Colors.white
-                                          : Colors.black87,
-                                      width: 2.0)
-                                  : null,
-                            ),
-                            child: Icon(
-                              Icons.add,
-                              size: 18.0,
-                              color: _isSelectedCustom(selectedColor)
-                                  ? (isDarkMode ? Colors.white : Colors.black87)
-                                  : (isDarkMode
-                                      ? Colors.white70
-                                      : Colors.black54),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (isCustomActive) ...[
-                      const SizedBox(height: 16.0),
-                      const Text('Pilih Palet Kustom:',
-                          style: TextStyle(
-                              fontSize: 11.0,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 6.0),
-                      Wrap(
-                        spacing: 10.0,
-                        runSpacing: 10.0,
+            return Dialog(
+              backgroundColor: isDarkMode ? AppColors.darkModal : Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24.0),
+              ),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
                         children: [
-                          {'id': '#1A1A1A', 'color': AppColors.primaryBlack},
-                          {'id': '#0D9488', 'color': AppColors.accentTeal},
-                          {'id': '#F2994A', 'color': AppColors.accentOrange},
-                          {'id': '#6B7280', 'color': AppColors.neutralGray},
-                          {'id': '#DC2626', 'color': AppColors.semanticRed},
-                          {'id': '#064B45', 'color': const Color(0xFF064B45)},
-                        ].map((c) {
-                          final isThisSelected = selectedColor.toLowerCase() ==
-                              (c['id'] as String).toLowerCase();
+                          Container(
+                            padding: const EdgeInsets.all(10.0),
+                            decoration: BoxDecoration(
+                              color: AppColors.accentTeal.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            child: const Icon(
+                              Icons.add_card_outlined,
+                              color: AppColors.accentTeal,
+                              size: 22.0,
+                            ),
+                          ),
+                          const SizedBox(width: 14.0),
+                          Text(
+                            'Tambah Dompet Baru',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              color: isDarkMode ? Colors.white : Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20.0),
+                      TextField(
+                        controller: nameController,
+                        decoration: InputDecoration(
+                          labelText: 'Nama Dompet',
+                          hintText: 'cth: GoPay',
+                          labelStyle: TextStyle(
+                            fontSize: 13.0,
+                            color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                          ),
+                          hintStyle: TextStyle(
+                            fontSize: 13.0,
+                            color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
+                          ),
+                          filled: true,
+                          fillColor: isDarkMode ? AppColors.darkElevated : const Color(0xFFF3F4F6),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide.none,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+                        ),
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          color: isDarkMode ? Colors.white : Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 12.0),
+                      TextField(
+                        controller: balanceController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: 'Saldo Awal',
+                          hintText: 'Rp 0',
+                          labelStyle: TextStyle(
+                            fontSize: 13.0,
+                            color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                          ),
+                          hintStyle: TextStyle(
+                            fontSize: 13.0,
+                            color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
+                          ),
+                          filled: true,
+                          fillColor: isDarkMode ? AppColors.darkElevated : const Color(0xFFF3F4F6),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide.none,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+                          prefixText: 'Rp ',
+                          prefixStyle: TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.bold,
+                            color: isDarkMode ? Colors.white : Colors.black87,
+                          ),
+                        ),
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          color: isDarkMode ? Colors.white : Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 20.0),
+                      Text(
+                        'PILIH ICON',
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.8,
+                          color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                        ),
+                      ),
+                      const SizedBox(height: 10.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          'wallet',
+                          'account_balance',
+                          'payment'
+                        ].map((iconName) {
+                          final isSelected = selectedIcon == iconName;
                           return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                selectedColor = c['id'] as String;
-                                hexController.text = c['id'] as String;
-                              });
-                            },
-                            child: Container(
-                              width: 28.0,
-                              height: 28.0,
+                            onTap: () => setState(() => selectedIcon = iconName),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              padding: const EdgeInsets.all(12.0),
                               decoration: BoxDecoration(
-                                color: c['color'] as Color,
+                                color: isSelected
+                                    ? AppColors.accentTeal.withValues(alpha: 0.1)
+                                    : (isDarkMode ? AppColors.darkElevated : const Color(0xFFF3F4F6)),
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: isThisSelected
-                                      ? (isDarkMode
-                                          ? Colors.white
-                                          : Colors.black87)
-                                      : Colors.transparent,
-                                  width: 2.0,
+                                  color: isSelected ? AppColors.accentTeal : Colors.transparent,
+                                  width: 1.5,
                                 ),
                               ),
-                              child: isThisSelected
-                                  ? const Icon(Icons.check,
-                                      color: Colors.white, size: 14.0)
-                                  : null,
+                              child: Icon(
+                                _getAccountIcon(iconName),
+                                color: isSelected
+                                    ? AppColors.accentTeal
+                                    : (isDarkMode ? Colors.white70 : Colors.black87),
+                                size: 24.0,
+                              ),
                             ),
                           );
                         }).toList(),
                       ),
-                      const SizedBox(height: 16.0),
+                      const SizedBox(height: 20.0),
+                      Text(
+                        'PILIH WARNA KARTU',
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.8,
+                          color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                        ),
+                      ),
+                      const SizedBox(height: 10.0),
                       Row(
                         children: [
-                          Expanded(
-                            child: TextField(
-                              controller: hexController,
-                              decoration: const InputDecoration(
-                                labelText:
-                                    'Kode Hex atau RGB (cth: #FF5722 atau 255,87,34)',
-                                labelStyle: TextStyle(fontSize: 10.0),
-                                isDense: true,
-                                contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 10.0, vertical: 8.0),
+                          buildColorDot('teal', AppColors.accentTeal),
+                          const SizedBox(width: 12.0),
+                          buildColorDot('orange', AppColors.accentOrange),
+                          const SizedBox(width: 12.0),
+                          if (isCustomActive) ...[
+                            GestureDetector(
+                              onTap: () => setState(() => isCustomActive = true),
+                              child: Container(
+                                width: 32.0,
+                                height: 32.0,
+                                decoration: BoxDecoration(
+                                  color: _parseCustomColor(selectedColor) ??
+                                      AppColors.accentTeal,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: isDarkMode
+                                        ? Colors.white
+                                        : Colors.black87,
+                                    width: 2.5,
+                                  ),
+                                ),
+                                child: const Icon(Icons.check,
+                                    color: Colors.white, size: 16.0),
                               ),
-                              style: const TextStyle(fontSize: 11.0),
-                              onChanged: (val) {
-                                final parsed = _parseCustomColor(val);
-                                if (parsed != null) {
-                                  setState(() {
-                                    selectedColor = val;
-                                  });
-                                }
-                              },
+                            ),
+                            const SizedBox(width: 12.0),
+                          ],
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isCustomActive = true;
+                                selectedColor = '#0288D1';
+                                hexController.text = '#0288D1';
+                              });
+                            },
+                            child: Container(
+                              width: 32.0,
+                              height: 32.0,
+                              decoration: BoxDecoration(
+                                color: _isSelectedCustom(selectedColor)
+                                    ? Colors.transparent
+                                    : (isDarkMode
+                                        ? Colors.grey[800]
+                                        : Colors.grey[300]),
+                                shape: BoxShape.circle,
+                                border: _isSelectedCustom(selectedColor)
+                                    ? Border.all(
+                                        color: isDarkMode
+                                            ? Colors.white
+                                            : Colors.black87,
+                                        width: 2.0)
+                                    : null,
+                              ),
+                              child: Icon(
+                                Icons.add,
+                                size: 18.0,
+                                color: _isSelectedCustom(selectedColor)
+                                    ? (isDarkMode ? Colors.white : Colors.black87)
+                                    : (isDarkMode
+                                        ? Colors.white70
+                                        : Colors.black54),
+                              ),
                             ),
                           ),
+                        ],
+                      ),
+                      if (isCustomActive) ...[
+                        const SizedBox(height: 16.0),
+                        Text(
+                          'PILIH PALET KUSTOM',
+                          style: TextStyle(
+                            fontSize: 10.0,
+                            color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8.0),
+                        Wrap(
+                          spacing: 10.0,
+                          runSpacing: 10.0,
+                          children: [
+                            {'id': '#1A1A1A', 'color': AppColors.primaryBlack},
+                            {'id': '#0D9488', 'color': AppColors.accentTeal},
+                            {'id': '#F2994A', 'color': AppColors.accentOrange},
+                            {'id': '#6B7280', 'color': AppColors.neutralGray},
+                            {'id': '#DC2626', 'color': AppColors.semanticRed},
+                            {'id': '#064B45', 'color': const Color(0xFF064B45)},
+                          ].map((c) {
+                            final isThisSelected = selectedColor.toLowerCase() ==
+                                (c['id'] as String).toLowerCase();
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selectedColor = c['id'] as String;
+                                  hexController.text = c['id'] as String;
+                                });
+                              },
+                              child: Container(
+                                width: 28.0,
+                                height: 28.0,
+                                decoration: BoxDecoration(
+                                  color: c['color'] as Color,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: isThisSelected
+                                        ? (isDarkMode
+                                            ? Colors.white
+                                            : Colors.black87)
+                                        : Colors.transparent,
+                                    width: 2.0,
+                                  ),
+                                ),
+                                child: isThisSelected
+                                    ? const Icon(Icons.check,
+                                        color: Colors.white, size: 14.0)
+                                    : null,
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                        const SizedBox(height: 16.0),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: hexController,
+                                decoration: InputDecoration(
+                                  labelText: 'Kode Hex / RGB',
+                                  hintText: 'cth: #FF5722 atau 255,87,34',
+                                  labelStyle: TextStyle(
+                                    fontSize: 11.0,
+                                    color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                                  ),
+                                  hintStyle: TextStyle(
+                                    fontSize: 11.0,
+                                    color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
+                                  ),
+                                  filled: true,
+                                  fillColor: isDarkMode ? AppColors.darkElevated : const Color(0xFFF3F4F6),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  isDense: true,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 12.0, vertical: 10.0),
+                                ),
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                  color: isDarkMode ? Colors.white : Colors.black87,
+                                ),
+                                onChanged: (val) {
+                                  final parsed = _parseCustomColor(val);
+                                  if (parsed != null) {
+                                    setState(() {
+                                      selectedColor = val;
+                                    });
+                                  }
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 12.0),
+                            Container(
+                              width: 32.0,
+                              height: 32.0,
+                              decoration: BoxDecoration(
+                                color: _parseCustomColor(selectedColor) ??
+                                    Colors.transparent,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                    color: isDarkMode ? Colors.white24 : Colors.grey.shade400,
+                                    width: 1.0),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                      const SizedBox(height: 32.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            style: TextButton.styleFrom(
+                              foregroundColor: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                            ),
+                            child: const Text('Batal'),
+                          ),
                           const SizedBox(width: 12.0),
-                          Container(
-                            width: 28.0,
-                            height: 28.0,
-                            decoration: BoxDecoration(
-                              color: _parseCustomColor(selectedColor) ??
-                                  Colors.transparent,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                  color: Colors.grey.shade400, width: 1.0),
+                          ElevatedButton(
+                            onPressed: () {
+                              final name = nameController.text.trim();
+                              final balance =
+                                  double.tryParse(balanceController.text) ?? 0.0;
+                              if (name.isNotEmpty) {
+                                ref.read(accountsNotifierProvider.notifier).addAccount(
+                                    name, balance, selectedIcon, selectedColor);
+                                Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text('Dompet "$name" berhasil dibuat')),
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: isDarkMode ? Colors.white : AppColors.primaryBlack,
+                              foregroundColor: isDarkMode ? Colors.black : Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              elevation: 0,
+                            ),
+                            child: const Text(
+                              'Simpan',
+                              style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
                         ],
                       ),
                     ],
-                  ],
+                  ),
                 ),
               ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('Batal'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    final name = nameController.text.trim();
-                    final balance =
-                        double.tryParse(balanceController.text) ?? 0.0;
-                    if (name.isNotEmpty) {
-                      ref.read(accountsNotifierProvider.notifier).addAccount(
-                          name, balance, selectedIcon, selectedColor);
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text('Dompet "$name" berhasil dibuat')),
-                      );
-                    }
-                  },
-                  child: const Text('Simpan'),
-                ),
-              ],
             );
           },
         );
@@ -763,253 +902,382 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
               );
             }
 
-            return AlertDialog(
-              title: const Text('Edit Dompet'),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextField(
-                      controller: nameController,
-                      decoration:
-                          const InputDecoration(labelText: 'Nama Dompet'),
-                    ),
-                    TextField(
-                      controller: balanceController,
-                      keyboardType: TextInputType.number,
-                      decoration:
-                          const InputDecoration(labelText: 'Saldo Awal (Rp)'),
-                    ),
-                    const SizedBox(height: 16.0),
-                    const Text('Pilih Icon:',
-                        style: TextStyle(
-                            fontSize: 12.0, fontWeight: FontWeight.bold)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.account_balance_wallet,
-                              color: selectedIcon == 'wallet'
-                                  ? AppColors.accentTeal
-                                  : Colors.grey),
-                          onPressed: () =>
-                              setState(() => selectedIcon = 'wallet'),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.account_balance,
-                              color: selectedIcon == 'account_balance'
-                                  ? AppColors.accentTeal
-                                  : Colors.grey),
-                          onPressed: () =>
-                              setState(() => selectedIcon = 'account_balance'),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.payment,
-                              color: selectedIcon == 'payment'
-                                  ? AppColors.accentTeal
-                                  : Colors.grey),
-                          onPressed: () =>
-                              setState(() => selectedIcon = 'payment'),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16.0),
-                    const Text('Pilih Warna Kartu:',
-                        style: TextStyle(
-                            fontSize: 12.0, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 8.0),
-                    Row(
-                      children: [
-                        buildColorDot('teal', AppColors.accentTeal),
-                        const SizedBox(width: 12.0),
-                        buildColorDot('orange', AppColors.accentOrange),
-                        const SizedBox(width: 12.0),
-                        if (isCustomActive) ...[
-                          GestureDetector(
-                            onTap: () => setState(() => isCustomActive = true),
-                            child: Container(
-                              width: 32.0,
-                              height: 32.0,
-                              decoration: BoxDecoration(
-                                color: _parseCustomColor(selectedColor) ??
-                                    AppColors.accentTeal,
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: isDarkMode
-                                      ? Colors.white
-                                      : Colors.black87,
-                                  width: 2.5,
-                                ),
-                              ),
-                              child: const Icon(Icons.check,
-                                  color: Colors.white, size: 16.0),
-                            ),
-                          ),
-                          const SizedBox(width: 12.0),
-                        ],
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              isCustomActive = true;
-                              selectedColor = '#0288D1';
-                              hexController.text = '#0288D1';
-                            });
-                          },
-                          child: Container(
-                            width: 32.0,
-                            height: 32.0,
-                            decoration: BoxDecoration(
-                              color: _isSelectedCustom(selectedColor)
-                                  ? Colors.transparent
-                                  : (isDarkMode
-                                      ? Colors.grey[800]
-                                      : Colors.grey[300]),
-                              shape: BoxShape.circle,
-                              border: _isSelectedCustom(selectedColor)
-                                  ? Border.all(
-                                      color: isDarkMode
-                                          ? Colors.white
-                                          : Colors.black87,
-                                      width: 2.0)
-                                  : null,
-                            ),
-                            child: Icon(
-                              Icons.add,
-                              size: 18.0,
-                              color: _isSelectedCustom(selectedColor)
-                                  ? (isDarkMode ? Colors.white : Colors.black87)
-                                  : (isDarkMode
-                                      ? Colors.white70
-                                      : Colors.black54),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (isCustomActive) ...[
-                      const SizedBox(height: 16.0),
-                      const Text('Pilih Palet Kustom:',
-                          style: TextStyle(
-                              fontSize: 11.0,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 6.0),
-                      Wrap(
-                        spacing: 10.0,
-                        runSpacing: 10.0,
+            return Dialog(
+              backgroundColor: isDarkMode ? AppColors.darkModal : Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24.0),
+              ),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
                         children: [
-                          {'id': '#1A1A1A', 'color': AppColors.primaryBlack},
-                          {'id': '#0D9488', 'color': AppColors.accentTeal},
-                          {'id': '#F2994A', 'color': AppColors.accentOrange},
-                          {'id': '#6B7280', 'color': AppColors.neutralGray},
-                          {'id': '#DC2626', 'color': AppColors.semanticRed},
-                          {'id': '#064B45', 'color': const Color(0xFF064B45)},
-                        ].map((c) {
-                          final isThisSelected = selectedColor.toLowerCase() ==
-                              (c['id'] as String).toLowerCase();
+                          Container(
+                            padding: const EdgeInsets.all(10.0),
+                            decoration: BoxDecoration(
+                              color: AppColors.accentTeal.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            child: const Icon(
+                              Icons.edit_note_outlined,
+                              color: AppColors.accentTeal,
+                              size: 22.0,
+                            ),
+                          ),
+                          const SizedBox(width: 14.0),
+                          Text(
+                            'Edit Dompet',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              color: isDarkMode ? Colors.white : Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20.0),
+                      TextField(
+                        controller: nameController,
+                        decoration: InputDecoration(
+                          labelText: 'Nama Dompet',
+                          labelStyle: TextStyle(
+                            fontSize: 13.0,
+                            color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                          ),
+                          filled: true,
+                          fillColor: isDarkMode ? AppColors.darkElevated : const Color(0xFFF3F4F6),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide.none,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+                        ),
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          color: isDarkMode ? Colors.white : Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 12.0),
+                      TextField(
+                        controller: balanceController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: 'Saldo Awal',
+                          labelStyle: TextStyle(
+                            fontSize: 13.0,
+                            color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                          ),
+                          filled: true,
+                          fillColor: isDarkMode ? AppColors.darkElevated : const Color(0xFFF3F4F6),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide.none,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+                          prefixText: 'Rp ',
+                          prefixStyle: TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.bold,
+                            color: isDarkMode ? Colors.white : Colors.black87,
+                          ),
+                        ),
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          color: isDarkMode ? Colors.white : Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 20.0),
+                      Text(
+                        'PILIH ICON',
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.8,
+                          color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                        ),
+                      ),
+                      const SizedBox(height: 10.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          'wallet',
+                          'account_balance',
+                          'payment'
+                        ].map((iconName) {
+                          final isSelected = selectedIcon == iconName;
                           return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                selectedColor = c['id'] as String;
-                                hexController.text = c['id'] as String;
-                              });
-                            },
-                            child: Container(
-                              width: 28.0,
-                              height: 28.0,
+                            onTap: () => setState(() => selectedIcon = iconName),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              padding: const EdgeInsets.all(12.0),
                               decoration: BoxDecoration(
-                                color: c['color'] as Color,
+                                color: isSelected
+                                    ? AppColors.accentTeal.withValues(alpha: 0.1)
+                                    : (isDarkMode ? AppColors.darkElevated : const Color(0xFFF3F4F6)),
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: isThisSelected
-                                      ? (isDarkMode
-                                          ? Colors.white
-                                          : Colors.black87)
-                                      : Colors.transparent,
-                                  width: 2.0,
+                                  color: isSelected ? AppColors.accentTeal : Colors.transparent,
+                                  width: 1.5,
                                 ),
                               ),
-                              child: isThisSelected
-                                  ? const Icon(Icons.check,
-                                      color: Colors.white, size: 14.0)
-                                  : null,
+                              child: Icon(
+                                _getAccountIcon(iconName),
+                                color: isSelected
+                                    ? AppColors.accentTeal
+                                    : (isDarkMode ? Colors.white70 : Colors.black87),
+                                size: 24.0,
+                              ),
                             ),
                           );
                         }).toList(),
                       ),
-                      const SizedBox(height: 16.0),
+                      const SizedBox(height: 20.0),
+                      Text(
+                        'PILIH WARNA KARTU',
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.8,
+                          color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                        ),
+                      ),
+                      const SizedBox(height: 10.0),
                       Row(
                         children: [
-                          Expanded(
-                            child: TextField(
-                              controller: hexController,
-                              decoration: const InputDecoration(
-                                labelText:
-                                    'Kode Hex atau RGB (cth: #FF5722 atau 255,87,34)',
-                                labelStyle: TextStyle(fontSize: 10.0),
-                                isDense: true,
-                                contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 10.0, vertical: 8.0),
+                          buildColorDot('teal', AppColors.accentTeal),
+                          const SizedBox(width: 12.0),
+                          buildColorDot('orange', AppColors.accentOrange),
+                          const SizedBox(width: 12.0),
+                          if (isCustomActive) ...[
+                            GestureDetector(
+                              onTap: () => setState(() => isCustomActive = true),
+                              child: Container(
+                                width: 32.0,
+                                height: 32.0,
+                                decoration: BoxDecoration(
+                                  color: _parseCustomColor(selectedColor) ??
+                                      AppColors.accentTeal,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: isDarkMode
+                                        ? Colors.white
+                                        : Colors.black87,
+                                    width: 2.5,
+                                  ),
+                                ),
+                                child: const Icon(Icons.check,
+                                    color: Colors.white, size: 16.0),
                               ),
-                              style: const TextStyle(fontSize: 11.0),
-                              onChanged: (val) {
-                                final parsed = _parseCustomColor(val);
-                                if (parsed != null) {
-                                  setState(() {
-                                    selectedColor = val;
-                                  });
-                                }
-                              },
+                            ),
+                            const SizedBox(width: 12.0),
+                          ],
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isCustomActive = true;
+                                selectedColor = '#0288D1';
+                                hexController.text = '#0288D1';
+                              });
+                            },
+                            child: Container(
+                              width: 32.0,
+                              height: 32.0,
+                              decoration: BoxDecoration(
+                                color: _isSelectedCustom(selectedColor)
+                                    ? Colors.transparent
+                                    : (isDarkMode
+                                        ? Colors.grey[800]
+                                        : Colors.grey[300]),
+                                shape: BoxShape.circle,
+                                border: _isSelectedCustom(selectedColor)
+                                    ? Border.all(
+                                        color: isDarkMode
+                                            ? Colors.white
+                                            : Colors.black87,
+                                        width: 2.0)
+                                    : null,
+                              ),
+                              child: Icon(
+                                Icons.add,
+                                size: 18.0,
+                                color: _isSelectedCustom(selectedColor)
+                                    ? (isDarkMode ? Colors.white : Colors.black87)
+                                    : (isDarkMode
+                                        ? Colors.white70
+                                        : Colors.black54),
+                              ),
                             ),
                           ),
+                        ],
+                      ),
+                      if (isCustomActive) ...[
+                        const SizedBox(height: 16.0),
+                        Text(
+                          'PILIH PALET KUSTOM',
+                          style: TextStyle(
+                            fontSize: 10.0,
+                            color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8.0),
+                        Wrap(
+                          spacing: 10.0,
+                          runSpacing: 10.0,
+                          children: [
+                            {'id': '#1A1A1A', 'color': AppColors.primaryBlack},
+                            {'id': '#0D9488', 'color': AppColors.accentTeal},
+                            {'id': '#F2994A', 'color': AppColors.accentOrange},
+                            {'id': '#6B7280', 'color': AppColors.neutralGray},
+                            {'id': '#DC2626', 'color': AppColors.semanticRed},
+                            {'id': '#064B45', 'color': const Color(0xFF064B45)},
+                          ].map((c) {
+                            final isThisSelected = selectedColor.toLowerCase() ==
+                                (c['id'] as String).toLowerCase();
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selectedColor = c['id'] as String;
+                                  hexController.text = c['id'] as String;
+                                });
+                              },
+                              child: Container(
+                                width: 28.0,
+                                height: 28.0,
+                                decoration: BoxDecoration(
+                                  color: c['color'] as Color,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: isThisSelected
+                                        ? (isDarkMode
+                                            ? Colors.white
+                                            : Colors.black87)
+                                        : Colors.transparent,
+                                    width: 2.0,
+                                  ),
+                                ),
+                                child: isThisSelected
+                                    ? const Icon(Icons.check,
+                                        color: Colors.white, size: 14.0)
+                                    : null,
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                        const SizedBox(height: 16.0),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: hexController,
+                                decoration: InputDecoration(
+                                  labelText: 'Kode Hex / RGB',
+                                  hintText: 'cth: #FF5722 atau 255,87,34',
+                                  labelStyle: TextStyle(
+                                    fontSize: 11.0,
+                                    color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                                  ),
+                                  hintStyle: TextStyle(
+                                    fontSize: 11.0,
+                                    color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
+                                  ),
+                                  filled: true,
+                                  fillColor: isDarkMode ? AppColors.darkElevated : const Color(0xFFF3F4F6),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  isDense: true,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 12.0, vertical: 10.0),
+                                ),
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                  color: isDarkMode ? Colors.white : Colors.black87,
+                                ),
+                                onChanged: (val) {
+                                  final parsed = _parseCustomColor(val);
+                                  if (parsed != null) {
+                                    setState(() {
+                                      selectedColor = val;
+                                    });
+                                  }
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 12.0),
+                            Container(
+                              width: 32.0,
+                              height: 32.0,
+                              decoration: BoxDecoration(
+                                color: _parseCustomColor(selectedColor) ??
+                                    Colors.transparent,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                    color: isDarkMode ? Colors.white24 : Colors.grey.shade400,
+                                    width: 1.0),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                      const SizedBox(height: 32.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            style: TextButton.styleFrom(
+                              foregroundColor: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                            ),
+                            child: const Text('Batal'),
+                          ),
                           const SizedBox(width: 12.0),
-                          Container(
-                            width: 28.0,
-                            height: 28.0,
-                            decoration: BoxDecoration(
-                              color: _parseCustomColor(selectedColor) ??
-                                  Colors.transparent,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                  color: Colors.grey.shade400, width: 1.0),
+                          ElevatedButton(
+                            onPressed: () {
+                              final name = nameController.text.trim();
+                              final balance =
+                                  double.tryParse(balanceController.text) ?? 0.0;
+                              if (name.isNotEmpty) {
+                                ref.read(accountsNotifierProvider.notifier).updateAccount(
+                                      acc.copyWith(
+                                        name: name,
+                                        initialBalance: balance,
+                                        icon: selectedIcon,
+                                        color: selectedColor,
+                                      ),
+                                    );
+                                Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text('Dompet "$name" berhasil diupdate')),
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: isDarkMode ? Colors.white : AppColors.primaryBlack,
+                              foregroundColor: isDarkMode ? Colors.black : Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              elevation: 0,
+                            ),
+                            child: const Text(
+                              'Simpan',
+                              style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
                         ],
                       ),
                     ],
-                  ],
+                  ),
                 ),
               ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('Batal'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    final name = nameController.text.trim();
-                    final balance =
-                        double.tryParse(balanceController.text) ?? 0.0;
-                    if (name.isNotEmpty) {
-                      ref.read(accountsNotifierProvider.notifier).updateAccount(
-                            acc.copyWith(
-                              name: name,
-                              initialBalance: balance,
-                              icon: selectedIcon,
-                              color: selectedColor,
-                            ),
-                          );
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text('Dompet "$name" berhasil diupdate')),
-                      );
-                    }
-                  },
-                  child: const Text('Simpan'),
-                ),
-              ],
             );
           },
         );
@@ -1018,35 +1286,101 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
   }
 
   void _confirmDeleteAccount(BuildContext context, Account acc) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: const Text('Hapus Dompet'),
-          content: Text(
-              'Apakah Anda yakin ingin menghapus dompet "${acc.name}"? Semua data transaksi yang menggunakan dompet ini juga akan terhapus.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Batal'),
+        return Dialog(
+          backgroundColor: isDarkMode ? AppColors.darkModal : Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24.0),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        color: AppColors.semanticRed.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      child: const Icon(
+                        Icons.delete_outline,
+                        color: AppColors.semanticRed,
+                        size: 22.0,
+                      ),
+                    ),
+                    const SizedBox(width: 14.0),
+                    Text(
+                      'Hapus Dompet',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        color: isDarkMode ? Colors.white : Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16.0),
+                Text(
+                  'Apakah Anda yakin ingin menghapus dompet "${acc.name}"? Semua data transaksi yang menggunakan dompet ini juga akan terhapus secara permanen.',
+                  style: TextStyle(
+                    fontSize: 12.0,
+                    color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 24.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: TextButton.styleFrom(
+                        foregroundColor: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                      ),
+                      child: const Text('Batal'),
+                    ),
+                    const SizedBox(width: 12.0),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (acc.id != null) {
+                          ref
+                              .read(accountsNotifierProvider.notifier)
+                              .deleteAccount(acc.id!);
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text('Dompet "${acc.name}" berhasil dihapus'),
+                                backgroundColor: AppColors.semanticRed),
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.semanticRed,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: const Text(
+                        'Hapus',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            TextButton(
-              onPressed: () {
-                if (acc.id != null) {
-                  ref
-                      .read(accountsNotifierProvider.notifier)
-                      .deleteAccount(acc.id!);
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text('Dompet "${acc.name}" berhasil dihapus')),
-                  );
-                }
-              },
-              style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
-              child: const Text('Hapus'),
-            ),
-          ],
+          ),
         );
       },
     );
