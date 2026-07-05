@@ -759,16 +759,16 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                 // Bar chart
                                 if (isSingleDay)
                                   SizedBox(
-                                    height: 180,
+                                    height: 200, // increased scrollview height to allow vertical tooltip float
                                     child: Container(
-                                      padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+                                      padding: const EdgeInsets.only(top: 24.0, left: 8.0, right: 8.0),
                                       child: BarChart(
                                         BarChartData(
                                           alignment: BarChartAlignment.spaceEvenly,
                                           maxY: max(totalIncome, totalExpense) == 0
                                               ? 1000.0
                                               : max(totalIncome, totalExpense) *
-                                                  1.15, // reduced space headroom
+                                                  1.15,
                                           barTouchData: BarTouchData(
                                             enabled: true,
                                             touchTooltipData: BarTouchTooltipData(
@@ -853,7 +853,11 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                   width: 48,
                                                   borderRadius:
                                                       BorderRadius.circular(8.0),
-                                                  color: const Color(0xFF10B981),
+                                                  gradient: const LinearGradient(
+                                                    colors: [Color(0xFF059669), Color(0xFF34D399)],
+                                                    begin: Alignment.bottomCenter,
+                                                    end: Alignment.topCenter,
+                                                  ),
                                                   backDrawRodData: BackgroundBarChartRodData(
                                                     show: true,
                                                     toY: max(totalIncome, totalExpense) == 0
@@ -874,7 +878,11 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                   width: 48,
                                                   borderRadius:
                                                       BorderRadius.circular(8.0),
-                                                  color: const Color(0xFFEF4444),
+                                                  gradient: const LinearGradient(
+                                                    colors: [Color(0xFFDC2626), Color(0xFFF87171)],
+                                                    begin: Alignment.bottomCenter,
+                                                    end: Alignment.topCenter,
+                                                  ),
                                                   backDrawRodData: BackgroundBarChartRodData(
                                                     show: true,
                                                     toY: max(totalIncome, totalExpense) == 0
@@ -893,35 +901,35 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                     ),
                                   )
                                 else
-                                  // Scrollable Trend Bar Chart showing both Income and Expense side-by-side with light empty backgrounds
-                                  SizedBox(
-                                    height: 180,
-                                    child: Builder(
-                                      builder: (context) {
-                                        final double maxAmount = lineSpotsExpense.isEmpty
-                                            ? 1000.0
-                                            : max(
-                                                lineSpotsExpense
-                                                    .map((s) => s.y)
-                                                    .reduce((a, b) => a > b ? a : b),
-                                                lineSpotsIncome.isEmpty
-                                                    ? 0.0
-                                                    : lineSpotsIncome
-                                                        .map((s) => s.y)
-                                                        .reduce((a, b) => a > b ? a : b),
-                                              );
-                                        final double chartMaxY = maxAmount == 0
-                                            ? 1000.0
-                                            : maxAmount * 1.15; // compact chart headroom
+                                  // Scrollable Trend Bar Chart showing both Income and Expense side-by-side
+                                  Builder(
+                                    builder: (context) {
+                                      final double maxAmount = lineSpotsExpense.isEmpty
+                                          ? 1000.0
+                                          : max(
+                                              lineSpotsExpense
+                                                  .map((s) => s.y)
+                                                  .reduce((a, b) => a > b ? a : b),
+                                              lineSpotsIncome.isEmpty
+                                                  ? 0.0
+                                                  : lineSpotsIncome
+                                                      .map((s) => s.y)
+                                                      .reduce((a, b) => a > b ? a : b),
+                                            );
+                                      final double chartMaxY = maxAmount == 0
+                                          ? 1000.0
+                                          : maxAmount * 1.15; // compact chart headroom
 
-                                        final isMonth = _timeframe == 'month' || totalChartPoints > 15;
+                                      final isMonth = _timeframe == 'month' || totalChartPoints > 15;
 
-                                        return SingleChildScrollView(
+                                      return SizedBox(
+                                        height: 200, // increased scrollview height to allow vertical tooltip float
+                                        child: SingleChildScrollView(
                                           scrollDirection: Axis.horizontal,
-                                          clipBehavior: Clip.none, // Allow tooltips to overflow the horizontal scrollview vertically/horizontally!
+                                          // clipBehavior remains default hardEdge to prevent horizontal bars bleed outside the card
                                           child: Container(
                                             width: max(MediaQuery.of(context).size.width - 64.0, totalChartPoints * (isMonth ? 36.0 : 52.0)),
-                                            padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+                                            padding: const EdgeInsets.only(top: 24.0, left: 8.0, right: 8.0), // top padding keeps tooltip inside scrollview bounds
                                             child: BarChart(
                                               BarChartData(
                                                 alignment: BarChartAlignment.spaceAround,
@@ -1005,13 +1013,17 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                   return BarChartGroupData(
                                                     x: index,
                                                     barRods: [
-                                                      // Pemasukan Bar (Green)
+                                                      // Pemasukan Bar (Green Gradient)
                                                       BarChartRodData(
                                                         toY: incomeAmt,
                                                         width: rodWidth,
                                                         borderRadius:
                                                             BorderRadius.circular(rRadius),
-                                                        color: const Color(0xFF10B981),
+                                                        gradient: const LinearGradient(
+                                                          colors: [Color(0xFF059669), Color(0xFF34D399)],
+                                                          begin: Alignment.bottomCenter,
+                                                          end: Alignment.topCenter,
+                                                        ),
                                                         backDrawRodData: BackgroundBarChartRodData(
                                                           show: true,
                                                           toY: chartMaxY,
@@ -1020,13 +1032,17 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                               : Colors.black.withOpacity(0.04),
                                                         ),
                                                       ),
-                                                      // Pengeluaran Bar (Red)
+                                                      // Pengeluaran Bar (Red Gradient)
                                                       BarChartRodData(
                                                         toY: expenseAmt,
                                                         width: rodWidth,
                                                         borderRadius:
                                                             BorderRadius.circular(rRadius),
-                                                        color: const Color(0xFFEF4444),
+                                                        gradient: const LinearGradient(
+                                                          colors: [Color(0xFFDC2626), Color(0xFFF87171)],
+                                                          begin: Alignment.bottomCenter,
+                                                          end: Alignment.topCenter,
+                                                        ),
                                                         backDrawRodData: BackgroundBarChartRodData(
                                                           show: true,
                                                           toY: chartMaxY,
@@ -1041,9 +1057,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                               ),
                                             ),
                                           ),
-                                        );
-                                      },
-                                    ),
+                                        ),
+                                      );
+                                    },
                                   ),
                               ],
                             ),
@@ -1247,7 +1263,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                             .toList();
                                         final dateRangeStr = _selectedDateRange !=
                                                 null
-                                            ? '${DateFormat('dd MMM yyyy').format(_selectedDateRange!.start)} - ${DateFormat('dd MMM yyyy').format(_selectedDateRange!.end)}'
+                                            ? '${DateFormat('dd MMM yyyy').format(_selectedDateRange!.start)} - ${DateFormat('dd MMM yroi_ID').format(_selectedDateRange!.end)}'
                                             : _timeframe == 'day'
                                                 ? 'Hari Ini'
                                                 : _timeframe == 'week'
