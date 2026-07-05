@@ -33,6 +33,32 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     ).format(val);
   }
 
+  String _getAdaptiveTitle() {
+    if (_selectedDateRange != null) {
+      final start = _selectedDateRange!.start;
+      final end = _selectedDateRange!.end;
+      final startStr = DateFormat('dd MMM').format(start);
+      if (start.year == end.year && start.month == end.month && start.day == end.day) {
+        return 'Tren Keuangan: $startStr';
+      }
+      final endStr = DateFormat('dd MMM').format(end);
+      return 'Tren Keuangan: $startStr - $endStr';
+    }
+
+    switch (_timeframe) {
+      case 'day':
+        return 'Tren Keuangan Hari Ini';
+      case 'week':
+        return 'Tren Keuangan Minggu Ini';
+      case 'month':
+        return 'Tren Keuangan Bulan Ini';
+      case 'year':
+        return 'Tren Keuangan Tahun Ini';
+      default:
+        return 'Tren Keuangan';
+    }
+  }
+
   IconData _getCategoryIcon(String? iconName) {
     switch (iconName) {
       case 'work':
@@ -488,79 +514,99 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // 1. Filters Row with rounded card selection boxes matching dashboard dialog styles
-                Row(
-                  children: [
-                    // Wallet Selector Pill
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => _showWalletFilterBottomSheet(context, accounts),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                          decoration: BoxDecoration(
-                            color: isDarkMode
-                                ? AppColors.darkCard
-                                : const Color(0xFFECEEEE),
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                selectedAccName,
-                                style: TextStyle(
-                                  fontSize: 12.0,
-                                  fontWeight: FontWeight.w600,
-                                  color: isDarkMode ? Colors.white70 : Colors.black87,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        children: [
+                          // Wallet Selector Pill
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => _showWalletFilterBottomSheet(context, accounts),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                                decoration: BoxDecoration(
+                                  color: isDarkMode
+                                      ? const Color(0xFF1E222B)
+                                      : Colors.white,
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  border: Border.all(
+                                    color: isDarkMode
+                                        ? Colors.white.withOpacity(0.04)
+                                        : Colors.black.withOpacity(0.03),
+                                    width: 1.0,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      selectedAccName,
+                                      style: TextStyle(
+                                        fontSize: 12.0,
+                                        fontWeight: FontWeight.w600,
+                                        color: isDarkMode ? Colors.white70 : Colors.black87,
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.keyboard_arrow_down,
+                                      size: 16.0,
+                                      color: isDarkMode ? Colors.white54 : Colors.black54,
+                                    ),
+                                  ],
                                 ),
                               ),
-                              Icon(
-                                Icons.keyboard_arrow_down,
-                                size: 16.0,
-                                color: isDarkMode ? Colors.white54 : Colors.black54,
+                            ),
+                          ),
+                          const SizedBox(width: 12.0),
+                          // Calendar Icon Button
+                          GestureDetector(
+                            onTap: () => _showCalendarFilterBottomSheet(context),
+                            child: Container(
+                              padding: const EdgeInsets.all(12.0),
+                              decoration: BoxDecoration(
+                                color: isDarkMode
+                                    ? const Color(0xFF1E222B)
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(12.0),
+                                border: Border.all(
+                                  color: isDarkMode
+                                      ? Colors.white.withOpacity(0.04)
+                                      : Colors.black.withOpacity(0.03),
+                                  width: 1.0,
+                                ),
                               ),
-                            ],
+                              child: Icon(
+                                Icons.calendar_month_outlined,
+                                size: 18.0,
+                                color: isDarkMode ? Colors.white70 : Colors.black87,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (_selectedDateRange != null) ...[
+                        const SizedBox(height: 10.0),
+                        Center(
+                          child: InputChip(
+                            label: Text(
+                              'Rentang: ${DateFormat('dd MMM yyyy').format(_selectedDateRange!.start)} - ${DateFormat('dd MMM yyyy').format(_selectedDateRange!.end)}',
+                              style: const TextStyle(fontSize: 11.5),
+                            ),
+                            onDeleted: () {
+                              setState(() {
+                                _selectedDateRange = null;
+                              });
+                            },
+                            deleteIcon: const Icon(Icons.close, size: 14),
                           ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(width: 12.0),
-                    // Calendar Icon Button
-                    GestureDetector(
-                      onTap: () => _showCalendarFilterBottomSheet(context),
-                      child: Container(
-                        padding: const EdgeInsets.all(12.0),
-                        decoration: BoxDecoration(
-                          color: isDarkMode
-                              ? AppColors.darkCard
-                              : const Color(0xFFECEEEE),
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        child: Icon(
-                          Icons.calendar_month_outlined,
-                          size: 18.0,
-                          color: isDarkMode ? Colors.white70 : Colors.black87,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                if (_selectedDateRange != null) ...[
-                  const SizedBox(height: 10.0),
-                  Center(
-                    child: InputChip(
-                      label: Text(
-                        'Rentang: ${DateFormat('dd MMM yyyy').format(_selectedDateRange!.start)} - ${DateFormat('dd MMM yyyy').format(_selectedDateRange!.end)}',
-                        style: const TextStyle(fontSize: 11.5),
-                      ),
-                      onDeleted: () {
-                        setState(() {
-                          _selectedDateRange = null;
-                        });
-                      },
-                      deleteIcon: const Icon(Icons.close, size: 14),
-                    ),
+                      ],
+                    ],
                   ),
-                ],
+                ),
                 const SizedBox(height: 16.0),
 
 
@@ -568,7 +614,6 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                 transactionsAsync.when(
                   data: (transactions) {
                     final categories = categoriesAsync.value ?? [];
-                    final accounts = accountsAsync.value ?? [];
 
                     // Apply filters to transactions
                     final now = DateTime.now();
@@ -855,84 +900,13 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      isSingleDay ? 'Tren Keuangan Hari Ini' : 'Tren Keuangan',
+                                      _getAdaptiveTitle(),
                                       style: const TextStyle(
                                           fontSize: 14.0,
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () => _showWalletFilterBottomSheet(context, accounts),
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-                                            decoration: BoxDecoration(
-                                              color: isDarkMode
-                                                  ? Colors.white.withOpacity(0.06)
-                                                  : Colors.black.withOpacity(0.04),
-                                              borderRadius: BorderRadius.circular(10.0),
-                                            ),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text(
-                                                  selectedAccName,
-                                                  style: TextStyle(
-                                                    fontSize: 12.0,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: isDarkMode ? Colors.white70 : Colors.black87,
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 4.0),
-                                                Icon(
-                                                  Icons.keyboard_arrow_down,
-                                                  size: 16.0,
-                                                  color: isDarkMode ? Colors.white54 : Colors.black54,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8.0),
-                                        GestureDetector(
-                                          onTap: () => _showCalendarFilterBottomSheet(context),
-                                          child: Container(
-                                            padding: const EdgeInsets.all(6.0),
-                                            decoration: BoxDecoration(
-                                              color: isDarkMode
-                                                  ? Colors.white.withOpacity(0.06)
-                                                  : Colors.black.withOpacity(0.04),
-                                              borderRadius: BorderRadius.circular(10.0),
-                                            ),
-                                            child: Icon(
-                                              Icons.calendar_month_outlined,
-                                              size: 16.0,
-                                              color: isDarkMode ? Colors.white70 : Colors.black87,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
                                   ],
                                 ),
-                                if (_selectedDateRange != null) ...[
-                                  const SizedBox(height: 10.0),
-                                  Center(
-                                    child: InputChip(
-                                      label: Text(
-                                        'Rentang: ${DateFormat('dd MMM yyyy').format(_selectedDateRange!.start)} - ${DateFormat('dd MMM yyyy').format(_selectedDateRange!.end)}',
-                                        style: const TextStyle(fontSize: 11.5),
-                                      ),
-                                      onDeleted: () {
-                                        setState(() {
-                                          _selectedDateRange = null;
-                                        });
-                                      },
-                                      deleteIcon: const Icon(Icons.close, size: 14),
-                                    ),
-                                  ),
-                                ],
                                 const SizedBox(height: 16.0),
 
                                 // Totals side-by-side
