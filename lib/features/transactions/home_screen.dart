@@ -901,6 +901,7 @@ class HomeScreen extends ConsumerWidget {
 
   void _showEditDialog(BuildContext context, WidgetRef ref, TransactionModel tx,
       List<Category> categories) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final noteController = TextEditingController(text: tx.note);
     final amountController =
         TextEditingController(text: tx.amount.toStringAsFixed(0));
@@ -1033,11 +1034,25 @@ class HomeScreen extends ConsumerWidget {
                                 children: [
                                   Expanded(
                                     child: DropdownButtonFormField<Category>(
-                                      value: selectedCat,
+                                      initialValue: selectedCat,
+                                      dropdownColor: isDarkMode
+                                          ? const Color(0xFF1E222B)
+                                          : Colors.white,
+                                      borderRadius: BorderRadius.circular(12.0),
                                       items: filteredCats.map((c) {
                                         return DropdownMenuItem(
                                           value: c,
-                                          child: Text(c.name, style: const TextStyle(fontSize: 11.5)),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                _getCategoryIcon(c.icon),
+                                                size: 16.0,
+                                                color: isDarkMode ? Colors.white70 : Colors.black54,
+                                              ),
+                                              const SizedBox(width: 8.0),
+                                              Text(c.name, style: const TextStyle(fontSize: 11.5)),
+                                            ],
+                                          ),
                                         );
                                       }).toList(),
                                       onChanged: (val) => setState(() => selectedCat = val),
@@ -1053,11 +1068,25 @@ class HomeScreen extends ConsumerWidget {
                                   const SizedBox(width: 6.0),
                                   Expanded(
                                     child: DropdownButtonFormField<int>(
-                                      value: selectedAccId,
+                                      initialValue: selectedAccId,
+                                      dropdownColor: isDarkMode
+                                          ? const Color(0xFF1E222B)
+                                          : Colors.white,
+                                      borderRadius: BorderRadius.circular(12.0),
                                       items: accounts.map((a) {
                                         return DropdownMenuItem<int>(
                                           value: a.account.id,
-                                          child: Text(a.account.name, style: const TextStyle(fontSize: 11.5)),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                _getAccountIcon(a.account.icon),
+                                                size: 16.0,
+                                                color: isDarkMode ? Colors.white70 : Colors.black54,
+                                              ),
+                                              const SizedBox(width: 8.0),
+                                              Text(a.account.name, style: const TextStyle(fontSize: 11.5)),
+                                            ],
+                                          ),
                                         );
                                       }).toList(),
                                       onChanged: (val) => setState(() => selectedAccId = val),
