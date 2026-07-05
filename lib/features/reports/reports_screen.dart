@@ -898,163 +898,186 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
 
                                 // Bar chart
                                 if (isSingleDay)
-                                  SizedBox(
-                                    height: 200, // increased scrollview height to allow vertical tooltip float
-                                    child: Container(
-                                      padding: const EdgeInsets.only(top: 24.0, left: 8.0, right: 8.0),
-                                      child: BarChart(
-                                        BarChartData(
-                                          alignment: BarChartAlignment.spaceEvenly,
-                                          maxY: max(totalIncome, totalExpense) == 0
-                                              ? 1000.0
-                                              : max(totalIncome, totalExpense) *
-                                                  1.15,
-                                          barTouchData: BarTouchData(
-                                            enabled: true,
-                                            touchTooltipData: BarTouchTooltipData(
-                                              fitInsideHorizontally: true,
-                                              fitInsideVertically: true,
-                                              getTooltipColor: (group) =>
-                                                  group.x == 0
-                                                      ? const Color(0xFF0D9488)
-                                                      : const Color(0xFFDC2626), // Green for Pemasukan, Red for Pengeluaran
-                                              tooltipBorderRadius:
-                                                  BorderRadius.circular(8),
-                                              getTooltipItem: (group, groupIndex,
-                                                  rod, rodIndex) {
-                                                return BarTooltipItem(
-                                                  _formatRp(rod.toY),
-                                                  const TextStyle(
-                                                    color: Colors.white, // white text stands out on green/red bg
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 11,
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                          ),
-                                          titlesData: FlTitlesData(
-                                            rightTitles: const AxisTitles(
-                                                sideTitles:
-                                                    SideTitles(showTitles: false)),
-                                            topTitles: const AxisTitles(
-                                                sideTitles:
-                                                    SideTitles(showTitles: false)),
-                                            leftTitles: const AxisTitles(
-                                                sideTitles:
-                                                    SideTitles(showTitles: false)),
-                                            bottomTitles: AxisTitles(
-                                              sideTitles: SideTitles(
-                                                showTitles: true,
-                                                getTitlesWidget: (val, meta) {
-                                                  if (val == 0) {
-                                                    return const Padding(
-                                                      padding:
-                                                          EdgeInsets.only(top: 8.0),
-                                                      child: Text(
-                                                        'Pemasukan',
-                                                        style: TextStyle(
-                                                          fontSize: 11,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Colors.grey,
-                                                        ),
+                                  Builder(
+                                    builder: (context) {
+                                      final double activeMax = _showAllocationChart
+                                          ? (_allocationType == 'income' ? totalIncome : totalExpense)
+                                          : max(totalIncome, totalExpense);
+                                      final double singleDayMaxY = activeMax == 0 ? 1000.0 : activeMax * 1.15;
+
+                                      return SizedBox(
+                                        height: 200, // increased scrollview height to allow vertical tooltip float
+                                        child: Container(
+                                          padding: const EdgeInsets.only(top: 24.0, left: 8.0, right: 8.0),
+                                          child: BarChart(
+                                            BarChartData(
+                                              alignment: BarChartAlignment.spaceEvenly,
+                                              maxY: singleDayMaxY,
+                                              barTouchData: BarTouchData(
+                                                enabled: true,
+                                                touchTooltipData: BarTouchTooltipData(
+                                                  fitInsideHorizontally: true,
+                                                  fitInsideVertically: true,
+                                                  getTooltipColor: (group) {
+                                                    if (_showAllocationChart) {
+                                                      return _allocationType == 'income'
+                                                          ? const Color(0xFF0D9488)
+                                                          : const Color(0xFFDC2626);
+                                                    }
+                                                    return group.x == 0
+                                                        ? const Color(0xFF0D9488)
+                                                        : const Color(0xFFDC2626); // Green for Pemasukan, Red for Pengeluaran
+                                                  },
+                                                  tooltipBorderRadius:
+                                                      BorderRadius.circular(8),
+                                                  getTooltipItem: (group, groupIndex,
+                                                      rod, rodIndex) {
+                                                    return BarTooltipItem(
+                                                      _formatRp(rod.toY),
+                                                      const TextStyle(
+                                                        color: Colors.white, // white text stands out on green/red bg
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 11,
                                                       ),
                                                     );
-                                                  } else if (val == 1) {
-                                                    return const Padding(
-                                                      padding:
-                                                          EdgeInsets.only(top: 8.0),
-                                                      child: Text(
-                                                        'Pengeluaran',
-                                                        style: TextStyle(
-                                                          fontSize: 11,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Colors.grey,
-                                                        ),
-                                                      ),
-                                                    );
-                                                  }
-                                                  return const SizedBox();
-                                                },
+                                                  },
+                                                ),
                                               ),
+                                              titlesData: FlTitlesData(
+                                                rightTitles: const AxisTitles(
+                                                    sideTitles:
+                                                        SideTitles(showTitles: false)),
+                                                topTitles: const AxisTitles(
+                                                    sideTitles:
+                                                        SideTitles(showTitles: false)),
+                                                leftTitles: const AxisTitles(
+                                                    sideTitles:
+                                                        SideTitles(showTitles: false)),
+                                                bottomTitles: AxisTitles(
+                                                  sideTitles: SideTitles(
+                                                    showTitles: true,
+                                                    getTitlesWidget: (val, meta) {
+                                                      if (val == 0) {
+                                                        return const Padding(
+                                                          padding:
+                                                              EdgeInsets.only(top: 8.0),
+                                                          child: Text(
+                                                            'Pemasukan',
+                                                            style: TextStyle(
+                                                              fontSize: 11,
+                                                              fontWeight:
+                                                                  FontWeight.bold,
+                                                              color: Colors.grey,
+                                                            ),
+                                                          ),
+                                                        );
+                                                      } else if (val == 1) {
+                                                        return const Padding(
+                                                          padding:
+                                                              EdgeInsets.only(top: 8.0),
+                                                          child: Text(
+                                                            'Pengeluaran',
+                                                            style: TextStyle(
+                                                              fontSize: 11,
+                                                              fontWeight:
+                                                                  FontWeight.bold,
+                                                              color: Colors.grey,
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }
+                                                      return const SizedBox();
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                              gridData: const FlGridData(show: false),
+                                              borderData: FlBorderData(show: false),
+                                              barGroups: [
+                                                if (!_showAllocationChart || _allocationType == 'income')
+                                                  BarChartGroupData(
+                                                    x: 0,
+                                                    barRods: [
+                                                      BarChartRodData(
+                                                        toY: totalIncome,
+                                                        width: 48,
+                                                        borderRadius:
+                                                            BorderRadius.circular(8.0),
+                                                        gradient: const LinearGradient(
+                                                          colors: [AppColors.income, Color(0xFF2DD4BF)],
+                                                          begin: Alignment.bottomCenter,
+                                                          end: Alignment.topCenter,
+                                                        ),
+                                                        backDrawRodData: BackgroundBarChartRodData(
+                                                          show: true,
+                                                          toY: singleDayMaxY,
+                                                          color: isDarkMode
+                                                              ? Colors.white.withOpacity(0.04)
+                                                              : Colors.black.withOpacity(0.04),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                if (!_showAllocationChart || _allocationType == 'expense')
+                                                  BarChartGroupData(
+                                                    x: 1,
+                                                    barRods: [
+                                                      BarChartRodData(
+                                                        toY: totalExpense,
+                                                        width: 48,
+                                                        borderRadius:
+                                                            BorderRadius.circular(8.0),
+                                                        gradient: const LinearGradient(
+                                                          colors: [Color(0xFFDC2626), Color(0xFFF87171)],
+                                                          begin: Alignment.bottomCenter,
+                                                          end: Alignment.topCenter,
+                                                        ),
+                                                        backDrawRodData: BackgroundBarChartRodData(
+                                                          show: true,
+                                                          toY: singleDayMaxY,
+                                                          color: isDarkMode
+                                                              ? Colors.white.withOpacity(0.04)
+                                                              : Colors.black.withOpacity(0.04),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                              ],
                                             ),
                                           ),
-                                          gridData: const FlGridData(show: false),
-                                          borderData: FlBorderData(show: false),
-                                          barGroups: [
-                                            BarChartGroupData(
-                                              x: 0,
-                                              barRods: [
-                                                BarChartRodData(
-                                                  toY: totalIncome,
-                                                  width: 48,
-                                                  borderRadius:
-                                                      BorderRadius.circular(8.0),
-                                                  gradient: const LinearGradient(
-                                                    colors: [AppColors.income, Color(0xFF2DD4BF)],
-                                                    begin: Alignment.bottomCenter,
-                                                    end: Alignment.topCenter,
-                                                  ),
-                                                  backDrawRodData: BackgroundBarChartRodData(
-                                                    show: true,
-                                                    toY: max(totalIncome, totalExpense) == 0
-                                                        ? 1000.0
-                                                        : max(totalIncome, totalExpense) * 1.15,
-                                                    color: isDarkMode
-                                                        ? Colors.white.withOpacity(0.04)
-                                                        : Colors.black.withOpacity(0.04),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            BarChartGroupData(
-                                              x: 1,
-                                              barRods: [
-                                                BarChartRodData(
-                                                  toY: totalExpense,
-                                                  width: 48,
-                                                  borderRadius:
-                                                      BorderRadius.circular(8.0),
-                                                  gradient: const LinearGradient(
-                                                    colors: [Color(0xFFDC2626), Color(0xFFF87171)],
-                                                    begin: Alignment.bottomCenter,
-                                                    end: Alignment.topCenter,
-                                                  ),
-                                                  backDrawRodData: BackgroundBarChartRodData(
-                                                    show: true,
-                                                    toY: max(totalIncome, totalExpense) == 0
-                                                        ? 1000.0
-                                                        : max(totalIncome, totalExpense) * 1.15,
-                                                    color: isDarkMode
-                                                        ? Colors.white.withOpacity(0.04)
-                                                        : Colors.black.withOpacity(0.04),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
                                         ),
-                                      ),
-                                    ),
+                                      );
+                                    },
                                   )
                                 else
                                   // Scrollable Trend Bar Chart showing both Income and Expense side-by-side
                                   Builder(
                                     builder: (context) {
-                                      final double maxAmount = lineSpotsExpense.isEmpty
-                                          ? 1000.0
-                                          : max(
-                                              lineSpotsExpense
-                                                  .map((s) => s.y)
-                                                  .reduce((a, b) => a > b ? a : b),
-                                              lineSpotsIncome.isEmpty
-                                                  ? 0.0
-                                                  : lineSpotsIncome
-                                                      .map((s) => s.y)
-                                                      .reduce((a, b) => a > b ? a : b),
-                                            );
+                                      final double maxAmount;
+                                      if (_showAllocationChart) {
+                                        if (_allocationType == 'income') {
+                                          maxAmount = lineSpotsIncome.isEmpty
+                                              ? 1000.0
+                                              : lineSpotsIncome.map((s) => s.y).reduce((a, b) => a > b ? a : b);
+                                        } else {
+                                          maxAmount = lineSpotsExpense.isEmpty
+                                              ? 1000.0
+                                              : lineSpotsExpense.map((s) => s.y).reduce((a, b) => a > b ? a : b);
+                                        }
+                                      } else {
+                                        maxAmount = lineSpotsExpense.isEmpty
+                                            ? 1000.0
+                                            : max(
+                                                lineSpotsExpense
+                                                    .map((s) => s.y)
+                                                    .reduce((a, b) => a > b ? a : b),
+                                                lineSpotsIncome.isEmpty
+                                                    ? 0.0
+                                                    : lineSpotsIncome
+                                                        .map((s) => s.y)
+                                                        .reduce((a, b) => a > b ? a : b),
+                                              );
+                                      }
                                       final double chartMaxY = maxAmount == 0
                                           ? 1000.0
                                           : maxAmount * 1.15; // compact chart headroom
@@ -1079,6 +1102,11 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                     fitInsideHorizontally: true,
                                                     fitInsideVertically: true,
                                                     getTooltipColor: (group) {
+                                                      if (_showAllocationChart) {
+                                                        return _allocationType == 'income'
+                                                            ? const Color(0xFF0D9488)
+                                                            : const Color(0xFFDC2626);
+                                                      }
                                                       // Dynamic tooltip color: Green if Pemasukan is higher, Red if Pengeluaran is higher
                                                       final income = group.barRods[0].toY;
                                                       final expense = group.barRods[1].toY;
@@ -1090,15 +1118,15 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                     },
                                                     tooltipBorderRadius:
                                                         BorderRadius.circular(8),
-                                                    getTooltipItem: (group,
-                                                        groupIndex, rod, rodIndex) {
+                                                    getTooltipItem: (group, groupIndex,
+                                                        rod, rodIndex) {
                                                       return BarTooltipItem(
                                                         _formatRp(rod.toY),
                                                         const TextStyle(
-                                                            color: Colors.white, // white text stands out on green/red bg
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 11),
+                                                          color: Colors.white, // white text stands out on green/red bg
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 11,
+                                                        ),
                                                       );
                                                     },
                                                   ),
@@ -1159,44 +1187,46 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                   return BarChartGroupData(
                                                     x: index,
                                                     barRods: [
-                                                      // Pemasukan Bar (Green Gradient)
-                                                      BarChartRodData(
-                                                        toY: incomeAmt,
-                                                        width: rodWidth,
-                                                        borderRadius:
-                                                            BorderRadius.circular(rRadius),
-                                                        gradient: const LinearGradient(
-                                                          colors: [AppColors.income, Color(0xFF2DD4BF)],
-                                                          begin: Alignment.bottomCenter,
-                                                          end: Alignment.topCenter,
+                                                      if (!_showAllocationChart || _allocationType == 'income')
+                                                        // Pemasukan Bar (Green Gradient)
+                                                        BarChartRodData(
+                                                          toY: incomeAmt,
+                                                          width: rodWidth,
+                                                          borderRadius:
+                                                              BorderRadius.circular(rRadius),
+                                                          gradient: const LinearGradient(
+                                                            colors: [AppColors.income, Color(0xFF2DD4BF)],
+                                                            begin: Alignment.bottomCenter,
+                                                            end: Alignment.topCenter,
+                                                          ),
+                                                          backDrawRodData: BackgroundBarChartRodData(
+                                                            show: true,
+                                                            toY: chartMaxY,
+                                                            color: isDarkMode
+                                                                ? Colors.white.withOpacity(0.04)
+                                                                : Colors.black.withOpacity(0.04),
+                                                          ),
                                                         ),
-                                                        backDrawRodData: BackgroundBarChartRodData(
-                                                          show: true,
-                                                          toY: chartMaxY,
-                                                          color: isDarkMode
-                                                              ? Colors.white.withOpacity(0.04)
-                                                              : Colors.black.withOpacity(0.04),
+                                                      if (!_showAllocationChart || _allocationType == 'expense')
+                                                        // Pengeluaran Bar (Red Gradient)
+                                                        BarChartRodData(
+                                                          toY: expenseAmt,
+                                                          width: rodWidth,
+                                                          borderRadius:
+                                                              BorderRadius.circular(rRadius),
+                                                          gradient: const LinearGradient(
+                                                            colors: [Color(0xFFDC2626), Color(0xFFF87171)],
+                                                            begin: Alignment.bottomCenter,
+                                                            end: Alignment.topCenter,
+                                                          ),
+                                                          backDrawRodData: BackgroundBarChartRodData(
+                                                            show: true,
+                                                            toY: chartMaxY,
+                                                            color: isDarkMode
+                                                                ? Colors.white.withOpacity(0.04)
+                                                                : Colors.black.withOpacity(0.04),
+                                                          ),
                                                         ),
-                                                      ),
-                                                      // Pengeluaran Bar (Red Gradient)
-                                                      BarChartRodData(
-                                                        toY: expenseAmt,
-                                                        width: rodWidth,
-                                                        borderRadius:
-                                                            BorderRadius.circular(rRadius),
-                                                        gradient: const LinearGradient(
-                                                          colors: [Color(0xFFDC2626), Color(0xFFF87171)],
-                                                          begin: Alignment.bottomCenter,
-                                                          end: Alignment.topCenter,
-                                                        ),
-                                                        backDrawRodData: BackgroundBarChartRodData(
-                                                          show: true,
-                                                          toY: chartMaxY,
-                                                          color: isDarkMode
-                                                              ? Colors.white.withOpacity(0.04)
-                                                              : Colors.black.withOpacity(0.04),
-                                                        ),
-                                                      ),
                                                     ],
                                                   );
                                                 }),
@@ -1264,7 +1294,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                       child: PieChart(
                                         PieChartData(
                                           sectionsSpace: 4,
-                                          centerSpaceRadius: 55,
+                                          centerSpaceRadius: 45,
                                           startDegreeOffset: -90,
                                           sections: sortedAllocation.map((entry) {
                                             final catId = entry.key;
@@ -1275,12 +1305,20 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                                     name: 'Lain-lain',
                                                     type: _allocationType));
                                             final catColor = cat.color;
+                                            final pct = totalForAllocation > 0
+                                                ? (amt / totalForAllocation) * 100
+                                                : 0.0;
 
                                             return PieChartSectionData(
                                               color: catColor,
                                               value: amt,
-                                              title: '',
-                                              radius: 18,
+                                              title: '${pct.toStringAsFixed(0)}%',
+                                              radius: 40,
+                                              titleStyle: const TextStyle(
+                                                fontSize: 11.0,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                              ),
                                             );
                                           }).toList(),
                                         ),

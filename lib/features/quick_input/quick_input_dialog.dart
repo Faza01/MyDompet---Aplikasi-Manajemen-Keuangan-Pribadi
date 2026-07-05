@@ -568,37 +568,7 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
     return null;
   }
 
-  Widget _buildTypeToggleChip({
-    required String title,
-    required bool isActive,
-    required Color activeColor,
-    required VoidCallback? onTap,
-    required bool isDarkMode,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
-        decoration: BoxDecoration(
-          color: isActive ? activeColor.withOpacity(0.15) : Colors.transparent,
-          borderRadius: BorderRadius.circular(8.0),
-          border: Border.all(
-            color: isActive ? activeColor : (isDarkMode ? Colors.white30 : Colors.black26),
-            width: 1,
-          ),
-        ),
-        child: Text(
-          title,
-          style: TextStyle(
-            fontSize: 11.0,
-            fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-            color: isActive ? activeColor : (isDarkMode ? Colors.white70 : Colors.black54),
-          ),
-        ),
-      ),
-    );
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -861,28 +831,70 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                             ],
                                                           ),
                                                           const SizedBox(height: 8.0),
-                                                          Row(
-                                                            children: [
-                                                              _buildTypeToggleChip(
-                                                                title: 'Pengeluaran',
-                                                                isActive: tx.type == 'expense',
-                                                                activeColor: Colors.redAccent,
-                                                                onTap: message.isSaved
-                                                                    ? null
-                                                                    : () => setState(() => _toggleType(tx, 'expense', categories)),
-                                                                isDarkMode: isDarkMode,
-                                                              ),
-                                                              const SizedBox(width: 8.0),
-                                                              _buildTypeToggleChip(
-                                                                title: 'Pemasukan',
-                                                                isActive: tx.type == 'income',
-                                                                activeColor: const Color(0xFF0D9488),
-                                                                onTap: message.isSaved
-                                                                    ? null
-                                                                    : () => setState(() => _toggleType(tx, 'income', categories)),
-                                                                isDarkMode: isDarkMode,
-                                                              ),
-                                                            ],
+                                                          Container(
+                                                            padding: const EdgeInsets.all(4.0),
+                                                            decoration: BoxDecoration(
+                                                              color: isDarkMode
+                                                                  ? AppColors.darkCard
+                                                                  : const Color(0xFFECEEEE),
+                                                              borderRadius: BorderRadius.circular(12.0),
+                                                            ),
+                                                            child: Row(
+                                                              children: [
+                                                                Expanded(
+                                                                  child: GestureDetector(
+                                                                    onTap: message.isSaved
+                                                                        ? null
+                                                                        : () => setState(() => _toggleType(tx, 'expense', categories)),
+                                                                    child: AnimatedContainer(
+                                                                      duration: const Duration(milliseconds: 150),
+                                                                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                                                      decoration: BoxDecoration(
+                                                                        color: tx.type == 'expense' ? const Color(0xFF2C2C2C) : Colors.transparent,
+                                                                        borderRadius: BorderRadius.circular(10.0),
+                                                                      ),
+                                                                      child: Text(
+                                                                        'Pengeluaran',
+                                                                        textAlign: TextAlign.center,
+                                                                        style: TextStyle(
+                                                                          fontSize: 12.0,
+                                                                          fontWeight: FontWeight.w500,
+                                                                          color: tx.type == 'expense'
+                                                                              ? Colors.white
+                                                                              : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Expanded(
+                                                                  child: GestureDetector(
+                                                                    onTap: message.isSaved
+                                                                        ? null
+                                                                        : () => setState(() => _toggleType(tx, 'income', categories)),
+                                                                    child: AnimatedContainer(
+                                                                      duration: const Duration(milliseconds: 150),
+                                                                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                                                      decoration: BoxDecoration(
+                                                                        color: tx.type == 'income' ? const Color(0xFF2C2C2C) : Colors.transparent,
+                                                                        borderRadius: BorderRadius.circular(10.0),
+                                                                      ),
+                                                                      child: Text(
+                                                                        'Pemasukan',
+                                                                        textAlign: TextAlign.center,
+                                                                        style: TextStyle(
+                                                                          fontSize: 12.0,
+                                                                          fontWeight: FontWeight.w500,
+                                                                          color: tx.type == 'income'
+                                                                              ? Colors.white
+                                                                              : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
                                                           ),
                                                           const SizedBox(height: 10.0),
                                                           Row(

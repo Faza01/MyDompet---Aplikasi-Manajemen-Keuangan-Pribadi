@@ -907,28 +907,66 @@ class HomeScreen extends ConsumerWidget {
                                 ],
                               ),
                               const SizedBox(height: 12.0),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: _buildCustomTypeChip(
-                                      title: 'Pengeluaran',
-                                      isActive: type == 'expense',
-                                      activeColor: AppColors.expense,
-                                      onTap: () => setState(() => type = 'expense'),
-                                      isDarkMode: isDarkMode,
+                              Container(
+                                padding: const EdgeInsets.all(4.0),
+                                decoration: BoxDecoration(
+                                  color: isDarkMode
+                                      ? AppColors.darkCard
+                                      : const Color(0xFFECEEEE),
+                                  borderRadius: BorderRadius.circular(12.0),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: () => setState(() => type = 'expense'),
+                                        child: AnimatedContainer(
+                                          duration: const Duration(milliseconds: 150),
+                                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                          decoration: BoxDecoration(
+                                            color: type == 'expense' ? const Color(0xFF2C2C2C) : Colors.transparent,
+                                            borderRadius: BorderRadius.circular(10.0),
+                                          ),
+                                          child: Text(
+                                            'Pengeluaran',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 12.0,
+                                              fontWeight: FontWeight.w500,
+                                              color: type == 'expense'
+                                                  ? Colors.white
+                                                  : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(width: 8.0),
-                                  Expanded(
-                                    child: _buildCustomTypeChip(
-                                      title: 'Pemasukan',
-                                      isActive: type == 'income',
-                                      activeColor: AppColors.income,
-                                      onTap: () => setState(() => type = 'income'),
-                                      isDarkMode: isDarkMode,
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: () => setState(() => type = 'income'),
+                                        child: AnimatedContainer(
+                                          duration: const Duration(milliseconds: 150),
+                                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                          decoration: BoxDecoration(
+                                            color: type == 'income' ? const Color(0xFF2C2C2C) : Colors.transparent,
+                                            borderRadius: BorderRadius.circular(10.0),
+                                          ),
+                                          child: Text(
+                                            'Pemasukan',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 12.0,
+                                              fontWeight: FontWeight.w500,
+                                              color: type == 'income'
+                                                  ? Colors.white
+                                                  : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                               const SizedBox(height: 14.0),
                               Row(
@@ -1190,38 +1228,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildCustomTypeChip({
-    required String title,
-    required bool isActive,
-    required Color activeColor,
-    required VoidCallback onTap,
-    required bool isDarkMode,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        decoration: BoxDecoration(
-          color: isActive ? activeColor.withOpacity(0.15) : Colors.transparent,
-          borderRadius: BorderRadius.circular(10.0),
-          border: Border.all(
-            color: isActive ? activeColor : (isDarkMode ? Colors.white30 : Colors.black26),
-            width: 1,
-          ),
-        ),
-        child: Text(
-          title,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 12.0,
-            fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-            color: isActive ? activeColor : (isDarkMode ? Colors.white70 : Colors.black54),
-          ),
-        ),
-      ),
-    );
-  }
+
 
   Widget _buildTimeframePill(BuildContext context, WidgetRef ref,
       String timeframe, String label, String activeTimeframe) {
