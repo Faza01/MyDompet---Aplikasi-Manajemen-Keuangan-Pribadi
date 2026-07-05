@@ -925,6 +925,7 @@ class HomeScreen extends ConsumerWidget {
 
             return Dialog(
               backgroundColor: isDarkMode ? const Color(0xFF1E222B) : Colors.white,
+              clipBehavior: Clip.antiAlias,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0),
                 side: BorderSide(
@@ -940,13 +941,7 @@ class HomeScreen extends ConsumerWidget {
                     children: [
                       Container(
                         width: 5.0,
-                        decoration: BoxDecoration(
-                          color: type == 'expense' ? Colors.redAccent : const Color(0xFF10B981),
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(19.0),
-                            bottomLeft: Radius.circular(19.0),
-                          ),
-                        ),
+                        color: type == 'expense' ? Colors.redAccent : const Color(0xFF10B981),
                       ),
                       Expanded(
                         child: Padding(

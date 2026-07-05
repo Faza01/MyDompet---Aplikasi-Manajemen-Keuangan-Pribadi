@@ -810,6 +810,7 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                           return IntrinsicHeight(
                                             child: Container(
                                               margin: const EdgeInsets.only(top: 10.0),
+                                              clipBehavior: Clip.antiAlias,
                                               decoration: BoxDecoration(
                                                 color: isDarkMode ? const Color(0xFF1E222B) : Colors.white,
                                                 borderRadius: BorderRadius.circular(12.0),
@@ -823,13 +824,7 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                 children: [
                                                   Container(
                                                     width: 4.0,
-                                                    decoration: BoxDecoration(
-                                                      color: tx.type == 'expense' ? Colors.redAccent : const Color(0xFF10B981),
-                                                      borderRadius: const BorderRadius.only(
-                                                        topLeft: Radius.circular(11.0),
-                                                        bottomLeft: Radius.circular(11.0),
-                                                      ),
-                                                    ),
+                                                    color: tx.type == 'expense' ? Colors.redAccent : const Color(0xFF10B981),
                                                   ),
                                                   Expanded(
                                                     child: Padding(
