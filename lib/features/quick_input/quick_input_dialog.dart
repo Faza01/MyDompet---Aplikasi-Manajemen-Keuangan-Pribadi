@@ -839,59 +839,80 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                                   : const Color(0xFFECEEEE),
                                                               borderRadius: BorderRadius.circular(12.0),
                                                             ),
-                                                            child: Row(
+                                                            child: Stack(
                                                               children: [
-                                                                Expanded(
-                                                                  child: GestureDetector(
-                                                                    onTap: message.isSaved
-                                                                        ? null
-                                                                        : () => setState(() => _toggleType(tx, 'expense', categories)),
-                                                                    child: AnimatedContainer(
-                                                                      duration: const Duration(milliseconds: 150),
-                                                                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                                                      decoration: BoxDecoration(
-                                                                        color: tx.type == 'expense' ? const Color(0xFF2C2C2C) : Colors.transparent,
-                                                                        borderRadius: BorderRadius.circular(10.0),
-                                                                      ),
-                                                                      child: Text(
-                                                                        'Pengeluaran',
-                                                                        textAlign: TextAlign.center,
-                                                                        style: TextStyle(
-                                                                          fontSize: 12.0,
-                                                                          fontWeight: FontWeight.w500,
-                                                                          color: tx.type == 'expense'
-                                                                              ? Colors.white
-                                                                              : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
+                                                                Positioned.fill(
+                                                                  child: AnimatedAlign(
+                                                                    duration: const Duration(milliseconds: 250),
+                                                                    curve: Curves.easeInOutCubic,
+                                                                    alignment: tx.type == 'expense'
+                                                                        ? Alignment.centerLeft
+                                                                        : Alignment.centerRight,
+                                                                    child: FractionallySizedBox(
+                                                                      widthFactor: 0.5,
+                                                                      heightFactor: 1.0,
+                                                                      child: Container(
+                                                                        decoration: BoxDecoration(
+                                                                          color: const Color(0xFF2C2C2C),
+                                                                          borderRadius: BorderRadius.circular(9.0),
                                                                         ),
                                                                       ),
                                                                     ),
                                                                   ),
                                                                 ),
-                                                                Expanded(
-                                                                  child: GestureDetector(
-                                                                    onTap: message.isSaved
-                                                                        ? null
-                                                                        : () => setState(() => _toggleType(tx, 'income', categories)),
-                                                                    child: AnimatedContainer(
-                                                                      duration: const Duration(milliseconds: 150),
-                                                                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                                                      decoration: BoxDecoration(
-                                                                        color: tx.type == 'income' ? const Color(0xFF2C2C2C) : Colors.transparent,
-                                                                        borderRadius: BorderRadius.circular(10.0),
-                                                                      ),
-                                                                      child: Text(
-                                                                        'Pemasukan',
-                                                                        textAlign: TextAlign.center,
-                                                                        style: TextStyle(
-                                                                          fontSize: 12.0,
-                                                                          fontWeight: FontWeight.w500,
-                                                                          color: tx.type == 'income'
-                                                                              ? Colors.white
-                                                                              : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
+                                                                Row(
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: GestureDetector(
+                                                                        onTap: message.isSaved
+                                                                            ? null
+                                                                            : () => setState(() => _toggleType(tx, 'expense', categories)),
+                                                                        child: Container(
+                                                                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                                                          color: Colors.transparent,
+                                                                          child: AnimatedDefaultTextStyle(
+                                                                            duration: const Duration(milliseconds: 150),
+                                                                            style: TextStyle(
+                                                                              fontSize: 12.0,
+                                                                              fontWeight: FontWeight.w500,
+                                                                              color: tx.type == 'expense'
+                                                                                  ? Colors.white
+                                                                                  : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
+                                                                            ),
+                                                                            child: const Text(
+                                                                              'Pengeluaran',
+                                                                              textAlign: TextAlign.center,
+                                                                            ),
+                                                                          ),
                                                                         ),
                                                                       ),
                                                                     ),
-                                                                  ),
+                                                                    Expanded(
+                                                                      child: GestureDetector(
+                                                                        onTap: message.isSaved
+                                                                            ? null
+                                                                            : () => setState(() => _toggleType(tx, 'income', categories)),
+                                                                        child: Container(
+                                                                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                                                          color: Colors.transparent,
+                                                                          child: AnimatedDefaultTextStyle(
+                                                                            duration: const Duration(milliseconds: 150),
+                                                                            style: TextStyle(
+                                                                              fontSize: 12.0,
+                                                                              fontWeight: FontWeight.w500,
+                                                                              color: tx.type == 'income'
+                                                                                  ? Colors.white
+                                                                                  : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
+                                                                            ),
+                                                                            child: const Text(
+                                                                              'Pemasukan',
+                                                                              textAlign: TextAlign.center,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
                                                                 ),
                                                               ],
                                                             ),

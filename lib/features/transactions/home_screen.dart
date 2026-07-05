@@ -250,16 +250,43 @@ class HomeScreen extends ConsumerWidget {
                             : const Color(0xFFECEEEE),
                         borderRadius: BorderRadius.circular(12.0),
                       ),
-                      child: Row(
+                      child: Stack(
                         children: [
-                          _buildTimeframePill(
-                              context, ref, 'day', 'Hari', dashboardTimeframe),
-                          _buildTimeframePill(context, ref, 'week', 'Minggu',
-                              dashboardTimeframe),
-                          _buildTimeframePill(context, ref, 'month', 'Bulan',
-                              dashboardTimeframe),
-                          _buildTimeframePill(context, ref, 'year', 'Tahun',
-                              dashboardTimeframe),
+                          Positioned.fill(
+                            child: AnimatedAlign(
+                              duration: const Duration(milliseconds: 250),
+                              curve: Curves.easeInOutCubic,
+                              alignment: Alignment(
+                                -1.0 +
+                                    (['day', 'week', 'month', 'year']
+                                            .indexOf(dashboardTimeframe) *
+                                        (2.0 / 3.0)),
+                                0.0,
+                              ),
+                              child: FractionallySizedBox(
+                                widthFactor: 0.25,
+                                heightFactor: 1.0,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF2C2C2C),
+                                    borderRadius: BorderRadius.circular(9.0),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              _buildTimeframePill(
+                                  context, ref, 'day', 'Hari', dashboardTimeframe),
+                              _buildTimeframePill(context, ref, 'week', 'Minggu',
+                                  dashboardTimeframe),
+                              _buildTimeframePill(context, ref, 'month', 'Bulan',
+                                  dashboardTimeframe),
+                              _buildTimeframePill(context, ref, 'year', 'Tahun',
+                                  dashboardTimeframe),
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -910,67 +937,88 @@ class HomeScreen extends ConsumerWidget {
                                 ],
                               ),
                               const SizedBox(height: 12.0),
-                              Container(
-                                padding: const EdgeInsets.all(4.0),
-                                decoration: BoxDecoration(
-                                  color: isDarkMode
-                                      ? AppColors.darkCard
-                                      : const Color(0xFFECEEEE),
-                                  borderRadius: BorderRadius.circular(12.0),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: () => setState(() => type = 'expense'),
-                                        child: AnimatedContainer(
-                                          duration: const Duration(milliseconds: 150),
-                                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                          decoration: BoxDecoration(
-                                            color: type == 'expense' ? const Color(0xFF2C2C2C) : Colors.transparent,
-                                            borderRadius: BorderRadius.circular(10.0),
-                                          ),
-                                          child: Text(
-                                            'Pengeluaran',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 12.0,
-                                              fontWeight: FontWeight.w500,
-                                              color: type == 'expense'
-                                                  ? Colors.white
-                                                  : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: () => setState(() => type = 'income'),
-                                        child: AnimatedContainer(
-                                          duration: const Duration(milliseconds: 150),
-                                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                          decoration: BoxDecoration(
-                                            color: type == 'income' ? const Color(0xFF2C2C2C) : Colors.transparent,
-                                            borderRadius: BorderRadius.circular(10.0),
-                                          ),
-                                          child: Text(
-                                            'Pemasukan',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 12.0,
-                                              fontWeight: FontWeight.w500,
-                                              color: type == 'income'
-                                                  ? Colors.white
-                                                  : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                               Container(
+                                 padding: const EdgeInsets.all(4.0),
+                                 decoration: BoxDecoration(
+                                   color: isDarkMode
+                                       ? AppColors.darkCard
+                                       : const Color(0xFFECEEEE),
+                                   borderRadius: BorderRadius.circular(12.0),
+                                 ),
+                                 child: Stack(
+                                   children: [
+                                     Positioned.fill(
+                                       child: AnimatedAlign(
+                                         duration: const Duration(milliseconds: 250),
+                                         curve: Curves.easeInOutCubic,
+                                         alignment: type == 'expense'
+                                             ? Alignment.centerLeft
+                                             : Alignment.centerRight,
+                                         child: FractionallySizedBox(
+                                           widthFactor: 0.5,
+                                           heightFactor: 1.0,
+                                           child: Container(
+                                             decoration: BoxDecoration(
+                                               color: const Color(0xFF2C2C2C),
+                                               borderRadius: BorderRadius.circular(9.0),
+                                             ),
+                                           ),
+                                         ),
+                                       ),
+                                     ),
+                                     Row(
+                                       children: [
+                                         Expanded(
+                                           child: GestureDetector(
+                                             onTap: () => setState(() => type = 'expense'),
+                                             child: Container(
+                                               padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                               color: Colors.transparent,
+                                               child: AnimatedDefaultTextStyle(
+                                                 duration: const Duration(milliseconds: 150),
+                                                 style: TextStyle(
+                                                   fontSize: 12.0,
+                                                   fontWeight: FontWeight.w500,
+                                                   color: type == 'expense'
+                                                       ? Colors.white
+                                                       : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
+                                                 ),
+                                                 child: const Text(
+                                                   'Pengeluaran',
+                                                   textAlign: TextAlign.center,
+                                                 ),
+                                               ),
+                                             ),
+                                           ),
+                                         ),
+                                         Expanded(
+                                           child: GestureDetector(
+                                             onTap: () => setState(() => type = 'income'),
+                                             child: Container(
+                                               padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                               color: Colors.transparent,
+                                               child: AnimatedDefaultTextStyle(
+                                                 duration: const Duration(milliseconds: 150),
+                                                 style: TextStyle(
+                                                   fontSize: 12.0,
+                                                   fontWeight: FontWeight.w500,
+                                                   color: type == 'income'
+                                                       ? Colors.white
+                                                       : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
+                                                 ),
+                                                 child: const Text(
+                                                   'Pemasukan',
+                                                   textAlign: TextAlign.center,
+                                                 ),
+                                               ),
+                                             ),
+                                           ),
+                                         ),
+                                       ],
+                                     ),
+                                   ],
+                                 ),
+                               ),
                               const SizedBox(height: 14.0),
                               Row(
                                 children: [
@@ -1243,22 +1291,21 @@ class HomeScreen extends ConsumerWidget {
         onTap: () {
           ref.read(dashboardTimeframeProvider.notifier).setTimeframe(timeframe);
         },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
+        child: Container(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
-          decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFF2C2C2C) : Colors.transparent,
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          child: Text(
-            label,
-            textAlign: TextAlign.center,
+          color: Colors.transparent,
+          child: AnimatedDefaultTextStyle(
+            duration: const Duration(milliseconds: 150),
             style: TextStyle(
               fontSize: 12.0,
               fontWeight: FontWeight.w500,
               color: isSelected
                   ? Colors.white
                   : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
+            ),
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
             ),
           ),
         ),
