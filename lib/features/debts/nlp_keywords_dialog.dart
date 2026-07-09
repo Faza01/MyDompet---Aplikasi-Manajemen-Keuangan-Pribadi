@@ -104,42 +104,52 @@ class _NlpKeywordsDialogState extends ConsumerState<NlpKeywordsDialog> {
                 children: [
                   const Text('Tipe: ', style: TextStyle(fontSize: 12, color: Colors.grey)),
                   const SizedBox(width: 8),
-                  ChoiceChip(
-                    label: const Text('Hutang', style: TextStyle(fontSize: 11)),
-                    selected: _selectedType == 'debt',
-                    pressElevation: 0,
-                    elevation: 0,
-                    showCheckmark: false,
-                    selectedColor: isDarkMode ? Colors.white : AppColors.primaryBlack,
-                    backgroundColor: isDarkMode ? AppColors.darkCard : const Color(0xFFECEEEE),
-                    labelStyle: TextStyle(
-                      color: _selectedType == 'debt'
-                          ? (isDarkMode ? Colors.black : Colors.white)
-                          : (isDarkMode ? Colors.white70 : Colors.black87),
-                      fontWeight: FontWeight.bold,
+                  GestureDetector(
+                    onTap: () => setState(() => _selectedType = 'debt'),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 150),
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                      decoration: BoxDecoration(
+                        color: _selectedType == 'debt'
+                            ? (isDarkMode ? Colors.white : AppColors.primaryBlack)
+                            : (isDarkMode ? AppColors.darkCard : const Color(0xFFECEEEE)),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Text(
+                        'Hutang',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: _selectedType == 'debt'
+                              ? (isDarkMode ? Colors.black : Colors.white)
+                              : (isDarkMode ? Colors.white70 : Colors.black87),
+                        ),
+                      ),
                     ),
-                    onSelected: (selected) {
-                      if (selected) setState(() => _selectedType = 'debt');
-                    },
                   ),
                   const SizedBox(width: 8),
-                  ChoiceChip(
-                    label: const Text('Piutang', style: TextStyle(fontSize: 11)),
-                    selected: _selectedType == 'receivable',
-                    pressElevation: 0,
-                    elevation: 0,
-                    showCheckmark: false,
-                    selectedColor: isDarkMode ? Colors.white : AppColors.primaryBlack,
-                    backgroundColor: isDarkMode ? AppColors.darkCard : const Color(0xFFECEEEE),
-                    labelStyle: TextStyle(
-                      color: _selectedType == 'receivable'
-                          ? (isDarkMode ? Colors.black : Colors.white)
-                          : (isDarkMode ? Colors.white70 : Colors.black87),
-                      fontWeight: FontWeight.bold,
+                  GestureDetector(
+                    onTap: () => setState(() => _selectedType = 'receivable'),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 150),
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                      decoration: BoxDecoration(
+                        color: _selectedType == 'receivable'
+                            ? (isDarkMode ? Colors.white : AppColors.primaryBlack)
+                            : (isDarkMode ? AppColors.darkCard : const Color(0xFFECEEEE)),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Text(
+                        'Piutang',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: _selectedType == 'receivable'
+                              ? (isDarkMode ? Colors.black : Colors.white)
+                              : (isDarkMode ? Colors.white70 : Colors.black87),
+                        ),
+                      ),
                     ),
-                    onSelected: (selected) {
-                      if (selected) setState(() => _selectedType = 'receivable');
-                    },
                   ),
                 ],
               ),

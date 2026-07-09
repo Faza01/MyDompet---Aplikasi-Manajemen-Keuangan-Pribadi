@@ -25,7 +25,7 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 3,
+      version: 4,
       onCreate: _createDB,
       onConfigure: _onConfigure,
       onUpgrade: _onUpgrade,
@@ -64,6 +64,8 @@ class DatabaseHelper {
           FOREIGN KEY (transaction_id) REFERENCES transactions(id) ON DELETE CASCADE
         )
       ''');
+    }
+    if (oldVersion < 4) {
       await db.execute('''
         CREATE TABLE nlp_debt_keywords (
           id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -500,38 +500,31 @@ class _DebtsScreenState extends ConsumerState<DebtsScreen> {
     final isSelected = _typeFilter == value;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    return Theme(
-      data: Theme.of(context).copyWith(
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        splashFactory: NoSplash.splashFactory, // Removes tap splash completely
-      ),
-      child: ChoiceChip(
-        label: Text(label),
-        selected: isSelected,
-        pressElevation: 0.0, // Removes shadow popping when pressed
-        elevation: 0.0,      // Removes flat shadow
-        onSelected: (val) {
-          if (val) {
-            setState(() {
-              _typeFilter = value;
-            });
-          }
-        },
-        selectedColor: isDarkMode ? Colors.white : AppColors.primaryBlack,
-        backgroundColor: isDarkMode ? AppColors.darkCard : const Color(0xFFECEEEE),
-        labelStyle: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.bold,
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _typeFilter = value;
+        });
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        decoration: BoxDecoration(
           color: isSelected
-              ? (isDarkMode ? Colors.black : Colors.white)
-              : (isDarkMode ? Colors.white70 : Colors.black87),
-        ),
-        shape: RoundedRectangleBorder(
+              ? (isDarkMode ? Colors.white : AppColors.primaryBlack)
+              : (isDarkMode ? AppColors.darkCard : const Color(0xFFECEEEE)),
           borderRadius: BorderRadius.circular(8.0),
-          side: const BorderSide(color: Colors.transparent),
         ),
-        showCheckmark: false,
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+            color: isSelected
+                ? (isDarkMode ? Colors.black : Colors.white)
+                : (isDarkMode ? Colors.white70 : Colors.black87),
+          ),
+        ),
       ),
     );
   }
