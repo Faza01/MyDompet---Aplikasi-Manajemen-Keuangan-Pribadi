@@ -207,74 +207,92 @@ class _DebtsScreenState extends ConsumerState<DebtsScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Container(
+                    height: 40.0,
                     padding: const EdgeInsets.all(4.0),
                     decoration: BoxDecoration(
                       color: isDarkMode ? AppColors.darkCard : const Color(0xFFECEEEE),
                       borderRadius: BorderRadius.circular(12.0),
                     ),
-                    child: Row(
+                    child: Stack(
                       children: [
-                        // Belum Lunas
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _statusFilter = 'pending';
-                              });
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
-                              decoration: BoxDecoration(
-                                color: _statusFilter == 'pending'
-                                    ? (isDarkMode ? const Color(0xFF2C2C2C) : Colors.white)
-                                    : Colors.transparent,
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'Belum Lunas',
-                                  style: TextStyle(
-                                    fontSize: 12.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: _statusFilter == 'pending'
-                                        ? (isDarkMode ? Colors.white : Colors.black87)
-                                        : Colors.grey,
-                                  ),
+                        // Sliding active background pill
+                        Positioned.fill(
+                          child: AnimatedAlign(
+                            duration: const Duration(milliseconds: 250),
+                            curve: Curves.easeInOutCubic,
+                            alignment: Alignment(
+                              _statusFilter == 'pending' ? -1.0 : 1.0,
+                              0.0,
+                            ),
+                            child: FractionallySizedBox(
+                              widthFactor: 0.5,
+                              heightFactor: 1.0,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: isDarkMode ? const Color(0xFF2C2C2C) : Colors.white,
+                                  borderRadius: BorderRadius.circular(9.0),
+                                  boxShadow: !isDarkMode
+                                      ? [
+                                          BoxShadow(
+                                            color: Colors.black.withValues(alpha: 0.05),
+                                            blurRadius: 4.0,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ]
+                                      : null,
                                 ),
                               ),
                             ),
                           ),
                         ),
-                        // Lunas
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _statusFilter = 'paid';
-                              });
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
-                              decoration: BoxDecoration(
-                                color: _statusFilter == 'paid'
-                                    ? (isDarkMode ? const Color(0xFF2C2C2C) : Colors.white)
-                                    : Colors.transparent,
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'Lunas',
-                                  style: TextStyle(
-                                    fontSize: 12.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: _statusFilter == 'paid'
-                                        ? (isDarkMode ? Colors.white : Colors.black87)
-                                        : Colors.grey,
+                        // Tab Text Row
+                        Row(
+                          children: [
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _statusFilter = 'pending';
+                                  });
+                                },
+                                behavior: HitTestBehavior.opaque,
+                                child: Center(
+                                  child: Text(
+                                    'Belum Lunas',
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: _statusFilter == 'pending'
+                                          ? (isDarkMode ? Colors.white : Colors.black87)
+                                          : Colors.grey,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _statusFilter = 'paid';
+                                  });
+                                },
+                                behavior: HitTestBehavior.opaque,
+                                child: Center(
+                                  child: Text(
+                                    'Lunas',
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: _statusFilter == 'paid'
+                                          ? (isDarkMode ? Colors.white : Colors.black87)
+                                          : Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -463,30 +481,36 @@ class _DebtsScreenState extends ConsumerState<DebtsScreen> {
     final isSelected = _typeFilter == value;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    return ChoiceChip(
-      label: Text(label),
-      selected: isSelected,
-      onSelected: (val) {
-        if (val) {
-          setState(() {
-            _typeFilter = value;
-          });
-        }
-      },
-      selectedColor: isDarkMode ? Colors.white : AppColors.primaryBlack,
-      backgroundColor: isDarkMode ? AppColors.darkCard : const Color(0xFFECEEEE),
-      labelStyle: TextStyle(
-        fontSize: 11,
-        fontWeight: FontWeight.bold,
-        color: isSelected
-            ? (isDarkMode ? Colors.black : Colors.white)
-            : (isDarkMode ? Colors.white70 : Colors.black87),
+    return Theme(
+      data: Theme.of(context).copyWith(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
       ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
-        side: const BorderSide(color: Colors.transparent),
+      child: ChoiceChip(
+        label: Text(label),
+        selected: isSelected,
+        onSelected: (val) {
+          if (val) {
+            setState(() {
+              _typeFilter = value;
+            });
+          }
+        },
+        selectedColor: isDarkMode ? Colors.white : AppColors.primaryBlack,
+        backgroundColor: isDarkMode ? AppColors.darkCard : const Color(0xFFECEEEE),
+        labelStyle: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
+          color: isSelected
+              ? (isDarkMode ? Colors.black : Colors.white)
+              : (isDarkMode ? Colors.white70 : Colors.black87),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+          side: const BorderSide(color: Colors.transparent),
+        ),
+        showCheckmark: false,
       ),
-      showCheckmark: false,
     );
   }
 }
