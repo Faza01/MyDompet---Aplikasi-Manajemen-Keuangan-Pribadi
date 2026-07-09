@@ -10,6 +10,7 @@ import '../accounts/accounts_provider.dart';
 import '../budgeting/categories_provider.dart';
 import '../transactions/transactions_provider.dart';
 import '../debts/debts_provider.dart';
+import '../debts/nlp_keywords_provider.dart';
 import '../../data/models/debt.dart';
 
 class EditableParsedTransaction {
