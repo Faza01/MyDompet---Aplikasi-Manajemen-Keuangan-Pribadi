@@ -82,3 +82,7 @@ final keywordsNotifierProvider =
     AsyncNotifierProvider.autoDispose<KeywordsNotifier, List<CategoryKeyword>>(
   KeywordsNotifier.new,
 );
+
+final categoryKeywordsProvider = FutureProvider.autoDispose.family<List<CategoryKeyword>, int>((ref, categoryId) async {
+  return DatabaseHelper.instance.getKeywordsForCategory(categoryId);
+});
