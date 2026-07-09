@@ -235,12 +235,15 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
       ),
     );
 
+    final nlpDebtKeywords = ref.read(nlpKeywordsNotifierProvider).value ?? [];
+
     final parsedResults = NlpParser.parseMultiple(
       text,
       categories: categories,
       keywords: keywords,
       defaultExpenseCategory: expenseDefault,
       defaultIncomeCategory: incomeDefault,
+      nlpDebtKeywords: nlpDebtKeywords,
     );
 
     // 3. Convert parsed results to EditableParsedTransaction
@@ -437,12 +440,15 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
       ),
     );
 
+    final nlpDebtKeywords = ref.read(nlpKeywordsNotifierProvider).value ?? [];
+
     final parsedResults = NlpParser.parseMultiple(
       newText,
       categories: categories,
       keywords: keywords,
       defaultExpenseCategory: expenseDefault,
       defaultIncomeCategory: incomeDefault,
+      nlpDebtKeywords: nlpDebtKeywords,
     );
 
     final List<EditableParsedTransaction> editableTxs = [];

@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:keuangan_v1/core/nlp/nlp_parser.dart';
 import 'package:keuangan_v1/data/models/category.dart';
 import 'package:keuangan_v1/data/models/keyword.dart';
+import 'package:keuangan_v1/data/models/nlp_debt_keyword.dart';
 
 void main() {
   group('NLP Parser Tests', () {
@@ -280,6 +281,26 @@ void main() {
       expect(result.debtType, equals('receivable'));
       expect(result.contactName, equals('Andi'));
       expect(result.dueDate, isNull);
+    });
+
+    test('Should parse custom passed nlpDebtKeywords list correctly', () {
+      final customKws = [
+        NlpDebtKeyword(id: 1, keyword: 'pinjemin duit ke', type: 'receivable'),
+        NlpDebtKeyword(id: 2, keyword: 'utang dari', type: 'debt'),
+      ];
+      final result = NlpParser.parse(
+        'pinjemin duit ke Joko 50rb',
+        categories: categories,
+        keywords: keywords,
+        defaultExpenseCategory: defaultExpense,
+        defaultIncomeCategory: defaultIncome,
+        nlpDebtKeywords: customKws,
+      );
+
+      expect(result.amount, equals(50000.0));
+      expect(result.type, equals('expense'));
+      expect(result.debtType, equals('receivable'));
+      expect(result.contactName, equals('Joko'));
     });
   });
 }

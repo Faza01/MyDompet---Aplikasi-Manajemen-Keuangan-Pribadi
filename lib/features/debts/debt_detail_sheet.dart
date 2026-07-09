@@ -189,6 +189,23 @@ class _DebtDetailSheetState extends ConsumerState<DebtDetailSheet> {
                 ],
               ),
               const SizedBox(height: 16),
+              // Tanggal Tenggat waktu
+              Row(
+                children: [
+                  const Icon(Icons.calendar_today_outlined, size: 16, color: Colors.grey),
+                  const SizedBox(width: 8),
+                  Text(
+                    widget.debt.dueDate == null
+                        ? 'Tanpa tenggat waktu'
+                        : 'Jatuh Tempo: ${DateFormat('dd MMM yyyy').format(widget.debt.dueDate!)}',
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      color: isDarkMode ? Colors.white70 : Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
 
               // Note (if any)
               if (widget.debt.note != null && widget.debt.note!.isNotEmpty) ...[

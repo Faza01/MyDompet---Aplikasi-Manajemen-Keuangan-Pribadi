@@ -43,7 +43,7 @@ class DatabaseHelper {
           contact_name TEXT NOT NULL,
           amount REAL NOT NULL,
           type TEXT NOT NULL CHECK(type IN ('debt', 'receivable')),
-          due_date TEXT NOT NULL,
+          due_date TEXT,
           status TEXT NOT NULL CHECK(status IN ('pending', 'paid')),
           note TEXT,
           account_id INTEGER NOT NULL,
@@ -64,6 +64,14 @@ class DatabaseHelper {
           FOREIGN KEY (transaction_id) REFERENCES transactions(id) ON DELETE CASCADE
         )
       ''');
+      await db.execute('''
+        CREATE TABLE nlp_debt_keywords (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          keyword TEXT NOT NULL UNIQUE,
+          type TEXT NOT NULL CHECK(type IN ('debt', 'receivable'))
+        )
+      ''');
+      await _seedNlpKeywords(db);
     }
   }
 
@@ -141,7 +149,7 @@ class DatabaseHelper {
         contact_name TEXT NOT NULL,
         amount REAL NOT NULL,
         type TEXT NOT NULL CHECK(type IN ('debt', 'receivable')),
-        due_date TEXT NOT NULL,
+        due_date TEXT,
         status TEXT NOT NULL CHECK(status IN ('pending', 'paid')),
         note TEXT,
         account_id INTEGER NOT NULL,
@@ -164,6 +172,16 @@ class DatabaseHelper {
         FOREIGN KEY (transaction_id) REFERENCES transactions(id) ON DELETE CASCADE
       )
     ''');
+
+    // 8. NLP Debt Keywords Table
+    await db.execute('''
+      CREATE TABLE nlp_debt_keywords (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        keyword TEXT NOT NULL UNIQUE,
+        type TEXT NOT NULL CHECK(type IN ('debt', 'receivable'))
+      )
+    ''');
+    await _seedNlpKeywords(db);
 
     // Create Indexes for Query Optimization
     await db.execute('CREATE INDEX idx_transactions_created_at ON transactions(created_at)');
@@ -630,5 +648,54 @@ class DatabaseHelper {
       whereArgs: [debtId],
       orderBy: 'created_at ASC',
     );
+  }
+
+  // --- NLP Debt Keywords ---
+  Future<List<Map<String, dynamic>>> getNlpKeywords() async {
+    final db = await instance.database;
+    return await db.query('nlp_debt_keywords', orderBy: 'keyword ASC');
+  }
+
+  Future<int> insertNlpKeyword(String keyword, String type) async {
+    final db = await instance.database;
+    return await db.insert(
+      'nlp_debt_keywords',
+      {'keyword': keyword.toLowerCase().trim(), 'type': type},
+      conflictAlgorithm: ConflictAlgorithm.ignore,
+    );
+  }
+
+  Future<int> deleteNlpKeyword(int id) async {
+    final db = await instance.database;
+    return await db.delete(
+      'nlp_debt_keywords',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<void> _seedNlpKeywords(Database db) async {
+    final List<Map<String, String>> initialKeywords = [
+      {'keyword': 'hutang ke', 'type': 'debt'},
+      {'keyword': 'utang ke', 'type': 'debt'},
+      {'keyword': 'hutang dari', 'type': 'debt'},
+      {'keyword': 'utang dari', 'type': 'debt'},
+      {'keyword': 'pinjam dari', 'type': 'debt'},
+      {'keyword': 'pinjem dari', 'type': 'debt'},
+      {'keyword': 'pinjam uang dari', 'type': 'debt'},
+      {'keyword': 'pinjem uang dari', 'type': 'debt'},
+      {'keyword': 'pinjamkan ke', 'type': 'receivable'},
+      {'keyword': 'pinjemin ke', 'type': 'receivable'},
+      {'keyword': 'piutang ke', 'type': 'receivable'},
+      {'keyword': 'piutang dari', 'type': 'receivable'},
+      {'keyword': 'pinjamkan uang ke', 'type': 'receivable'},
+      {'keyword': 'utangin ke', 'type': 'receivable'},
+      {'keyword': 'piutang', 'type': 'receivable'},
+      {'keyword': 'kasih pinjam ke', 'type': 'receivable'},
+      {'keyword': 'kasih pinjem ke', 'type': 'receivable'},
+    ];
+    for (final kw in initialKeywords) {
+      await db.insert('nlp_debt_keywords', kw, conflictAlgorithm: ConflictAlgorithm.ignore);
+    }
   }
 }

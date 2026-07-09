@@ -1,5 +1,6 @@
 import '../../data/models/category.dart';
 import '../../data/models/keyword.dart';
+import '../../data/models/nlp_debt_keyword.dart';
 
 class ParsedResult {
   final double amount;
@@ -75,6 +76,7 @@ class NlpParser {
     required List<CategoryKeyword> keywords,
     Category? defaultExpenseCategory,
     Category? defaultIncomeCategory,
+    List<NlpDebtKeyword>? nlpDebtKeywords,
   }) {
     final statements = splitStatements(input);
     final List<ParsedResult> results = [];
@@ -86,6 +88,7 @@ class NlpParser {
           keywords: keywords,
           defaultExpenseCategory: defaultExpenseCategory,
           defaultIncomeCategory: defaultIncomeCategory,
+          nlpDebtKeywords: nlpDebtKeywords,
         ),
       );
     }
@@ -101,6 +104,7 @@ class NlpParser {
     required List<CategoryKeyword> keywords,
     Category? defaultExpenseCategory,
     Category? defaultIncomeCategory,
+    List<NlpDebtKeyword>? nlpDebtKeywords,
   }) {
     if (input.trim().isEmpty) {
       return ParsedResult(
@@ -192,9 +196,18 @@ class NlpParser {
     String? debtType;
     DateTime? dueDate;
 
+    // Resolve triggers (database if provided, static defaults if empty/null)
+    final activeDebtKws = nlpDebtKeywords != null && nlpDebtKeywords.isNotEmpty
+        ? nlpDebtKeywords.where((k) => k.type == 'debt').map((k) => k.keyword).toList()
+        : debtKeywords;
+
+    final activeReceivableKws = nlpDebtKeywords != null && nlpDebtKeywords.isNotEmpty
+        ? nlpDebtKeywords.where((k) => k.type == 'receivable').map((k) => k.keyword).toList()
+        : receivableKeywords;
+
     // Detect if this is a debt or receivable transaction
     String? matchedKeyword;
-    for (final kw in debtKeywords) {
+    for (final kw in activeDebtKws) {
       if (lowercaseInput.contains(kw)) {
         debtType = 'debt';
         matchedKeyword = kw;
@@ -203,7 +216,7 @@ class NlpParser {
       }
     }
     if (debtType == null) {
-      for (final kw in receivableKeywords) {
+      for (final kw in activeReceivableKws) {
         if (lowercaseInput.contains(kw)) {
           debtType = 'receivable';
           matchedKeyword = kw;

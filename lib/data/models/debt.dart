@@ -4,7 +4,7 @@ class DebtModel {
   final double amount;
   final double paidAmount; // Track total paid amount
   final String type; // 'debt' | 'receivable'
-  final DateTime dueDate;
+  final DateTime? dueDate; // Nullable due date
   final String status; // 'pending' | 'paid'
   final String? note;
   final int accountId;
@@ -17,7 +17,7 @@ class DebtModel {
     required this.amount,
     this.paidAmount = 0.0,
     required this.type,
-    required this.dueDate,
+    this.dueDate,
     required this.status,
     this.note,
     required this.accountId,
@@ -59,7 +59,7 @@ class DebtModel {
       'contact_name': contactName,
       'amount': amount,
       'type': type,
-      'due_date': dueDate.toIso8601String(),
+      'due_date': dueDate?.toIso8601String(),
       'status': status,
       'note': note,
       'account_id': accountId,
@@ -75,7 +75,7 @@ class DebtModel {
       amount: (map['amount'] as num).toDouble(),
       paidAmount: ((map['paid_amount'] as num?)?.toDouble()) ?? 0.0,
       type: map['type'] as String,
-      dueDate: DateTime.parse(map['due_date'] as String),
+      dueDate: map['due_date'] == null ? null : DateTime.parse(map['due_date'] as String),
       status: map['status'] as String,
       note: map['note'] as String?,
       accountId: map['account_id'] as int,

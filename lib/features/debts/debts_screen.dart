@@ -6,6 +6,7 @@ import '../../data/models/debt.dart';
 import 'debts_provider.dart';
 import 'add_debt_dialog.dart';
 import 'debt_detail_sheet.dart';
+import 'nlp_keywords_dialog.dart';
 
 class DebtsScreen extends ConsumerStatefulWidget {
   const DebtsScreen({super.key});
@@ -33,6 +34,13 @@ class _DebtsScreenState extends ConsumerState<DebtsScreen> {
     );
   }
 
+  void _openNlpKeywordsDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => const NlpKeywordsDialog(),
+    );
+  }
+
   void _openDebtDetailSheet(DebtModel debt) {
     showModalBottomSheet(
       context: context,
@@ -54,6 +62,13 @@ class _DebtsScreenState extends ConsumerState<DebtsScreen> {
           'Hutang & Piutang',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings_suggest_outlined),
+            tooltip: 'Atur Kata Kunci NLP',
+            onPressed: _openNlpKeywordsDialog,
+          ),
+        ],
         elevation: 0,
         backgroundColor: Colors.transparent,
         foregroundColor: isDarkMode ? Colors.white : Colors.black87,

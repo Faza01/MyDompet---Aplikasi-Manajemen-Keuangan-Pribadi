@@ -69,12 +69,6 @@ class _AddDebtDialogState extends ConsumerState<AddDebtDialog> {
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
-    if (_dueDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Silakan pilih tenggat waktu pembayaran')),
-      );
-      return;
-    }
     if (_selectedAccountId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Silakan pilih rekening/dompet asal')),
@@ -94,7 +88,7 @@ class _AddDebtDialogState extends ConsumerState<AddDebtDialog> {
       contactName: _contactController.text.trim(),
       amount: amount,
       type: _type,
-      dueDate: _dueDate!,
+      dueDate: _dueDate,
       status: 'pending',
       note: _noteController.text.trim().isEmpty ? null : _noteController.text.trim(),
       accountId: _selectedAccountId!,
