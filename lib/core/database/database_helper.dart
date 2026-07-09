@@ -452,11 +452,177 @@ class DatabaseHelper {
   // Clear all tables (Reset database)
   Future<void> resetDatabase() async {
     final db = await instance.database;
+    await db.delete('debt_repayments');
+    await db.delete('debts');
     await db.delete('budgets');
     await db.delete('transactions');
     await db.delete('category_keywords');
     await db.delete('categories');
     await db.delete('accounts');
     await _seedData(db);
+  }
+
+  // --- CRUD Debts ---
+  Future<int> insertDebt(Map<String, dynamic> debtMap) async {
+    final db = await instance.database;
+    return await db.transaction((txn) async {
+      // 1. Find or create Category
+      final type = debtMap['type'] as String; // 'debt' or 'receivable'
+      final catName = type == 'debt' ? 'Pinjaman (Masuk)' : 'Pinjaman (Keluar)';
+      final txType = type == 'debt' ? 'income' : 'expense';
+      final catIcon = type == 'debt' ? 'add_circle' : 'remove_circle';
+
+      final catMaps = await txn.query(
+        'categories',
+        where: 'name = ? AND type = ?',
+        whereArgs: [catName, txType],
+      );
+      int catId;
+      if (catMaps.isEmpty) {
+        catId = await txn.insert('categories', {
+          'name': catName,
+          'type': txType,
+          'icon': catIcon,
+          'is_default': 0,
+        });
+      } else {
+        catId = catMaps.first['id'] as int;
+      }
+
+      // 2. Insert Transaction first to get transaction_id
+      final nowStr = DateTime.now().toIso8601String();
+      final note = type == 'debt' 
+          ? 'Pinjaman dari ${debtMap['contact_name']}${debtMap['note'] != null && (debtMap['note'] as String).isNotEmpty ? ' - ${debtMap['note']}' : ''}'
+          : 'Pinjaman ke ${debtMap['contact_name']}${debtMap['note'] != null && (debtMap['note'] as String).isNotEmpty ? ' - ${debtMap['note']}' : ''}';
+      
+      final txId = await txn.insert('transactions', {
+        'account_id': debtMap['account_id'],
+        'amount': debtMap['amount'],
+        'type': txType,
+        'category_id': catId,
+        'note': note,
+        'input_method': 'manual',
+        'created_at': debtMap['created_at'] ?? nowStr,
+      });
+
+      // 3. Insert Debt with transaction_id
+      final finalDebtMap = Map<String, dynamic>.from(debtMap);
+      finalDebtMap['transaction_id'] = txId;
+      return await txn.insert('debts', finalDebtMap);
+    });
+  }
+
+  Future<List<Map<String, dynamic>>> getAllDebts() async {
+    final db = await instance.database;
+    return await db.query('debts', orderBy: 'created_at DESC');
+  }
+
+  Future<void> deleteDebt(int id) async {
+    final db = await instance.database;
+    await db.transaction((txn) async {
+      // Get the debt to find linked transaction_id
+      final debtMaps = await txn.query('debts', where: 'id = ?', whereArgs: [id]);
+      if (debtMaps.isNotEmpty) {
+        final initialTxId = debtMaps.first['transaction_id'] as int?;
+        if (initialTxId != null) {
+          await txn.delete('transactions', where: 'id = ?', whereArgs: [initialTxId]);
+        }
+      }
+
+      // Get repayment transaction_ids
+      final repaymentMaps = await txn.query('debt_repayments', where: 'debt_id = ?', whereArgs: [id]);
+      for (final rep in repaymentMaps) {
+        final repTxId = rep['transaction_id'] as int?;
+        if (repTxId != null) {
+          await txn.delete('transactions', where: 'id = ?', whereArgs: [repTxId]);
+        }
+      }
+
+      // Delete debt (cascade will delete repayments in SQLite)
+      await txn.delete('debts', where: 'id = ?', whereArgs: [id]);
+    });
+  }
+
+  // --- CRUD Debt Repayments ---
+  Future<int> insertRepayment(int debtId, double amount, int accountId, String contactName, String type) async {
+    final db = await instance.database;
+    return await db.transaction((txn) async {
+      // 1. Find or create Category for repayment
+      final catName = type == 'debt' ? 'Pelunasan (Keluar)' : 'Pelunasan (Masuk)';
+      final txType = type == 'debt' ? 'expense' : 'income'; // melunasi hutang = uang keluar, melunasi piutang = uang masuk
+      final catIcon = type == 'debt' ? 'remove_circle' : 'add_circle';
+
+      final catMaps = await txn.query(
+        'categories',
+        where: 'name = ? AND type = ?',
+        whereArgs: [catName, txType],
+      );
+      int catId;
+      if (catMaps.isEmpty) {
+        catId = await txn.insert('categories', {
+          'name': catName,
+          'type': txType,
+          'icon': catIcon,
+          'is_default': 0,
+        });
+      } else {
+        catId = catMaps.first['id'] as int;
+      }
+
+      // 2. Insert Transaction to transactions table
+      final nowStr = DateTime.now().toIso8601String();
+      final note = type == 'debt' 
+          ? 'Pelunasan Hutang ke $contactName'
+          : 'Pelunasan Piutang dari $contactName';
+
+      final txId = await txn.insert('transactions', {
+        'account_id': accountId,
+        'amount': amount,
+        'type': txType,
+        'category_id': catId,
+        'note': note,
+        'input_method': 'manual',
+        'created_at': nowStr,
+      });
+
+      // 3. Insert into debt_repayments
+      final repaymentId = await txn.insert('debt_repayments', {
+        'debt_id': debtId,
+        'amount': amount,
+        'transaction_id': txId,
+        'created_at': nowStr,
+      });
+
+      // 4. Update status in debts table if fully paid
+      final debtMaps = await txn.query('debts', where: 'id = ?', whereArgs: [debtId]);
+      if (debtMaps.isNotEmpty) {
+        final totalAmount = (debtMaps.first['amount'] as num).toDouble();
+        final repResult = await txn.rawQuery(
+          'SELECT SUM(amount) as total FROM debt_repayments WHERE debt_id = ?',
+          [debtId],
+        );
+        final paidTotal = (repResult.first['total'] as num?)?.toDouble() ?? 0.0;
+        if (paidTotal >= totalAmount) {
+          await txn.update(
+            'debts',
+            {'status': 'paid'},
+            where: 'id = ?',
+            whereArgs: [debtId],
+          );
+        }
+      }
+
+      return repaymentId;
+    });
+  }
+
+  Future<List<Map<String, dynamic>>> getRepaymentsForDebt(int debtId) async {
+    final db = await instance.database;
+    return await db.query(
+      'debt_repayments',
+      where: 'debt_id = ?',
+      whereArgs: [debtId],
+      orderBy: 'created_at ASC',
+    );
   }
 }
