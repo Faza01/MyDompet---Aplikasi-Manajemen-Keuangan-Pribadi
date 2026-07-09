@@ -25,7 +25,7 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: _createDB,
       onConfigure: _onConfigure,
       onUpgrade: _onUpgrade,
@@ -35,6 +35,35 @@ class DatabaseHelper {
   Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
       await db.execute('ALTER TABLE accounts ADD COLUMN color TEXT');
+    }
+    if (oldVersion < 3) {
+      await db.execute('''
+        CREATE TABLE debts (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          contact_name TEXT NOT NULL,
+          amount REAL NOT NULL,
+          type TEXT NOT NULL CHECK(type IN ('debt', 'receivable')),
+          due_date TEXT NOT NULL,
+          status TEXT NOT NULL CHECK(status IN ('pending', 'paid')),
+          note TEXT,
+          account_id INTEGER NOT NULL,
+          transaction_id INTEGER,
+          created_at TEXT NOT NULL,
+          FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE,
+          FOREIGN KEY (transaction_id) REFERENCES transactions(id) ON DELETE SET NULL
+        )
+      ''');
+      await db.execute('''
+        CREATE TABLE debt_repayments (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          debt_id INTEGER NOT NULL,
+          amount REAL NOT NULL,
+          transaction_id INTEGER NOT NULL,
+          created_at TEXT NOT NULL,
+          FOREIGN KEY (debt_id) REFERENCES debts(id) ON DELETE CASCADE,
+          FOREIGN KEY (transaction_id) REFERENCES transactions(id) ON DELETE CASCADE
+        )
+      ''');
     }
   }
 
@@ -102,6 +131,37 @@ class DatabaseHelper {
         period TEXT NOT NULL CHECK(period IN ('weekly','monthly')),
         start_date TEXT NOT NULL,
         FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
+      )
+    ''');
+
+    // 6. Debts Table
+    await db.execute('''
+      CREATE TABLE debts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        contact_name TEXT NOT NULL,
+        amount REAL NOT NULL,
+        type TEXT NOT NULL CHECK(type IN ('debt', 'receivable')),
+        due_date TEXT NOT NULL,
+        status TEXT NOT NULL CHECK(status IN ('pending', 'paid')),
+        note TEXT,
+        account_id INTEGER NOT NULL,
+        transaction_id INTEGER,
+        created_at TEXT NOT NULL,
+        FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE,
+        FOREIGN KEY (transaction_id) REFERENCES transactions(id) ON DELETE SET NULL
+      )
+    ''');
+
+    // 7. Debt Repayments Table
+    await db.execute('''
+      CREATE TABLE debt_repayments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        debt_id INTEGER NOT NULL,
+        amount REAL NOT NULL,
+        transaction_id INTEGER NOT NULL,
+        created_at TEXT NOT NULL,
+        FOREIGN KEY (debt_id) REFERENCES debts(id) ON DELETE CASCADE,
+        FOREIGN KEY (transaction_id) REFERENCES transactions(id) ON DELETE CASCADE
       )
     ''');
 
