@@ -17,6 +17,7 @@ class EditableParsedTransaction {
   final String rawInput;
   final TextEditingController noteController;
   final TextEditingController amountController;
+  final TextEditingController contactNameController;
   String type; // 'income' | 'expense'
   Category? category;
   AccountWithBalance? account;
@@ -43,11 +44,13 @@ class EditableParsedTransaction {
   })  : dateTime = dateTime ?? DateTime.now(),
         noteController = TextEditingController(text: note),
         amountController = TextEditingController(
-            text: amount > 0 ? amount.toStringAsFixed(0) : '');
+            text: amount > 0 ? amount.toStringAsFixed(0) : ''),
+        contactNameController = TextEditingController(text: contactName ?? '');
 
   void dispose() {
     noteController.dispose();
     amountController.dispose();
+    contactNameController.dispose();
   }
 }
 
@@ -280,7 +283,12 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
     if (editableTxs.isEmpty || (editableTxs.length == 1 && editableTxs.first.amountController.text.isEmpty)) {
       botResponseText = 'Maaf, saya tidak menemukan angka transaksi yang jelas dalam pesan Anda. Silakan tulis nominal transaksi secara jelas seperti: "beli makan 15rb" atau "gaji 3jt".';
     } else {
-      botResponseText = 'Berikut adalah transaksi yang berhasil saya analisis. Silakan periksa kembali detailnya di bawah ini sebelum menyimpan:';
+      final hasDebt = editableTxs.any((tx) => tx.debtType != null);
+      if (hasDebt) {
+        botResponseText = 'Berikut adalah transaksi Hutang / Piutang yang berhasil saya analisis. Silakan periksa kembali detailnya di bawah ini sebelum menyimpan:';
+      } else {
+        botResponseText = 'Berikut adalah transaksi yang berhasil saya analisis. Silakan periksa kembali detailnya di bawah ini sebelum menyimpan:';
+      }
     }
 
     final botMsg = ChatMessage(
@@ -309,8 +317,9 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
       if (tx.account == null) continue;
 
       if (tx.debtType != null) {
+        final cName = tx.contactNameController.text.trim();
         final newDebt = DebtModel(
-          contactName: tx.contactName ?? 'Seseorang',
+          contactName: cName.isEmpty ? 'Seseorang' : cName,
           amount: tx.amount,
           type: tx.debtType!,
           dueDate: tx.dueDate,
@@ -483,7 +492,12 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
     if (editableTxs.isEmpty || (editableTxs.length == 1 && editableTxs.first.amountController.text.isEmpty)) {
       botResponseText = 'Maaf, saya tidak menemukan angka transaksi yang jelas dalam pesan Anda. Silakan tulis nominal transaksi secara jelas seperti: "beli makan 15rb" atau "gaji 3jt".';
     } else {
-      botResponseText = 'Berikut adalah transaksi yang berhasil saya analisis. Silakan periksa kembali detailnya di bawah ini sebelum menyimpan:';
+      final hasDebt = editableTxs.any((tx) => tx.debtType != null);
+      if (hasDebt) {
+        botResponseText = 'Berikut adalah transaksi Hutang / Piutang yang berhasil saya analisis. Silakan periksa kembali detailnya di bawah ini sebelum menyimpan:';
+      } else {
+        botResponseText = 'Berikut adalah transaksi yang berhasil saya analisis. Silakan periksa kembali detailnya di bawah ini sebelum menyimpan:';
+      }
     }
 
     final botMsg = ChatMessage(
@@ -832,7 +846,9 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                 children: [
                                                   Container(
                                                     width: 4.0,
-                                                    color: tx.type == 'expense' ? Colors.redAccent : const Color(0xFF0D9488),
+                                                    color: tx.debtType != null
+                                                        ? (tx.debtType == 'debt' ? AppColors.accentOrange : Colors.blueAccent)
+                                                        : (tx.type == 'expense' ? Colors.redAccent : const Color(0xFF0D9488)),
                                                   ),
                                                   Expanded(
                                                     child: Padding(
@@ -844,7 +860,9 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                             children: [
                                                               Text(
-                                                                'Transaksi #${idx + 1}',
+                                                                tx.debtType != null
+                                                                    ? (tx.debtType == 'debt' ? 'Hutang #${idx + 1}' : 'Piutang #${idx + 1}')
+                                                                    : 'Transaksi #${idx + 1}',
                                                                 style: TextStyle(
                                                                   fontWeight: FontWeight.bold,
                                                                   fontSize: 12.0,
@@ -882,9 +900,9 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                                   child: AnimatedAlign(
                                                                     duration: const Duration(milliseconds: 250),
                                                                     curve: Curves.easeInOutCubic,
-                                                                    alignment: tx.type == 'expense'
-                                                                        ? Alignment.centerLeft
-                                                                        : Alignment.centerRight,
+                                                                    alignment: tx.debtType != null
+                                                                        ? (tx.debtType == 'debt' ? Alignment.centerLeft : Alignment.centerRight)
+                                                                        : (tx.type == 'expense' ? Alignment.centerLeft : Alignment.centerRight),
                                                                     child: FractionallySizedBox(
                                                                       widthFactor: 0.5,
                                                                       heightFactor: 1.0,
@@ -903,7 +921,14 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                                       child: GestureDetector(
                                                                         onTap: message.isSaved
                                                                             ? null
-                                                                            : () => setState(() => _toggleType(tx, 'expense', categories)),
+                                                                            : () => setState(() {
+                                                                                  if (tx.debtType != null) {
+                                                                                    tx.debtType = 'debt';
+                                                                                    tx.type = 'income';
+                                                                                  } else {
+                                                                                    _toggleType(tx, 'expense', categories);
+                                                                                  }
+                                                                                }),
                                                                         child: Container(
                                                                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                                                                           color: Colors.transparent,
@@ -912,12 +937,12 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                                             style: TextStyle(
                                                                               fontSize: 12.0,
                                                                               fontWeight: FontWeight.w500,
-                                                                              color: tx.type == 'expense'
+                                                                              color: (tx.debtType != null ? tx.debtType == 'debt' : tx.type == 'expense')
                                                                                   ? Colors.white
                                                                                   : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
                                                                             ),
-                                                                            child: const Text(
-                                                                              'Pengeluaran',
+                                                                            child: Text(
+                                                                              tx.debtType != null ? 'Hutang (Masuk)' : 'Pengeluaran',
                                                                               textAlign: TextAlign.center,
                                                                             ),
                                                                           ),
@@ -928,7 +953,14 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                                       child: GestureDetector(
                                                                         onTap: message.isSaved
                                                                             ? null
-                                                                            : () => setState(() => _toggleType(tx, 'income', categories)),
+                                                                            : () => setState(() {
+                                                                                  if (tx.debtType != null) {
+                                                                                    tx.debtType = 'receivable';
+                                                                                    tx.type = 'expense';
+                                                                                  } else {
+                                                                                    _toggleType(tx, 'income', categories);
+                                                                                  }
+                                                                                }),
                                                                         child: Container(
                                                                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                                                                           color: Colors.transparent,
@@ -937,12 +969,12 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                                             style: TextStyle(
                                                                               fontSize: 12.0,
                                                                               fontWeight: FontWeight.w500,
-                                                                              color: tx.type == 'income'
+                                                                              color: (tx.debtType != null ? tx.debtType == 'receivable' : tx.type == 'income')
                                                                                   ? Colors.white
                                                                                   : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
                                                                             ),
-                                                                            child: const Text(
-                                                                              'Pemasukan',
+                                                                            child: Text(
+                                                                              tx.debtType != null ? 'Piutang (Keluar)' : 'Pemasukan',
                                                                               textAlign: TextAlign.center,
                                                                             ),
                                                                           ),
@@ -995,27 +1027,40 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                           Row(
                                                             children: [
                                                               Expanded(
-                                                                child: DropdownButtonFormField<Category>(
-                                                                  value: tx.category,
-                                                                  disabledHint: tx.category != null ? Text(tx.category!.name, style: const TextStyle(fontSize: 11.0)) : null,
-                                                                  items: categories
-                                                                      .where((c) => c.type == tx.type)
-                                                                      .map((c) => DropdownMenuItem(
-                                                                            value: c,
-                                                                            child: Text(c.name, style: const TextStyle(fontSize: 11.0)),
-                                                                          ))
-                                                                      .toList(),
-                                                                  onChanged: message.isSaved
-                                                                      ? null
-                                                                      : (val) => setState(() => tx.category = val),
-                                                                  decoration: InputDecoration(
-                                                                    labelText: 'Kategori',
-                                                                    labelStyle: const TextStyle(fontSize: 9.5),
-                                                                    isDense: true,
-                                                                    contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                                                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
-                                                                  ),
-                                                                ),
+                                                                child: tx.debtType != null
+                                                                    ? TextField(
+                                                                        controller: tx.contactNameController,
+                                                                        enabled: !message.isSaved,
+                                                                        style: TextStyle(fontSize: 11.5, color: isDarkMode ? Colors.white : Colors.black87),
+                                                                        decoration: InputDecoration(
+                                                                          labelText: 'Nama Kontak',
+                                                                          labelStyle: const TextStyle(fontSize: 9.5),
+                                                                          isDense: true,
+                                                                          contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                                                                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                                                                        ),
+                                                                      )
+                                                                    : DropdownButtonFormField<Category>(
+                                                                        value: tx.category,
+                                                                        disabledHint: tx.category != null ? Text(tx.category!.name, style: const TextStyle(fontSize: 11.0)) : null,
+                                                                        items: categories
+                                                                            .where((c) => c.type == tx.type)
+                                                                            .map((c) => DropdownMenuItem(
+                                                                                  value: c,
+                                                                                  child: Text(c.name, style: const TextStyle(fontSize: 11.0)),
+                                                                                ))
+                                                                            .toList(),
+                                                                        onChanged: message.isSaved
+                                                                            ? null
+                                                                            : (val) => setState(() => tx.category = val),
+                                                                        decoration: InputDecoration(
+                                                                          labelText: 'Kategori',
+                                                                          labelStyle: const TextStyle(fontSize: 9.5),
+                                                                          isDense: true,
+                                                                          contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                                                                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                                                                        ),
+                                                                      ),
                                                               ),
                                                               const SizedBox(width: 6.0),
                                                               Expanded(
@@ -1044,6 +1089,63 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                               ),
                                                             ],
                                                           ),
+                                                          if (tx.debtType != null) ...[
+                                                            const SizedBox(height: 8.0),
+                                                            Row(
+                                                              children: [
+                                                                Expanded(
+                                                                  child: InkWell(
+                                                                    onTap: message.isSaved
+                                                                        ? null
+                                                                        : () async {
+                                                                            final selectedDate = await showDatePicker(
+                                                                              context: context,
+                                                                              initialDate: tx.dueDate ?? DateTime.now(),
+                                                                              firstDate: DateTime.now().subtract(const Duration(days: 365)),
+                                                                              lastDate: DateTime.now().add(const Duration(days: 3650)),
+                                                                            );
+                                                                            if (selectedDate != null) {
+                                                                              setState(() {
+                                                                                tx.dueDate = selectedDate;
+                                                                              });
+                                                                            }
+                                                                          },
+                                                                    child: Container(
+                                                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                                                                      decoration: BoxDecoration(
+                                                                        border: Border.all(
+                                                                          color: isDarkMode ? Colors.white24 : Colors.black26,
+                                                                        ),
+                                                                        borderRadius: BorderRadius.circular(8.0),
+                                                                      ),
+                                                                      child: Row(
+                                                                        children: [
+                                                                          Icon(Icons.event_outlined, size: 12, color: isDarkMode ? Colors.white70 : Colors.black54),
+                                                                          const SizedBox(width: 6),
+                                                                          Expanded(
+                                                                            child: Text(
+                                                                              tx.dueDate != null
+                                                                                  ? 'Tenggat: ${DateFormat('dd MMM yyyy').format(tx.dueDate!)}'
+                                                                                  : 'Tanpa Tenggat Waktu',
+                                                                              style: TextStyle(fontSize: 11.0, color: isDarkMode ? Colors.white : Colors.black87),
+                                                                            ),
+                                                                          ),
+                                                                          if (tx.dueDate != null && !message.isSaved)
+                                                                            GestureDetector(
+                                                                              onTap: () => setState(() => tx.dueDate = null),
+                                                                              child: const Padding(
+                                                                                padding: EdgeInsets.symmetric(horizontal: 4.0),
+                                                                                child: Icon(Icons.close, size: 12, color: Colors.redAccent),
+                                                                              ),
+                                                                            ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
                                                           const SizedBox(height: 8.0),
                                                           Row(
                                                             children: [
@@ -1166,6 +1268,7 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                 final amtText = tx.amountController.text.trim();
                                                 tx.amount = double.tryParse(amtText) ?? 0.0;
                                                 tx.note = tx.noteController.text.trim();
+                                                tx.contactName = tx.contactNameController.text.trim();
                                               }
                                               _saveMessageTransactions(message);
                                             },

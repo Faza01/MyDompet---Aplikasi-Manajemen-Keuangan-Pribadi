@@ -2,6 +2,15 @@
 
 Semua perubahan penting pada proyek **MyDompet** akan dicatat di file ini.
 
+## [1.3.1] - 2026-07-10
+
+### Diperbaiki
+- **UI Quick Input Hutang & Piutang**: Kartu transaksi kini menampilkan label **"Hutang #N"** atau **"Piutang #N"** (bukan "Transaksi #N") beserta indikator warna berbeda — oranye untuk hutang, biru untuk piutang.
+- **Toggle Tipe Khusus**: Slider tipe pada kartu hutang/piutang kini menampilkan **"Hutang (Masuk) / Piutang (Keluar)"** alih-alih "Pengeluaran / Pemasukan" yang membingungkan, dan dapat diubah langsung oleh pengguna.
+- **Field Nama Kontak**: Dropdown Kategori pada kartu hutang/piutang diganti dengan **field teks Nama Kontak** yang dapat diedit sebelum simpan.
+- **Tenggat Waktu Opsional**: Ditambahkan date picker **Tenggat Waktu** khusus untuk kartu hutang/piutang, dengan tombol clear (×) jika tidak diperlukan.
+- **Pesan Bot Informatif**: Respons chatbot kini secara eksplisit menyebutkan *"transaksi Hutang / Piutang"* bila pesan terdeteksi sebagai pinjaman, bukan sekadar "transaksi biasa".
+
 ## [1.3.0] - 2026-07-09
 
 ### Ditambahkan
