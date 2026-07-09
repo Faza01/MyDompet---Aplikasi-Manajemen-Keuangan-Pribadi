@@ -55,7 +55,8 @@ class CategoryDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final totalAmount = transactions.fold<double>(0.0, (sum, tx) => sum + tx.amount);
+    final totalAmount =
+        transactions.fold<double>(0.0, (sum, tx) => sum + tx.amount);
 
     return Scaffold(
       appBar: AppBar(
@@ -79,8 +80,8 @@ class CategoryDetailScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20.0),
                   side: BorderSide(
                     color: isDarkMode
-                        ? Colors.white.withOpacity(0.04)
-                        : Colors.black.withOpacity(0.03),
+                        ? Colors.white.withValues(alpha: 0.04)
+                        : Colors.black.withValues(alpha: 0.03),
                   ),
                 ),
                 child: Padding(
@@ -90,8 +91,8 @@ class CategoryDetailScreen extends StatelessWidget {
                       CircleAvatar(
                         radius: 28,
                         backgroundColor: category.type == 'income'
-                            ? const Color(0xFF0D9488).withOpacity(0.12)
-                            : const Color(0xFFDC2626).withOpacity(0.12),
+                            ? const Color(0xFF0D9488).withValues(alpha: 0.12)
+                            : const Color(0xFFDC2626).withValues(alpha: 0.12),
                         child: Icon(
                           _getCategoryIcon(category.icon),
                           color: category.type == 'income'
@@ -102,8 +103,11 @@ class CategoryDetailScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        category.type == 'income' ? 'Total Pemasukan' : 'Total Pengeluaran',
-                        style: const TextStyle(fontSize: 12.0, color: Colors.grey),
+                        category.type == 'income'
+                            ? 'Total Pemasukan'
+                            : 'Total Pengeluaran',
+                        style:
+                            const TextStyle(fontSize: 12.0, color: Colors.grey),
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -121,7 +125,8 @@ class CategoryDetailScreen extends StatelessWidget {
                       const SizedBox(height: 8),
                       _buildInfoRow('Dompet / Akun', accountName, isDarkMode),
                       const SizedBox(height: 6),
-                      _buildInfoRow('Periode Laporan', dateRangeStr, isDarkMode),
+                      _buildInfoRow(
+                          'Periode Laporan', dateRangeStr, isDarkMode),
                     ],
                   ),
                 ),
@@ -140,7 +145,8 @@ class CategoryDetailScreen extends StatelessWidget {
                     ? const Center(
                         child: Text(
                           'Tidak ada transaksi untuk kategori ini.',
-                          style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+                          style: TextStyle(
+                              color: Colors.grey, fontStyle: FontStyle.italic),
                         ),
                       )
                     : ListView.builder(
@@ -150,40 +156,54 @@ class CategoryDetailScreen extends StatelessWidget {
                           return Card(
                             elevation: 0,
                             margin: const EdgeInsets.symmetric(vertical: 4.0),
-                            color: isDarkMode ? const Color(0xFF1E222B) : Colors.white,
+                            color: isDarkMode
+                                ? const Color(0xFF1E222B)
+                                : Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12.0),
                               side: BorderSide(
                                 color: isDarkMode
-                                    ? Colors.white.withOpacity(0.04)
-                                    : Colors.black.withOpacity(0.03),
+                                    ? Colors.white.withValues(alpha: 0.04)
+                                    : Colors.black.withValues(alpha: 0.03),
                               ),
                             ),
                             child: ListTile(
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 4.0),
                               leading: Container(
                                 width: 36,
                                 height: 36,
                                 decoration: BoxDecoration(
-                                  color: isDarkMode ? Colors.white10 : Colors.black.withOpacity(0.04),
+                                  color: isDarkMode
+                                      ? Colors.white10
+                                      : Colors.black.withValues(alpha: 0.04),
                                   shape: BoxShape.circle,
                                 ),
                                 child: Icon(
                                   _getCategoryIcon(category.icon),
-                                  color: isDarkMode ? Colors.white70 : Colors.black87,
+                                  color: isDarkMode
+                                      ? Colors.white70
+                                      : Colors.black87,
                                   size: 16.0,
                                 ),
                               ),
                               title: Text(
-                                (tx.note == null || tx.note!.isEmpty) ? category.name : tx.note!,
-                                style: const TextStyle(fontSize: 13.0, fontWeight: FontWeight.w500),
+                                (tx.note == null || tx.note!.isEmpty)
+                                    ? category.name
+                                    : tx.note!,
+                                style: const TextStyle(
+                                    fontSize: 13.0,
+                                    fontWeight: FontWeight.w500),
                               ),
                               subtitle: Text(
-                                DateFormat('dd MMM yyyy, HH:mm', 'id_ID').format(tx.createdAt),
-                                style: const TextStyle(fontSize: 10.5, color: Colors.grey),
+                                DateFormat('dd MMM yyyy, HH:mm', 'id_ID')
+                                    .format(tx.createdAt),
+                                style: const TextStyle(
+                                    fontSize: 10.5, color: Colors.grey),
                               ),
                               trailing: Text(
-                                (tx.type == 'income' ? '+ ' : '- ') + _formatRp(tx.amount),
+                                (tx.type == 'income' ? '+ ' : '- ') +
+                                    _formatRp(tx.amount),
                                 style: TextStyle(
                                   fontSize: 13.0,
                                   fontWeight: FontWeight.bold,

@@ -54,12 +54,17 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
 
   List<Color> _generatePremiumGradient(Color baseColor) {
     final hsl = HSLColor.fromColor(baseColor);
-    final darkColor = hsl.withLightness((hsl.lightness * 0.45).clamp(0.0, 1.0)).toColor();
-    final lightColor = hsl.withLightness((hsl.lightness + (1.0 - hsl.lightness) * 0.35).clamp(0.0, 1.0)).toColor();
+    final darkColor =
+        hsl.withLightness((hsl.lightness * 0.45).clamp(0.0, 1.0)).toColor();
+    final lightColor = hsl
+        .withLightness(
+            (hsl.lightness + (1.0 - hsl.lightness) * 0.35).clamp(0.0, 1.0))
+        .toColor();
     return [darkColor, baseColor, lightColor];
   }
 
-  InputDecoration _buildFieldDecoration(String labelText, bool isDarkMode, {String? prefixText}) {
+  InputDecoration _buildFieldDecoration(String labelText, bool isDarkMode,
+      {String? prefixText}) {
     return InputDecoration(
       labelText: labelText,
       labelStyle: TextStyle(
@@ -72,7 +77,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
         borderRadius: BorderRadius.circular(12.0),
         borderSide: BorderSide.none,
       ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+      contentPadding:
+          const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
       prefixText: prefixText,
       prefixStyle: TextStyle(
         fontSize: 14.0,
@@ -213,7 +219,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                   Container(
                                     padding: const EdgeInsets.all(10.0),
                                     decoration: BoxDecoration(
-                                      color: AppColors.accentTeal.withValues(alpha: 0.08),
+                                      color: AppColors.accentTeal
+                                          .withValues(alpha: 0.08),
                                       shape: BoxShape.circle,
                                     ),
                                     child: const Icon(
@@ -228,7 +235,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                     style: TextStyle(
                                       fontSize: 12.0,
                                       fontWeight: FontWeight.bold,
-                                      color: isDarkMode ? Colors.white70 : Colors.black87,
+                                      color: isDarkMode
+                                          ? Colors.white70
+                                          : Colors.black87,
                                     ),
                                   ),
                                 ],
@@ -239,8 +248,12 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
 
                         final accWithBal = accounts[index];
                         final acc = accWithBal.account;
-                        final baseColor = _parseCustomColor(acc.color) ?? (isDarkMode ? const Color(0xFF1E222B) : Colors.white);
-                        final bool hasGradient = _parseCustomColor(acc.color) != null;
+                        final baseColor = _parseCustomColor(acc.color) ??
+                            (isDarkMode
+                                ? const Color(0xFF1E222B)
+                                : Colors.white);
+                        final bool hasGradient =
+                            _parseCustomColor(acc.color) != null;
 
                         return Container(
                           padding: const EdgeInsets.all(16.0),
@@ -254,7 +267,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                 : null,
                             color: hasGradient
                                 ? null
-                                : (isDarkMode ? const Color(0xFF1E222B) : Colors.white),
+                                : (isDarkMode
+                                    ? const Color(0xFF1E222B)
+                                    : Colors.white),
                             borderRadius: BorderRadius.circular(20.0),
                             border: Border.all(
                               color: hasGradient
@@ -291,38 +306,48 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                 ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Container(
                                         padding: const EdgeInsets.all(6.0),
                                         decoration: BoxDecoration(
                                           color: hasGradient
-                                              ? Colors.white.withValues(alpha: 0.15)
+                                              ? Colors.white
+                                                  .withValues(alpha: 0.15)
                                               : (isDarkMode
-                                                  ? Colors.white.withValues(alpha: 0.06)
-                                                  : Colors.black.withValues(alpha: 0.04)),
+                                                  ? Colors.white
+                                                      .withValues(alpha: 0.06)
+                                                  : Colors.black
+                                                      .withValues(alpha: 0.04)),
                                           shape: BoxShape.circle,
                                         ),
                                         child: Icon(
                                           _getAccountIcon(acc.icon),
                                           color: hasGradient
                                               ? Colors.white
-                                              : (isDarkMode ? Colors.white : Colors.black87),
+                                              : (isDarkMode
+                                                  ? Colors.white
+                                                  : Colors.black87),
                                           size: 16.0,
                                         ),
                                       ),
                                       Row(
                                         children: [
                                           GestureDetector(
-                                            onTap: () => _showEditAccountDialog(context, acc),
+                                            onTap: () => _showEditAccountDialog(
+                                                context, acc),
                                             child: Container(
-                                              padding: const EdgeInsets.all(6.0),
+                                              padding:
+                                                  const EdgeInsets.all(6.0),
                                               decoration: BoxDecoration(
                                                 color: hasGradient
-                                                    ? Colors.white.withValues(alpha: 0.12)
+                                                    ? Colors.white
+                                                        .withValues(alpha: 0.12)
                                                     : Colors.transparent,
                                                 shape: BoxShape.circle,
                                               ),
@@ -330,19 +355,25 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                                 Icons.edit_outlined,
                                                 size: 13.0,
                                                 color: hasGradient
-                                                    ? Colors.white.withValues(alpha: 0.95)
-                                                    : (isDarkMode ? Colors.white70 : Colors.black87),
+                                                    ? Colors.white
+                                                        .withValues(alpha: 0.95)
+                                                    : (isDarkMode
+                                                        ? Colors.white70
+                                                        : Colors.black87),
                                               ),
                                             ),
                                           ),
                                           const SizedBox(width: 6.0),
                                           GestureDetector(
-                                            onTap: () => _confirmDeleteAccount(context, acc),
+                                            onTap: () => _confirmDeleteAccount(
+                                                context, acc),
                                             child: Container(
-                                              padding: const EdgeInsets.all(6.0),
+                                              padding:
+                                                  const EdgeInsets.all(6.0),
                                               decoration: BoxDecoration(
                                                 color: hasGradient
-                                                    ? Colors.white.withValues(alpha: 0.12)
+                                                    ? Colors.white
+                                                        .withValues(alpha: 0.12)
                                                     : Colors.transparent,
                                                 shape: BoxShape.circle,
                                               ),
@@ -350,7 +381,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                                 Icons.delete_outline,
                                                 size: 13.0,
                                                 color: hasGradient
-                                                    ? Colors.white.withValues(alpha: 0.95)
+                                                    ? Colors.white
+                                                        .withValues(alpha: 0.95)
                                                     : Colors.redAccent,
                                               ),
                                             ),
@@ -360,7 +392,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                     ],
                                   ),
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         acc.name,
@@ -369,7 +402,11 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                         style: TextStyle(
                                           fontSize: 12.0,
                                           fontWeight: FontWeight.bold,
-                                          color: hasGradient ? Colors.white : (isDarkMode ? Colors.white : Colors.black87),
+                                          color: hasGradient
+                                              ? Colors.white
+                                              : (isDarkMode
+                                                  ? Colors.white
+                                                  : Colors.black87),
                                         ),
                                       ),
                                       const SizedBox(height: 2.0),
@@ -378,7 +415,11 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                         style: TextStyle(
                                           fontSize: 14.0,
                                           fontWeight: FontWeight.bold,
-                                          color: hasGradient ? Colors.white : (isDarkMode ? Colors.white : Colors.black87),
+                                          color: hasGradient
+                                              ? Colors.white
+                                              : (isDarkMode
+                                                  ? Colors.white
+                                                  : Colors.black87),
                                         ),
                                       ),
                                     ],
@@ -422,7 +463,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                             Container(
                               padding: const EdgeInsets.all(8.0),
                               decoration: BoxDecoration(
-                                color: AppColors.accentTeal.withValues(alpha: 0.1),
+                                color:
+                                    AppColors.accentTeal.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                               child: const Icon(
@@ -446,21 +488,29 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                               children: [
                                 // Source Account selector
                                 DropdownButtonFormField<int>(
-                                  value: _fromAccountId,
-                                  dropdownColor: isDarkMode ? AppColors.darkModal : Colors.white,
-                                  icon: const Icon(Icons.keyboard_arrow_down, size: 20.0),
+                                  initialValue: _fromAccountId,
+                                  dropdownColor: isDarkMode
+                                      ? AppColors.darkModal
+                                      : Colors.white,
+                                  icon: const Icon(Icons.keyboard_arrow_down,
+                                      size: 20.0),
                                   style: TextStyle(
                                     fontSize: 14.0,
-                                    color: isDarkMode ? Colors.white : Colors.black87,
+                                    color: isDarkMode
+                                        ? Colors.white
+                                        : Colors.black87,
                                   ),
-                                  decoration: _buildFieldDecoration('Dari Akun / Dompet', isDarkMode),
+                                  decoration: _buildFieldDecoration(
+                                      'Dari Akun / Dompet', isDarkMode),
                                   items: accounts.map((acc) {
                                     return DropdownMenuItem(
                                       value: acc.account.id,
                                       child: Text(
                                         acc.account.name,
                                         style: TextStyle(
-                                          color: isDarkMode ? Colors.white : Colors.black87,
+                                          color: isDarkMode
+                                              ? Colors.white
+                                              : Colors.black87,
                                         ),
                                       ),
                                     );
@@ -474,21 +524,29 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                 const SizedBox(height: 12.0),
                                 // Destination Account selector
                                 DropdownButtonFormField<int>(
-                                  value: _toAccountId,
-                                  dropdownColor: isDarkMode ? AppColors.darkModal : Colors.white,
-                                  icon: const Icon(Icons.keyboard_arrow_down, size: 20.0),
+                                  initialValue: _toAccountId,
+                                  dropdownColor: isDarkMode
+                                      ? AppColors.darkModal
+                                      : Colors.white,
+                                  icon: const Icon(Icons.keyboard_arrow_down,
+                                      size: 20.0),
                                   style: TextStyle(
                                     fontSize: 14.0,
-                                    color: isDarkMode ? Colors.white : Colors.black87,
+                                    color: isDarkMode
+                                        ? Colors.white
+                                        : Colors.black87,
                                   ),
-                                  decoration: _buildFieldDecoration('Ke Akun / Dompet', isDarkMode),
+                                  decoration: _buildFieldDecoration(
+                                      'Ke Akun / Dompet', isDarkMode),
                                   items: accounts.map((acc) {
                                     return DropdownMenuItem(
                                       value: acc.account.id,
                                       child: Text(
                                         acc.account.name,
                                         style: TextStyle(
-                                          color: isDarkMode ? Colors.white : Colors.black87,
+                                          color: isDarkMode
+                                              ? Colors.white
+                                              : Colors.black87,
                                         ),
                                       ),
                                     );
@@ -510,7 +568,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                         TextField(
                           controller: _amountController,
                           keyboardType: TextInputType.number,
-                          decoration: _buildFieldDecoration('Nominal Transfer', isDarkMode, prefixText: 'Rp '),
+                          decoration: _buildFieldDecoration(
+                              'Nominal Transfer', isDarkMode,
+                              prefixText: 'Rp '),
                           style: TextStyle(
                             fontSize: 14.0,
                             color: isDarkMode ? Colors.white : Colors.black87,
@@ -520,7 +580,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                         // Note Field
                         TextField(
                           controller: _noteController,
-                          decoration: _buildFieldDecoration('Catatan (Opsional)', isDarkMode),
+                          decoration: _buildFieldDecoration(
+                              'Catatan (Opsional)', isDarkMode),
                           style: TextStyle(
                             fontSize: 14.0,
                             color: isDarkMode ? Colors.white : Colors.black87,
@@ -530,8 +591,11 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                         ElevatedButton(
                           onPressed: _executeTransfer,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: isDarkMode ? Colors.white : AppColors.primaryBlack,
-                            foregroundColor: isDarkMode ? Colors.black : Colors.white,
+                            backgroundColor: isDarkMode
+                                ? Colors.white
+                                : AppColors.primaryBlack,
+                            foregroundColor:
+                                isDarkMode ? Colors.black : Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 14.0),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12.0)),
@@ -620,7 +684,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                           Container(
                             padding: const EdgeInsets.all(10.0),
                             decoration: BoxDecoration(
-                              color: AppColors.accentTeal.withValues(alpha: 0.1),
+                              color:
+                                  AppColors.accentTeal.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(12.0),
                             ),
                             child: const Icon(
@@ -648,19 +713,26 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                           hintText: 'cth: GoPay',
                           labelStyle: TextStyle(
                             fontSize: 13.0,
-                            color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                            color: isDarkMode
+                                ? Colors.grey[400]
+                                : Colors.grey[600],
                           ),
                           hintStyle: TextStyle(
                             fontSize: 13.0,
-                            color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
+                            color: isDarkMode
+                                ? Colors.grey[600]
+                                : Colors.grey[400],
                           ),
                           filled: true,
-                          fillColor: isDarkMode ? AppColors.darkElevated : const Color(0xFFF3F4F6),
+                          fillColor: isDarkMode
+                              ? AppColors.darkElevated
+                              : const Color(0xFFF3F4F6),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12.0),
                             borderSide: BorderSide.none,
                           ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 14.0),
                         ),
                         style: TextStyle(
                           fontSize: 14.0,
@@ -676,19 +748,26 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                           hintText: 'Rp 0',
                           labelStyle: TextStyle(
                             fontSize: 13.0,
-                            color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                            color: isDarkMode
+                                ? Colors.grey[400]
+                                : Colors.grey[600],
                           ),
                           hintStyle: TextStyle(
                             fontSize: 13.0,
-                            color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
+                            color: isDarkMode
+                                ? Colors.grey[600]
+                                : Colors.grey[400],
                           ),
                           filled: true,
-                          fillColor: isDarkMode ? AppColors.darkElevated : const Color(0xFFF3F4F6),
+                          fillColor: isDarkMode
+                              ? AppColors.darkElevated
+                              : const Color(0xFFF3F4F6),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12.0),
                             borderSide: BorderSide.none,
                           ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 14.0),
                           prefixText: 'Rp ',
                           prefixStyle: TextStyle(
                             fontSize: 14.0,
@@ -708,30 +787,34 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                           fontSize: 10.5,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 0.8,
-                          color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                          color:
+                              isDarkMode ? Colors.grey[400] : Colors.grey[600],
                         ),
                       ),
                       const SizedBox(height: 10.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          'wallet',
-                          'account_balance',
-                          'payment'
-                        ].map((iconName) {
+                        children: ['wallet', 'account_balance', 'payment']
+                            .map((iconName) {
                           final isSelected = selectedIcon == iconName;
                           return GestureDetector(
-                            onTap: () => setState(() => selectedIcon = iconName),
+                            onTap: () =>
+                                setState(() => selectedIcon = iconName),
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 200),
                               padding: const EdgeInsets.all(12.0),
                               decoration: BoxDecoration(
                                 color: isSelected
-                                    ? AppColors.accentTeal.withValues(alpha: 0.1)
-                                    : (isDarkMode ? AppColors.darkElevated : const Color(0xFFF3F4F6)),
+                                    ? AppColors.accentTeal
+                                        .withValues(alpha: 0.1)
+                                    : (isDarkMode
+                                        ? AppColors.darkElevated
+                                        : const Color(0xFFF3F4F6)),
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: isSelected ? AppColors.accentTeal : Colors.transparent,
+                                  color: isSelected
+                                      ? AppColors.accentTeal
+                                      : Colors.transparent,
                                   width: 1.5,
                                 ),
                               ),
@@ -739,7 +822,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                 _getAccountIcon(iconName),
                                 color: isSelected
                                     ? AppColors.accentTeal
-                                    : (isDarkMode ? Colors.white70 : Colors.black87),
+                                    : (isDarkMode
+                                        ? Colors.white70
+                                        : Colors.black87),
                                 size: 24.0,
                               ),
                             ),
@@ -753,7 +838,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                           fontSize: 10.5,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 0.8,
-                          color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                          color:
+                              isDarkMode ? Colors.grey[400] : Colors.grey[600],
                         ),
                       ),
                       const SizedBox(height: 10.0),
@@ -765,7 +851,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                           const SizedBox(width: 12.0),
                           if (isCustomActive) ...[
                             GestureDetector(
-                              onTap: () => setState(() => isCustomActive = true),
+                              onTap: () =>
+                                  setState(() => isCustomActive = true),
                               child: Container(
                                 width: 32.0,
                                 height: 32.0,
@@ -816,7 +903,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                 Icons.add,
                                 size: 18.0,
                                 color: _isSelectedCustom(selectedColor)
-                                    ? (isDarkMode ? Colors.white : Colors.black87)
+                                    ? (isDarkMode
+                                        ? Colors.white
+                                        : Colors.black87)
                                     : (isDarkMode
                                         ? Colors.white70
                                         : Colors.black54),
@@ -831,7 +920,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                           'PILIH PALET KUSTOM',
                           style: TextStyle(
                             fontSize: 10.0,
-                            color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                            color: isDarkMode
+                                ? Colors.grey[400]
+                                : Colors.grey[600],
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -847,8 +938,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                             {'id': '#DC2626', 'color': AppColors.semanticRed},
                             {'id': '#064B45', 'color': const Color(0xFF064B45)},
                           ].map((c) {
-                            final isThisSelected = selectedColor.toLowerCase() ==
-                                (c['id'] as String).toLowerCase();
+                            final isThisSelected =
+                                selectedColor.toLowerCase() ==
+                                    (c['id'] as String).toLowerCase();
                             return GestureDetector(
                               onTap: () {
                                 setState(() {
@@ -890,14 +982,20 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                   hintText: 'cth: #FF5722 atau 255,87,34',
                                   labelStyle: TextStyle(
                                     fontSize: 11.0,
-                                    color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                                    color: isDarkMode
+                                        ? Colors.grey[400]
+                                        : Colors.grey[600],
                                   ),
                                   hintStyle: TextStyle(
                                     fontSize: 11.0,
-                                    color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
+                                    color: isDarkMode
+                                        ? Colors.grey[600]
+                                        : Colors.grey[400],
                                   ),
                                   filled: true,
-                                  fillColor: isDarkMode ? AppColors.darkElevated : const Color(0xFFF3F4F6),
+                                  fillColor: isDarkMode
+                                      ? AppColors.darkElevated
+                                      : const Color(0xFFF3F4F6),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10.0),
                                     borderSide: BorderSide.none,
@@ -908,7 +1006,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                 ),
                                 style: TextStyle(
                                   fontSize: 12.0,
-                                  color: isDarkMode ? Colors.white : Colors.black87,
+                                  color: isDarkMode
+                                      ? Colors.white
+                                      : Colors.black87,
                                 ),
                                 onChanged: (val) {
                                   final parsed = _parseCustomColor(val);
@@ -929,7 +1029,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                     Colors.transparent,
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                    color: isDarkMode ? Colors.white24 : Colors.grey.shade400,
+                                    color: isDarkMode
+                                        ? Colors.white24
+                                        : Colors.grey.shade400,
                                     width: 1.0),
                               ),
                             ),
@@ -943,7 +1045,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                           TextButton(
                             onPressed: () => Navigator.pop(context),
                             style: TextButton.styleFrom(
-                              foregroundColor: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                              foregroundColor: isDarkMode
+                                  ? Colors.grey[400]
+                                  : Colors.grey[600],
                             ),
                             child: const Text('Batal'),
                           ),
@@ -952,21 +1056,29 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                             onPressed: () {
                               final name = nameController.text.trim();
                               final balance =
-                                  double.tryParse(balanceController.text) ?? 0.0;
+                                  double.tryParse(balanceController.text) ??
+                                      0.0;
                               if (name.isNotEmpty) {
-                                ref.read(accountsNotifierProvider.notifier).addAccount(
-                                    name, balance, selectedIcon, selectedColor);
+                                ref
+                                    .read(accountsNotifierProvider.notifier)
+                                    .addAccount(name, balance, selectedIcon,
+                                        selectedColor);
                                 Navigator.pop(context);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                      content: Text('Dompet "$name" berhasil dibuat')),
+                                      content: Text(
+                                          'Dompet "$name" berhasil dibuat')),
                                 );
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: isDarkMode ? Colors.white : AppColors.primaryBlack,
-                              foregroundColor: isDarkMode ? Colors.black : Colors.white,
-                              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                              backgroundColor: isDarkMode
+                                  ? Colors.white
+                                  : AppColors.primaryBlack,
+                              foregroundColor:
+                                  isDarkMode ? Colors.black : Colors.white,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24.0, vertical: 12.0),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
@@ -1054,7 +1166,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                           Container(
                             padding: const EdgeInsets.all(10.0),
                             decoration: BoxDecoration(
-                              color: AppColors.accentTeal.withValues(alpha: 0.1),
+                              color:
+                                  AppColors.accentTeal.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(12.0),
                             ),
                             child: const Icon(
@@ -1081,15 +1194,20 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                           labelText: 'Nama Dompet',
                           labelStyle: TextStyle(
                             fontSize: 13.0,
-                            color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                            color: isDarkMode
+                                ? Colors.grey[400]
+                                : Colors.grey[600],
                           ),
                           filled: true,
-                          fillColor: isDarkMode ? AppColors.darkElevated : const Color(0xFFF3F4F6),
+                          fillColor: isDarkMode
+                              ? AppColors.darkElevated
+                              : const Color(0xFFF3F4F6),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12.0),
                             borderSide: BorderSide.none,
                           ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 14.0),
                         ),
                         style: TextStyle(
                           fontSize: 14.0,
@@ -1104,15 +1222,20 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                           labelText: 'Saldo Awal',
                           labelStyle: TextStyle(
                             fontSize: 13.0,
-                            color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                            color: isDarkMode
+                                ? Colors.grey[400]
+                                : Colors.grey[600],
                           ),
                           filled: true,
-                          fillColor: isDarkMode ? AppColors.darkElevated : const Color(0xFFF3F4F6),
+                          fillColor: isDarkMode
+                              ? AppColors.darkElevated
+                              : const Color(0xFFF3F4F6),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12.0),
                             borderSide: BorderSide.none,
                           ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 14.0),
                           prefixText: 'Rp ',
                           prefixStyle: TextStyle(
                             fontSize: 14.0,
@@ -1132,30 +1255,34 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                           fontSize: 10.5,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 0.8,
-                          color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                          color:
+                              isDarkMode ? Colors.grey[400] : Colors.grey[600],
                         ),
                       ),
                       const SizedBox(height: 10.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          'wallet',
-                          'account_balance',
-                          'payment'
-                        ].map((iconName) {
+                        children: ['wallet', 'account_balance', 'payment']
+                            .map((iconName) {
                           final isSelected = selectedIcon == iconName;
                           return GestureDetector(
-                            onTap: () => setState(() => selectedIcon = iconName),
+                            onTap: () =>
+                                setState(() => selectedIcon = iconName),
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 200),
                               padding: const EdgeInsets.all(12.0),
                               decoration: BoxDecoration(
                                 color: isSelected
-                                    ? AppColors.accentTeal.withValues(alpha: 0.1)
-                                    : (isDarkMode ? AppColors.darkElevated : const Color(0xFFF3F4F6)),
+                                    ? AppColors.accentTeal
+                                        .withValues(alpha: 0.1)
+                                    : (isDarkMode
+                                        ? AppColors.darkElevated
+                                        : const Color(0xFFF3F4F6)),
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: isSelected ? AppColors.accentTeal : Colors.transparent,
+                                  color: isSelected
+                                      ? AppColors.accentTeal
+                                      : Colors.transparent,
                                   width: 1.5,
                                 ),
                               ),
@@ -1163,7 +1290,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                 _getAccountIcon(iconName),
                                 color: isSelected
                                     ? AppColors.accentTeal
-                                    : (isDarkMode ? Colors.white70 : Colors.black87),
+                                    : (isDarkMode
+                                        ? Colors.white70
+                                        : Colors.black87),
                                 size: 24.0,
                               ),
                             ),
@@ -1177,7 +1306,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                           fontSize: 10.5,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 0.8,
-                          color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                          color:
+                              isDarkMode ? Colors.grey[400] : Colors.grey[600],
                         ),
                       ),
                       const SizedBox(height: 10.0),
@@ -1189,7 +1319,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                           const SizedBox(width: 12.0),
                           if (isCustomActive) ...[
                             GestureDetector(
-                              onTap: () => setState(() => isCustomActive = true),
+                              onTap: () =>
+                                  setState(() => isCustomActive = true),
                               child: Container(
                                 width: 32.0,
                                 height: 32.0,
@@ -1240,7 +1371,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                 Icons.add,
                                 size: 18.0,
                                 color: _isSelectedCustom(selectedColor)
-                                    ? (isDarkMode ? Colors.white : Colors.black87)
+                                    ? (isDarkMode
+                                        ? Colors.white
+                                        : Colors.black87)
                                     : (isDarkMode
                                         ? Colors.white70
                                         : Colors.black54),
@@ -1255,7 +1388,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                           'PILIH PALET KUSTOM',
                           style: TextStyle(
                             fontSize: 10.0,
-                            color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                            color: isDarkMode
+                                ? Colors.grey[400]
+                                : Colors.grey[600],
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -1271,8 +1406,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                             {'id': '#DC2626', 'color': AppColors.semanticRed},
                             {'id': '#064B45', 'color': const Color(0xFF064B45)},
                           ].map((c) {
-                            final isThisSelected = selectedColor.toLowerCase() ==
-                                (c['id'] as String).toLowerCase();
+                            final isThisSelected =
+                                selectedColor.toLowerCase() ==
+                                    (c['id'] as String).toLowerCase();
                             return GestureDetector(
                               onTap: () {
                                 setState(() {
@@ -1314,14 +1450,20 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                   hintText: 'cth: #FF5722 atau 255,87,34',
                                   labelStyle: TextStyle(
                                     fontSize: 11.0,
-                                    color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                                    color: isDarkMode
+                                        ? Colors.grey[400]
+                                        : Colors.grey[600],
                                   ),
                                   hintStyle: TextStyle(
                                     fontSize: 11.0,
-                                    color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
+                                    color: isDarkMode
+                                        ? Colors.grey[600]
+                                        : Colors.grey[400],
                                   ),
                                   filled: true,
-                                  fillColor: isDarkMode ? AppColors.darkElevated : const Color(0xFFF3F4F6),
+                                  fillColor: isDarkMode
+                                      ? AppColors.darkElevated
+                                      : const Color(0xFFF3F4F6),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10.0),
                                     borderSide: BorderSide.none,
@@ -1332,7 +1474,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                 ),
                                 style: TextStyle(
                                   fontSize: 12.0,
-                                  color: isDarkMode ? Colors.white : Colors.black87,
+                                  color: isDarkMode
+                                      ? Colors.white
+                                      : Colors.black87,
                                 ),
                                 onChanged: (val) {
                                   final parsed = _parseCustomColor(val);
@@ -1353,7 +1497,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                     Colors.transparent,
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                    color: isDarkMode ? Colors.white24 : Colors.grey.shade400,
+                                    color: isDarkMode
+                                        ? Colors.white24
+                                        : Colors.grey.shade400,
                                     width: 1.0),
                               ),
                             ),
@@ -1367,7 +1513,9 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                           TextButton(
                             onPressed: () => Navigator.pop(context),
                             style: TextButton.styleFrom(
-                              foregroundColor: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                              foregroundColor: isDarkMode
+                                  ? Colors.grey[400]
+                                  : Colors.grey[600],
                             ),
                             child: const Text('Batal'),
                           ),
@@ -1376,9 +1524,12 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                             onPressed: () {
                               final name = nameController.text.trim();
                               final balance =
-                                  double.tryParse(balanceController.text) ?? 0.0;
+                                  double.tryParse(balanceController.text) ??
+                                      0.0;
                               if (name.isNotEmpty) {
-                                ref.read(accountsNotifierProvider.notifier).updateAccount(
+                                ref
+                                    .read(accountsNotifierProvider.notifier)
+                                    .updateAccount(
                                       acc.copyWith(
                                         name: name,
                                         initialBalance: balance,
@@ -1389,14 +1540,19 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                                 Navigator.pop(context);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                      content: Text('Dompet "$name" berhasil diupdate')),
+                                      content: Text(
+                                          'Dompet "$name" berhasil diupdate')),
                                 );
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: isDarkMode ? Colors.white : AppColors.primaryBlack,
-                              foregroundColor: isDarkMode ? Colors.black : Colors.white,
-                              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                              backgroundColor: isDarkMode
+                                  ? Colors.white
+                                  : AppColors.primaryBlack,
+                              foregroundColor:
+                                  isDarkMode ? Colors.black : Colors.white,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24.0, vertical: 12.0),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
@@ -1478,7 +1634,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                     TextButton(
                       onPressed: () => Navigator.pop(context),
                       style: TextButton.styleFrom(
-                        foregroundColor: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                        foregroundColor:
+                            isDarkMode ? Colors.grey[400] : Colors.grey[600],
                       ),
                       child: const Text('Batal'),
                     ),
@@ -1492,7 +1649,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                                content: Text('Dompet "${acc.name}" berhasil dihapus'),
+                                content: Text(
+                                    'Dompet "${acc.name}" berhasil dihapus'),
                                 backgroundColor: AppColors.semanticRed),
                           );
                         }
@@ -1500,7 +1658,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.semanticRed,
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 12.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),

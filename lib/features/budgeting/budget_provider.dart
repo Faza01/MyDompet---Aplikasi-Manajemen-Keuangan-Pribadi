@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/database/database_helper.dart';
 import '../../data/models/category.dart';
 import '../../data/models/budget.dart';
-import '../../data/models/transaction.dart';
 import 'categories_provider.dart';
 import '../transactions/transactions_provider.dart';
 
