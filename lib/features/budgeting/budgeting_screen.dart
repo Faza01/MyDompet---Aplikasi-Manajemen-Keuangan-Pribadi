@@ -6,6 +6,7 @@ import '../../data/models/category.dart';
 import '../../data/models/keyword.dart';
 import 'budget_provider.dart';
 import 'categories_provider.dart';
+import '../../core/database/database_helper.dart';
 
 class BudgetingScreen extends ConsumerWidget {
   const BudgetingScreen({super.key});
@@ -302,22 +303,31 @@ class _CategoryDetailPanelState extends ConsumerState<_CategoryDetailPanel> {
     }
   }
 
-  void _addKeyword() {
+  Future<void> _addKeyword() async {
     final kw = _keywordController.text.trim();
     if (kw.isEmpty) return;
 
-    ref
-        .read(keywordsNotifierProvider.notifier)
-        .addKeyword(widget.category.id!, kw);
+    final db = DatabaseHelper.instance;
+    await db.insertKeyword(CategoryKeyword(
+      categoryId: widget.category.id!,
+      keyword: kw.toLowerCase(),
+    ));
+    ref.invalidate(categoryKeywordsProvider(widget.category.id!));
     _keywordController.clear();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Kata kunci "$kw" ditambahkan')),
-    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Kata kunci "$kw" ditambahkan')),
+      );
+    }
+  }
+
+  Future<void> _deleteKeyword(int kwId) async {
+    await DatabaseHelper.instance.deleteKeyword(kwId);
+    ref.invalidate(categoryKeywordsProvider(widget.category.id!));
   }
 
   @override
   Widget build(BuildContext context) {
-    final keywordsAsync = ref.watch(keywordsNotifierProvider);
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
@@ -470,62 +480,74 @@ class _CategoryDetailPanelState extends ConsumerState<_CategoryDetailPanel> {
             ),
             const SizedBox(height: 12.0),
 
-            // List of keywords
-            keywordsAsync.when(
-              data: (keywords) {
-                final filteredKws = keywords
-                    .where((k) => k.categoryId == widget.category.id)
-                    .toList();
-
-                if (filteredKws.isEmpty) {
-                  return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 12.0),
-                      child: Text(
-                        'Belum ada kata kunci kustom untuk kategori ini.',
-                        style: TextStyle(
-                            fontStyle: FontStyle.italic, color: Colors.grey),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  );
-                }
-
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 12.0),
-                  child: Wrap(
-                    spacing: 8.0,
-                    runSpacing: 8.0,
-                    children: filteredKws.map((kw) {
-                      return Chip(
-                        label: Text(kw.keyword),
-                        deleteIcon: const Icon(Icons.close, size: 16),
-                        onDeleted: () {
-                          if (kw.id != null) {
-                            ref
-                                .read(keywordsNotifierProvider.notifier)
-                                .deleteKeyword(kw.id!);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content: Text(
-                                      'Kata kunci "${kw.keyword}" dihapus')),
-                            );
-                          }
-                        },
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      );
-                    }).toList(),
-                  ),
+            // List of keywords (Isolated sub-widget)
+            _KeywordsListWidget(
+              categoryId: widget.category.id!,
+              onDelete: (kwId) async {
+                final messenger = ScaffoldMessenger.of(context);
+                await _deleteKeyword(kwId);
+                messenger.showSnackBar(
+                  const SnackBar(content: Text('Kata kunci dihapus')),
                 );
               },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, st) => Text('Error load kata kunci: $err'),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _KeywordsListWidget extends ConsumerWidget {
+  final int categoryId;
+  final Function(int) onDelete;
+
+  const _KeywordsListWidget({
+    required this.categoryId,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final keywordsAsync = ref.watch(categoryKeywordsProvider(categoryId));
+
+    return keywordsAsync.when(
+      data: (keywords) {
+        if (keywords.isEmpty) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 12.0),
+              child: Text(
+                'Belum ada kata kunci kustom untuk kategori ini.',
+                style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+        }
+
+        return RepaintBoundary(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 12.0),
+            child: Wrap(
+              spacing: 8.0,
+              runSpacing: 8.0,
+              children: keywords.map((kw) {
+                return Chip(
+                  label: Text(kw.keyword),
+                  deleteIcon: const Icon(Icons.close, size: 16),
+                  onDeleted: () => onDelete(kw.id!),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (err, st) => Text('Error load kata kunci: $err'),
     );
   }
 }
