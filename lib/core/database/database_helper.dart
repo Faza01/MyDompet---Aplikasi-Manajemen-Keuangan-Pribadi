@@ -25,7 +25,7 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 4,
+      version: 5,
       onCreate: _createDB,
       onConfigure: _onConfigure,
       onUpgrade: _onUpgrade,
@@ -74,6 +74,38 @@ class DatabaseHelper {
         )
       ''');
       await _seedNlpKeywords(db);
+    }
+    if (oldVersion < 5) {
+      // Recreate debts table to ensure due_date column is nullable (removing NOT NULL constraint if it existed)
+      final tables = await db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='debts'");
+      if (tables.isNotEmpty) {
+        await db.execute('PRAGMA foreign_keys = OFF');
+        await db.execute('DROP TABLE IF EXISTS _debts_old');
+        await db.execute('ALTER TABLE debts RENAME TO _debts_old');
+        await db.execute('''
+          CREATE TABLE debts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            contact_name TEXT NOT NULL,
+            amount REAL NOT NULL,
+            type TEXT NOT NULL CHECK(type IN ('debt', 'receivable')),
+            due_date TEXT,
+            status TEXT NOT NULL CHECK(status IN ('pending', 'paid')),
+            note TEXT,
+            account_id INTEGER NOT NULL,
+            transaction_id INTEGER,
+            created_at TEXT NOT NULL,
+            FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE,
+            FOREIGN KEY (transaction_id) REFERENCES transactions(id) ON DELETE SET NULL
+          )
+        ''');
+        await db.execute('''
+          INSERT INTO debts (id, contact_name, amount, type, due_date, status, note, account_id, transaction_id, created_at)
+          SELECT id, contact_name, amount, type, due_date, status, note, account_id, transaction_id, created_at
+          FROM _debts_old
+        ''');
+        await db.execute('DROP TABLE _debts_old');
+        await db.execute('PRAGMA foreign_keys = ON');
+      }
     }
   }
 
