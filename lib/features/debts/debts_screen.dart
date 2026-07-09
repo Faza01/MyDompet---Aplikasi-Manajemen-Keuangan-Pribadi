@@ -333,7 +333,9 @@ class _DebtsScreenState extends ConsumerState<DebtsScreen> {
                             final debt = filteredDebts[index];
                             final sisa = debt.amount - debt.paidAmount;
                             final double progress = debt.amount > 0 ? (debt.paidAmount / debt.amount) : 0.0;
-                            final isOverdue = debt.status == 'pending' && debt.dueDate.isBefore(DateTime.now());
+                            final isOverdue = debt.status == 'pending' &&
+                                debt.dueDate != null &&
+                                debt.dueDate!.isBefore(DateTime.now());
                             final colorType = debt.type == 'debt' ? AppColors.semanticRed : AppColors.accentTeal;
 
                             return Card(
@@ -442,7 +444,9 @@ class _DebtsScreenState extends ConsumerState<DebtsScreen> {
                                               ),
                                               const SizedBox(width: 6),
                                               Text(
-                                                'Tenggat: ${DateFormat('dd MMM yyyy').format(debt.dueDate)}',
+                                                debt.dueDate == null
+                                                    ? 'Tanpa tenggat'
+                                                    : 'Tenggat: ${DateFormat('dd MMM yyyy').format(debt.dueDate!)}',
                                                 style: TextStyle(
                                                   fontSize: 11,
                                                   fontWeight: isOverdue ? FontWeight.bold : FontWeight.normal,
@@ -485,10 +489,13 @@ class _DebtsScreenState extends ConsumerState<DebtsScreen> {
       data: Theme.of(context).copyWith(
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
+        splashFactory: NoSplash.splashFactory, // Removes tap splash completely
       ),
       child: ChoiceChip(
         label: Text(label),
         selected: isSelected,
+        pressElevation: 0.0, // Removes shadow popping when pressed
+        elevation: 0.0,      // Removes flat shadow
         onSelected: (val) {
           if (val) {
             setState(() {
