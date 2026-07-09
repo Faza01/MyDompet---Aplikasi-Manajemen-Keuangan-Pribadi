@@ -5,6 +5,7 @@ import '../../data/models/category.dart';
 import '../../data/models/transaction.dart';
 import '../accounts/accounts_provider.dart';
 import '../budgeting/categories_provider.dart';
+import '../debts/debts_screen.dart';
 import 'transactions_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../main.dart';
@@ -231,6 +232,55 @@ class HomeScreen extends ConsumerWidget {
                           const Center(child: CircularProgressIndicator()),
                       error: (err, st) =>
                           Center(child: Text('Error loading akun: $err')),
+                    ),
+                  ),
+                ),
+              ),
+
+              // Button entry point to Hutang & Piutang screen
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0, left: 20.0, right: 20.0),
+                  child: Center(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const DebtsScreen()),
+                        );
+                      },
+                      borderRadius: BorderRadius.circular(12.0),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                        decoration: BoxDecoration(
+                          color: isDarkMode ? AppColors.darkCard : Colors.white,
+                          borderRadius: BorderRadius.circular(12.0),
+                          border: Border.all(
+                            color: isDarkMode
+                                ? Colors.white.withValues(alpha: 0.04)
+                                : Colors.black.withValues(alpha: 0.03),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.handshake_outlined,
+                              size: 20.0,
+                              color: isDarkMode ? Colors.white70 : Colors.black87,
+                            ),
+                            const SizedBox(width: 8.0),
+                            Text(
+                              'Hutang & Piutang',
+                              style: TextStyle(
+                                fontSize: 13.0,
+                                fontWeight: FontWeight.bold,
+                                color: isDarkMode ? Colors.white70 : Colors.black87,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
