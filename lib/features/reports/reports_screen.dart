@@ -1,8 +1,13 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:share_plus/share_plus.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/models/category.dart';
 import '../accounts/accounts_provider.dart';
@@ -461,6 +466,281 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     );
   }
 
+  Future<void> _exportMutasiPdf(
+    BuildContext context,
+    List<dynamic> txs,
+    double totalIncome,
+    double totalExpense,
+    String accountFilterText,
+  ) async {
+    if (txs.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text('Tidak ada data transaksi untuk diekspor pada periode ini.'),
+          backgroundColor: AppColors.semanticRed,
+        ),
+      );
+      return;
+    }
+
+    // Tampilkan Loading Dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+
+    try {
+      final pdf = pw.Document();
+      final titleText = _getAdaptiveTitle();
+      final netBalance = totalIncome - totalExpense;
+
+      // Ambil categories & accounts secara sinkron untuk pencarian di tabel
+      final categories = ref.read(categoriesNotifierProvider).value ?? [];
+      final accounts = ref.read(accountsNotifierProvider).value ?? [];
+
+      pdf.addPage(
+        pw.MultiPage(
+          pageFormat: PdfPageFormat.a4,
+          margin: const pw.EdgeInsets.all(24),
+          header: (pw.Context context) {
+            return pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text(
+                      'MyDompet',
+                      style: pw.TextStyle(
+                        fontSize: 20,
+                        fontWeight: pw.FontWeight.bold,
+                        color: PdfColors.teal800,
+                      ),
+                    ),
+                    pw.Text(
+                      'LAPORAN MUTASI KEUANGAN',
+                      style: pw.TextStyle(
+                        fontSize: 14,
+                        fontWeight: pw.FontWeight.bold,
+                        color: PdfColors.grey700,
+                      ),
+                    ),
+                  ],
+                ),
+                pw.SizedBox(height: 6),
+                pw.Text(
+                  'Periode: ${titleText.replaceFirst("Tren Keuangan: ", "").replaceFirst("Tren Keuangan ", "")}',
+                  style: const pw.TextStyle(
+                      fontSize: 11, color: PdfColors.grey600),
+                ),
+                pw.Text(
+                  'Rekening: $accountFilterText',
+                  style: const pw.TextStyle(
+                      fontSize: 11, color: PdfColors.grey600),
+                ),
+                pw.SizedBox(height: 8),
+                pw.Divider(thickness: 1, color: PdfColors.grey300),
+                pw.SizedBox(height: 12),
+              ],
+            );
+          },
+          footer: (pw.Context context) {
+            return pw.Container(
+              alignment: pw.Alignment.centerRight,
+              margin: const pw.EdgeInsets.only(top: 20),
+              child: pw.Text(
+                'Halaman ${context.pageNumber} dari ${context.pagesCount}',
+                style:
+                    const pw.TextStyle(fontSize: 9, color: PdfColors.grey500),
+              ),
+            );
+          },
+          build: (pw.Context context) {
+            return [
+              // Summary Cards
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Expanded(
+                    child: pw.Container(
+                      padding: const pw.EdgeInsets.all(10),
+                      decoration: pw.BoxDecoration(
+                        border: pw.Border.all(color: PdfColors.grey300),
+                        borderRadius: pw.BorderRadius.circular(6),
+                      ),
+                      child: pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          pw.Text('Total Pemasukan',
+                              style: const pw.TextStyle(
+                                  fontSize: 10, color: PdfColors.grey600)),
+                          pw.SizedBox(height: 4),
+                          pw.Text(_formatRp(totalIncome),
+                              style: pw.TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: pw.FontWeight.bold,
+                                  color: PdfColors.teal)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  pw.SizedBox(width: 10),
+                  pw.Expanded(
+                    child: pw.Container(
+                      padding: const pw.EdgeInsets.all(10),
+                      decoration: pw.BoxDecoration(
+                        border: pw.Border.all(color: PdfColors.grey300),
+                        borderRadius: pw.BorderRadius.circular(6),
+                      ),
+                      child: pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          pw.Text('Total Pengeluaran',
+                              style: const pw.TextStyle(
+                                  fontSize: 10, color: PdfColors.grey600)),
+                          pw.SizedBox(height: 4),
+                          pw.Text(_formatRp(totalExpense),
+                              style: pw.TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: pw.FontWeight.bold,
+                                  color: PdfColors.red)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  pw.SizedBox(width: 10),
+                  pw.Expanded(
+                    child: pw.Container(
+                      padding: const pw.EdgeInsets.all(10),
+                      decoration: pw.BoxDecoration(
+                        border: pw.Border.all(color: PdfColors.grey300),
+                        borderRadius: pw.BorderRadius.circular(6),
+                      ),
+                      child: pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          pw.Text('Selisih',
+                              style: const pw.TextStyle(
+                                  fontSize: 10, color: PdfColors.grey600)),
+                          pw.SizedBox(height: 4),
+                          pw.Text(
+                            (netBalance >= 0 ? '+' : '') +
+                                _formatRp(netBalance),
+                            style: pw.TextStyle(
+                              fontSize: 12,
+                              fontWeight: pw.FontWeight.bold,
+                              color: netBalance >= 0
+                                  ? PdfColors.teal800
+                                  : PdfColors.red800,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              pw.SizedBox(height: 20),
+
+              // Tabel Mutasi
+              pw.TableHelper.fromTextArray(
+                border: null,
+                headerAlignment: pw.Alignment.centerLeft,
+                cellAlignment: pw.Alignment.centerLeft,
+                headerDecoration: const pw.BoxDecoration(
+                  color: PdfColors.grey200,
+                ),
+                headerHeight: 25,
+                cellHeight: 25,
+                headerStyle:
+                    pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold),
+                cellStyle: const pw.TextStyle(fontSize: 9),
+                rowDecoration: const pw.BoxDecoration(
+                  border: pw.Border(
+                      bottom:
+                          pw.BorderSide(color: PdfColors.grey200, width: 0.5)),
+                ),
+                headers: <String>[
+                  'Tanggal',
+                  'Kategori',
+                  'Rekening',
+                  'Catatan',
+                  'Nominal'
+                ],
+                data: List<List<String>>.generate(txs.length, (index) {
+                  final tx = txs[index];
+                  final formattedDate =
+                      DateFormat('dd MMM yyyy').format(tx.createdAt);
+
+                  final category = categories.firstWhere(
+                    (c) => c.id == tx.categoryId,
+                    orElse: () => Category(name: 'Lain-lain', type: tx.type),
+                  );
+                  final categoryName = category.name;
+
+                  String accountName = '-';
+                  if (accounts.isNotEmpty) {
+                    final matchingAccount = accounts.firstWhere(
+                      (a) => a.account.id == tx.accountId,
+                      orElse: () => accounts.first,
+                    );
+                    accountName = matchingAccount.account.name;
+                  }
+
+                  final amountPrefix = tx.type == 'income' ? '+' : '-';
+                  return <String>[
+                    formattedDate,
+                    categoryName,
+                    accountName,
+                    tx.note.isEmpty ? '-' : tx.note,
+                    '$amountPrefix${_formatRp(tx.amount)}',
+                  ];
+                }),
+                cellDecoration: (index, data, rowNum) {
+                  if (rowNum == 0) return const pw.BoxDecoration();
+                  return pw.BoxDecoration(
+                    color: rowNum % 2 == 0 ? PdfColors.grey50 : PdfColors.white,
+                  );
+                },
+              ),
+            ];
+          },
+        ),
+      );
+
+      // Simpan Berkas
+      final tempDir = await getTemporaryDirectory();
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final file = File('${tempDir.path}/Mutasi_Keuangan_$timestamp.pdf');
+      await file.writeAsBytes(await pdf.save());
+
+      // Tutup Loading Dialog
+      if (context.mounted) Navigator.pop(context);
+
+      // Jalankan native share sheet
+      await Share.shareXFiles(
+        [XFile(file.path)],
+        subject: 'Laporan Mutasi Keuangan - MyDompet',
+      );
+    } catch (e) {
+      // Tutup Loading Dialog jika terjadi error
+      if (context.mounted) Navigator.pop(context);
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Gagal membuat PDF: $e'),
+            backgroundColor: AppColors.semanticRed,
+          ),
+        );
+      }
+    }
+  }
+
   Widget _buildCalendarOptionItem(
     BuildContext context, {
     required String label,
@@ -529,6 +809,55 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     final accountsAsync = ref.watch(accountsNotifierProvider);
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final accounts = accountsAsync.value ?? [];
+    final transactions = transactionsAsync.value ?? [];
+    final categories = categoriesAsync.value ?? [];
+
+    final filteredTxsForExport = transactions.where((tx) {
+      final matchesAccount = _selectedAccountIds.isEmpty ||
+          _selectedAccountIds.contains(tx.accountId);
+
+      bool matchesDate = false;
+      final now = DateTime.now();
+      if (_selectedDateRange != null) {
+        final start = _selectedDateRange!.start;
+        final end = _selectedDateRange!.end;
+        final actualEnd = DateTime(end.year, end.month, end.day, 23, 59, 59);
+        matchesDate =
+            tx.createdAt.isAfter(start.subtract(const Duration(seconds: 1))) &&
+                tx.createdAt.isBefore(actualEnd);
+      } else {
+        if (_timeframe == 'day') {
+          matchesDate = tx.createdAt.year == now.year &&
+              tx.createdAt.month == now.month &&
+              tx.createdAt.day == now.day;
+        } else if (_timeframe == 'week') {
+          final startOfWeek = DateTime(now.year, now.month, now.day)
+              .subtract(Duration(days: now.weekday - 1));
+          matchesDate = tx.createdAt
+              .isAfter(startOfWeek.subtract(const Duration(seconds: 1)));
+        } else if (_timeframe == 'month') {
+          matchesDate =
+              tx.createdAt.year == now.year && tx.createdAt.month == now.month;
+        } else if (_timeframe == 'year') {
+          matchesDate = tx.createdAt.year == now.year;
+        }
+      }
+
+      final category = categories.firstWhere(
+        (c) => c.id == tx.categoryId,
+        orElse: () => Category(name: 'Lain-lain', type: tx.type),
+      );
+      final isNotTransfer = category.name.toLowerCase() != 'transfer';
+
+      return matchesAccount && matchesDate && isNotTransfer;
+    }).toList();
+
+    final double totalIncomeForExport = filteredTxsForExport
+        .where((tx) => tx.type == 'income')
+        .fold(0.0, (sum, tx) => sum + tx.amount);
+    final double totalExpenseForExport = filteredTxsForExport
+        .where((tx) => tx.type == 'expense')
+        .fold(0.0, (sum, tx) => sum + tx.amount);
 
     final selectedAccName = _selectedAccountIds.isEmpty
         ? 'Semua Akun'
@@ -546,6 +875,22 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
             style: TextStyle(fontWeight: FontWeight.bold)),
         elevation: 0,
         backgroundColor: Colors.transparent,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.picture_as_pdf_outlined),
+            tooltip: 'Unduh Mutasi',
+            onPressed: () {
+              _exportMutasiPdf(
+                context,
+                filteredTxsForExport,
+                totalIncomeForExport,
+                totalExpenseForExport,
+                selectedAccName,
+              );
+            },
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: SafeArea(
         bottom: false,
