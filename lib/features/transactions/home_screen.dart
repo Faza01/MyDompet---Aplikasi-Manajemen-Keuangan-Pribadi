@@ -125,8 +125,12 @@ Color? _parseCustomColor(String? colorStr) {
 
 List<Color> _generatePremiumGradient(Color baseColor) {
   final hsl = HSLColor.fromColor(baseColor);
-  final darkColor = hsl.withLightness((hsl.lightness * 0.5).clamp(0.0, 1.0)).toColor();
-  final lightColor = hsl.withLightness((hsl.lightness + (1.0 - hsl.lightness) * 0.55).clamp(0.0, 1.0)).toColor();
+  final darkColor =
+      hsl.withLightness((hsl.lightness * 0.5).clamp(0.0, 1.0)).toColor();
+  final lightColor = hsl
+      .withLightness(
+          (hsl.lightness + (1.0 - hsl.lightness) * 0.55).clamp(0.0, 1.0))
+      .toColor();
   return [darkColor, baseColor, lightColor];
 }
 
@@ -240,18 +244,21 @@ class HomeScreen extends ConsumerWidget {
               // Button entry point to Hutang & Piutang screen
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0, left: 20.0, right: 20.0),
+                  padding: const EdgeInsets.only(
+                      bottom: 16.0, left: 20.0, right: 20.0),
                   child: Center(
                     child: InkWell(
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const DebtsScreen()),
+                          MaterialPageRoute(
+                              builder: (context) => const DebtsScreen()),
                         );
                       },
                       borderRadius: BorderRadius.circular(12.0),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 12.0),
                         decoration: BoxDecoration(
                           color: isDarkMode ? AppColors.darkCard : Colors.white,
                           borderRadius: BorderRadius.circular(12.0),
@@ -267,7 +274,8 @@ class HomeScreen extends ConsumerWidget {
                             Icon(
                               Icons.handshake_outlined,
                               size: 20.0,
-                              color: isDarkMode ? Colors.white70 : Colors.black87,
+                              color:
+                                  isDarkMode ? Colors.white70 : Colors.black87,
                             ),
                             const SizedBox(width: 8.0),
                             Text(
@@ -275,7 +283,9 @@ class HomeScreen extends ConsumerWidget {
                               style: TextStyle(
                                 fontSize: 13.0,
                                 fontWeight: FontWeight.bold,
-                                color: isDarkMode ? Colors.white70 : Colors.black87,
+                                color: isDarkMode
+                                    ? Colors.white70
+                                    : Colors.black87,
                               ),
                             ),
                           ],
@@ -327,12 +337,12 @@ class HomeScreen extends ConsumerWidget {
                           ),
                           Row(
                             children: [
-                              _buildTimeframePill(
-                                  context, ref, 'day', 'Hari', dashboardTimeframe),
-                              _buildTimeframePill(context, ref, 'week', 'Minggu',
+                              _buildTimeframePill(context, ref, 'day', 'Hari',
                                   dashboardTimeframe),
-                              _buildTimeframePill(context, ref, 'month', 'Bulan',
-                                  dashboardTimeframe),
+                              _buildTimeframePill(context, ref, 'week',
+                                  'Minggu', dashboardTimeframe),
+                              _buildTimeframePill(context, ref, 'month',
+                                  'Bulan', dashboardTimeframe),
                               _buildTimeframePill(context, ref, 'year', 'Tahun',
                                   dashboardTimeframe),
                             ],
@@ -655,9 +665,8 @@ class HomeScreen extends ConsumerWidget {
                         sliver: SliverToBoxAdapter(
                           child: Card(
                             elevation: 0,
-                            color: isDarkMode
-                                ? AppColors.darkModal
-                                : Colors.white,
+                            color:
+                                isDarkMode ? AppColors.darkModal : Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20.0),
                               side: BorderSide(
@@ -677,7 +686,8 @@ class HomeScreen extends ConsumerWidget {
                                       Container(
                                         padding: const EdgeInsets.all(8),
                                         decoration: BoxDecoration(
-                                          color: AppColors.accentTeal.withOpacity(0.15),
+                                          color: AppColors.accentTeal
+                                              .withValues(alpha: 0.15),
                                           borderRadius:
                                               BorderRadius.circular(10.0),
                                         ),
@@ -703,11 +713,15 @@ class HomeScreen extends ConsumerWidget {
                                   Builder(
                                     builder: (context) {
                                       // Group displayTransactions by date
-                                      final Map<String, List<TransactionModel>> groupedTransactions = {};
-                                      final dfHeader = DateFormat('dd MMMM yyyy', 'id_ID');
+                                      final Map<String, List<TransactionModel>>
+                                          groupedTransactions = {};
+                                      final dfHeader =
+                                          DateFormat('dd MMMM yyyy', 'id_ID');
                                       for (final tx in displayTransactions) {
-                                        final headerKey = dfHeader.format(tx.createdAt);
-                                        if (!groupedTransactions.containsKey(headerKey)) {
+                                        final headerKey =
+                                            dfHeader.format(tx.createdAt);
+                                        if (!groupedTransactions
+                                            .containsKey(headerKey)) {
                                           groupedTransactions[headerKey] = [];
                                         }
                                         groupedTransactions[headerKey]!.add(tx);
@@ -715,27 +729,37 @@ class HomeScreen extends ConsumerWidget {
 
                                       return Column(
                                         children: [
-                                          ...groupedTransactions.entries.expand((entry) {
+                                          ...groupedTransactions.entries
+                                              .expand((entry) {
                                             final dateHeader = entry.key;
                                             final txList = entry.value;
 
                                             return [
                                               Padding(
-                                                padding: const EdgeInsets.only(top: 14.0, bottom: 8.0),
+                                                padding: const EdgeInsets.only(
+                                                    top: 14.0, bottom: 8.0),
                                                 child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
                                                       dateHeader,
                                                       style: TextStyle(
                                                         fontSize: 12.0,
-                                                        fontWeight: FontWeight.bold,
-                                                        color: isDarkMode ? Colors.white70 : Colors.black87,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: isDarkMode
+                                                            ? Colors.white70
+                                                            : Colors.black87,
                                                       ),
                                                     ),
                                                     const SizedBox(height: 4.0),
                                                     Divider(
-                                                      color: isDarkMode ? Colors.white10 : Colors.black.withOpacity(0.06),
+                                                      color: isDarkMode
+                                                          ? Colors.white10
+                                                          : Colors.black
+                                                              .withValues(
+                                                                  alpha: 0.06),
                                                       thickness: 1.0,
                                                       height: 1.0,
                                                     ),
@@ -743,66 +767,129 @@ class HomeScreen extends ConsumerWidget {
                                                 ),
                                               ),
                                               ...txList.map((tx) {
-                                                final category = categories.firstWhere(
+                                                final category =
+                                                    categories.firstWhere(
                                                   (c) => c.id == tx.categoryId,
                                                   orElse: () => Category(
-                                                      name: 'Lain-lain', type: tx.type),
+                                                      name: 'Lain-lain',
+                                                      type: tx.type),
                                                 );
 
                                                 // Time subtitle formatting
-                                                final String dateSubtitle = DateFormat('HH:mm').format(tx.createdAt);
+                                                final String dateSubtitle =
+                                                    DateFormat('HH:mm')
+                                                        .format(tx.createdAt);
 
                                                 return Dismissible(
                                                   key: Key('tx-${tx.id}'),
-                                                  direction: DismissDirection.endToStart,
+                                                  direction: DismissDirection
+                                                      .endToStart,
                                                   background: Container(
                                                     color: AppColors.expense,
-                                                    alignment: Alignment.centerRight,
-                                                    padding: const EdgeInsets.only(right: 20.0),
-                                                    child: const Icon(Icons.delete_outline, color: Colors.white),
+                                                    alignment:
+                                                        Alignment.centerRight,
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 20.0),
+                                                    child: const Icon(
+                                                        Icons.delete_outline,
+                                                        color: Colors.white),
                                                   ),
                                                   onDismissed: (direction) {
                                                     if (tx.id != null) {
-                                                      ref.read(transactionsNotifierProvider.notifier).deleteTransaction(tx.id!);
-                                                      
-                                                      bool isUndoClicked = false;
-                                                      
-                                                      ScaffoldMessenger.of(context).showSnackBar(
+                                                      ref
+                                                          .read(
+                                                              transactionsNotifierProvider
+                                                                  .notifier)
+                                                          .deleteTransaction(
+                                                              tx.id!);
+
+                                                      bool isUndoClicked =
+                                                          false;
+
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
                                                         SnackBar(
-                                                          behavior: SnackBarBehavior.floating,
-                                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-                                                          backgroundColor: isDarkMode ? AppColors.darkCard : const Color(0xFF2E3131),
-                                                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                                                          duration: const Duration(seconds: 5),
+                                                          behavior:
+                                                              SnackBarBehavior
+                                                                  .floating,
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          16.0)),
+                                                          backgroundColor:
+                                                              isDarkMode
+                                                                  ? AppColors
+                                                                      .darkCard
+                                                                  : const Color(
+                                                                      0xFF2E3131),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                      16.0,
+                                                                  vertical:
+                                                                      8.0),
+                                                          duration:
+                                                              const Duration(
+                                                                  seconds: 5),
                                                           content: Row(
                                                             children: [
                                                               Expanded(
                                                                 child: Text(
                                                                   'Transaksi "${tx.note}" dihapus',
-                                                                  style: const TextStyle(color: Colors.white, fontSize: 13.0),
+                                                                  style: const TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          13.0),
                                                                 ),
                                                               ),
                                                               TextButton(
                                                                 onPressed: () {
-                                                                  if (isUndoClicked) return;
-                                                                  isUndoClicked = true;
-                                                                  ref.read(transactionsNotifierProvider.notifier).addTransaction(tx);
-                                                                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                                                  if (isUndoClicked)
+                                                                    return;
+                                                                  isUndoClicked =
+                                                                      true;
+                                                                  ref
+                                                                      .read(transactionsNotifierProvider
+                                                                          .notifier)
+                                                                      .addTransaction(
+                                                                          tx);
+                                                                  ScaffoldMessenger.of(
+                                                                          context)
+                                                                      .hideCurrentSnackBar();
                                                                 },
-                                                                child: const Text(
+                                                                child:
+                                                                    const Text(
                                                                   'Urungkan',
                                                                   style: TextStyle(
-                                                                      color: Color(0xFFFC8A40),
-                                                                      fontWeight: FontWeight.bold,
-                                                                      fontSize: 13.0),
+                                                                      color: Color(
+                                                                          0xFFFC8A40),
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontSize:
+                                                                          13.0),
                                                                 ),
                                                               ),
                                                               IconButton(
-                                                                icon: const Icon(Icons.close, color: Colors.white70, size: 16.0),
-                                                                padding: EdgeInsets.zero,
-                                                                constraints: const BoxConstraints(),
+                                                                icon: const Icon(
+                                                                    Icons.close,
+                                                                    color: Colors
+                                                                        .white70,
+                                                                    size: 16.0),
+                                                                padding:
+                                                                    EdgeInsets
+                                                                        .zero,
+                                                                constraints:
+                                                                    const BoxConstraints(),
                                                                 onPressed: () {
-                                                                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                                                  ScaffoldMessenger.of(
+                                                                          context)
+                                                                      .hideCurrentSnackBar();
                                                                 },
                                                               ),
                                                             ],
@@ -813,65 +900,108 @@ class HomeScreen extends ConsumerWidget {
                                                   },
                                                   child: InkWell(
                                                     onTap: () {
-                                                      _showEditDialog(context, ref, tx, categories);
+                                                      _showEditDialog(context,
+                                                          ref, tx, categories);
                                                     },
                                                     child: Padding(
-                                                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 12.0),
                                                       child: Row(
                                                         children: [
-                                                            Container(
-                                                              width: 38.0,
-                                                              height: 38.0,
-                                                              decoration: BoxDecoration(
-                                                                color: isDarkMode
-                                                                    ? Colors.white10
-                                                                    : Colors.black.withOpacity(0.05),
-                                                                shape: BoxShape.circle,
-                                                              ),
-                                                              child: Icon(
-                                                                _getCategoryIcon(category.icon),
-                                                                color: isDarkMode
-                                                                    ? Colors.white70
-                                                                    : Colors.black87,
-                                                                size: 18.0,
-                                                              ),
+                                                          Container(
+                                                            width: 38.0,
+                                                            height: 38.0,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: isDarkMode
+                                                                  ? Colors
+                                                                      .white10
+                                                                  : Colors.black
+                                                                      .withValues(
+                                                                          alpha:
+                                                                              0.05),
+                                                              shape: BoxShape
+                                                                  .circle,
                                                             ),
-                                                          const SizedBox(width: 12.0),
+                                                            child: Icon(
+                                                              _getCategoryIcon(
+                                                                  category
+                                                                      .icon),
+                                                              color: isDarkMode
+                                                                  ? Colors
+                                                                      .white70
+                                                                  : Colors
+                                                                      .black87,
+                                                              size: 18.0,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              width: 12.0),
                                                           Expanded(
                                                             child: Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
                                                               children: [
                                                                 Text(
-                                                                  (tx.note == null || tx.note!.isEmpty)
-                                                                      ? category.name
+                                                                  (tx.note == null ||
+                                                                          tx.note!
+                                                                              .isEmpty)
+                                                                      ? category
+                                                                          .name
                                                                       : tx.note!,
                                                                   maxLines: 1,
-                                                                  overflow: TextOverflow.ellipsis,
-                                                                  style: const TextStyle(
-                                                                    fontSize: 13.0,
-                                                                    fontWeight: FontWeight.w500,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    fontSize:
+                                                                        13.0,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
                                                                   ),
                                                                 ),
-                                                                const SizedBox(height: 2.0),
+                                                                const SizedBox(
+                                                                    height:
+                                                                        2.0),
                                                                 Text(
                                                                   dateSubtitle,
-                                                                  style: TextStyle(
-                                                                    fontSize: 10.5,
-                                                                    color: isDarkMode ? Colors.grey[400] : Colors.grey[500],
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        10.5,
+                                                                    color: isDarkMode
+                                                                        ? Colors.grey[
+                                                                            400]
+                                                                        : Colors
+                                                                            .grey[500],
                                                                   ),
                                                                 ),
                                                               ],
                                                             ),
                                                           ),
-                                                          const SizedBox(width: 8.0),
+                                                          const SizedBox(
+                                                              width: 8.0),
                                                           Text(
-                                                            (tx.type == 'income' ? '+ ' : '- ') + _formatRp(tx.amount),
+                                                            (tx.type == 'income'
+                                                                    ? '+ '
+                                                                    : '- ') +
+                                                                _formatRp(
+                                                                    tx.amount),
                                                             style: TextStyle(
                                                               fontSize: 13.0,
-                                                              fontWeight: FontWeight.bold,
-                                                              color: tx.type == 'income'
-                                                                  ? const Color(0xFF0D9488)
-                                                                  : const Color(0xFFDC2626),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: tx.type ==
+                                                                      'income'
+                                                                  ? const Color(
+                                                                      0xFF0D9488)
+                                                                  : const Color(
+                                                                      0xFFDC2626),
                                                             ),
                                                           ),
                                                         ],
@@ -951,7 +1081,9 @@ class HomeScreen extends ConsumerWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0),
                 side: BorderSide(
-                  color: isDarkMode ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.05),
+                  color: isDarkMode
+                      ? Colors.white.withValues(alpha: 0.08)
+                      : Colors.black.withValues(alpha: 0.05),
                   width: 1,
                 ),
               ),
@@ -963,11 +1095,14 @@ class HomeScreen extends ConsumerWidget {
                     children: [
                       Container(
                         width: 5.0,
-                        color: type == 'expense' ? AppColors.expense : AppColors.income,
+                        color: type == 'expense'
+                            ? AppColors.expense
+                            : AppColors.income,
                       ),
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 16.0),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -979,12 +1114,18 @@ class HomeScreen extends ConsumerWidget {
                                     style: TextStyle(
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
-                                      color: isDarkMode ? Colors.white : Colors.black87,
+                                      color: isDarkMode
+                                          ? Colors.white
+                                          : Colors.black87,
                                     ),
                                   ),
                                   const Spacer(),
                                   IconButton(
-                                    icon: Icon(Icons.close_outlined, size: 18, color: isDarkMode ? Colors.white70 : Colors.black54),
+                                    icon: Icon(Icons.close_outlined,
+                                        size: 18,
+                                        color: isDarkMode
+                                            ? Colors.white70
+                                            : Colors.black54),
                                     onPressed: () => Navigator.pop(context),
                                     constraints: const BoxConstraints(),
                                     padding: EdgeInsets.zero,
@@ -992,88 +1133,102 @@ class HomeScreen extends ConsumerWidget {
                                 ],
                               ),
                               const SizedBox(height: 12.0),
-                               Container(
-                                 padding: const EdgeInsets.all(4.0),
-                                 decoration: BoxDecoration(
-                                   color: isDarkMode
-                                       ? AppColors.darkCard
-                                       : const Color(0xFFECEEEE),
-                                   borderRadius: BorderRadius.circular(12.0),
-                                 ),
-                                 child: Stack(
-                                   children: [
-                                     Positioned.fill(
-                                       child: AnimatedAlign(
-                                         duration: const Duration(milliseconds: 250),
-                                         curve: Curves.easeInOutCubic,
-                                         alignment: type == 'expense'
-                                             ? Alignment.centerLeft
-                                             : Alignment.centerRight,
-                                         child: FractionallySizedBox(
-                                           widthFactor: 0.5,
-                                           heightFactor: 1.0,
-                                           child: Container(
-                                             decoration: BoxDecoration(
-                                               color: const Color(0xFF2C2C2C),
-                                               borderRadius: BorderRadius.circular(9.0),
-                                             ),
-                                           ),
-                                         ),
-                                       ),
-                                     ),
-                                     Row(
-                                       children: [
-                                         Expanded(
-                                           child: GestureDetector(
-                                             onTap: () => setState(() => type = 'expense'),
-                                             child: Container(
-                                               padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                               color: Colors.transparent,
-                                               child: AnimatedDefaultTextStyle(
-                                                 duration: const Duration(milliseconds: 150),
-                                                 style: TextStyle(
-                                                   fontSize: 12.0,
-                                                   fontWeight: FontWeight.w500,
-                                                   color: type == 'expense'
-                                                       ? Colors.white
-                                                       : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
-                                                 ),
-                                                 child: const Text(
-                                                   'Pengeluaran',
-                                                   textAlign: TextAlign.center,
-                                                 ),
-                                               ),
-                                             ),
-                                           ),
-                                         ),
-                                         Expanded(
-                                           child: GestureDetector(
-                                             onTap: () => setState(() => type = 'income'),
-                                             child: Container(
-                                               padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                               color: Colors.transparent,
-                                               child: AnimatedDefaultTextStyle(
-                                                 duration: const Duration(milliseconds: 150),
-                                                 style: TextStyle(
-                                                   fontSize: 12.0,
-                                                   fontWeight: FontWeight.w500,
-                                                   color: type == 'income'
-                                                       ? Colors.white
-                                                       : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
-                                                 ),
-                                                 child: const Text(
-                                                   'Pemasukan',
-                                                   textAlign: TextAlign.center,
-                                                 ),
-                                               ),
-                                             ),
-                                           ),
-                                         ),
-                                       ],
-                                     ),
-                                   ],
-                                 ),
-                               ),
+                              Container(
+                                padding: const EdgeInsets.all(4.0),
+                                decoration: BoxDecoration(
+                                  color: isDarkMode
+                                      ? AppColors.darkCard
+                                      : const Color(0xFFECEEEE),
+                                  borderRadius: BorderRadius.circular(12.0),
+                                ),
+                                child: Stack(
+                                  children: [
+                                    Positioned.fill(
+                                      child: AnimatedAlign(
+                                        duration:
+                                            const Duration(milliseconds: 250),
+                                        curve: Curves.easeInOutCubic,
+                                        alignment: type == 'expense'
+                                            ? Alignment.centerLeft
+                                            : Alignment.centerRight,
+                                        child: FractionallySizedBox(
+                                          widthFactor: 0.5,
+                                          heightFactor: 1.0,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFF2C2C2C),
+                                              borderRadius:
+                                                  BorderRadius.circular(9.0),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: GestureDetector(
+                                            onTap: () => setState(
+                                                () => type = 'expense'),
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 8.0),
+                                              color: Colors.transparent,
+                                              child: AnimatedDefaultTextStyle(
+                                                duration: const Duration(
+                                                    milliseconds: 150),
+                                                style: TextStyle(
+                                                  fontSize: 12.0,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: type == 'expense'
+                                                      ? Colors.white
+                                                      : (isDarkMode
+                                                          ? Colors.grey[400]
+                                                          : Colors.grey[600]),
+                                                ),
+                                                child: const Text(
+                                                  'Pengeluaran',
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: GestureDetector(
+                                            onTap: () =>
+                                                setState(() => type = 'income'),
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 8.0),
+                                              color: Colors.transparent,
+                                              child: AnimatedDefaultTextStyle(
+                                                duration: const Duration(
+                                                    milliseconds: 150),
+                                                style: TextStyle(
+                                                  fontSize: 12.0,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: type == 'income'
+                                                      ? Colors.white
+                                                      : (isDarkMode
+                                                          ? Colors.grey[400]
+                                                          : Colors.grey[600]),
+                                                ),
+                                                child: const Text(
+                                                  'Pemasukan',
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
                               const SizedBox(height: 14.0),
                               Row(
                                 children: [
@@ -1081,13 +1236,22 @@ class HomeScreen extends ConsumerWidget {
                                     flex: 2,
                                     child: TextField(
                                       controller: noteController,
-                                      style: TextStyle(fontSize: 12.5, color: isDarkMode ? Colors.white : Colors.black87),
+                                      style: TextStyle(
+                                          fontSize: 12.5,
+                                          color: isDarkMode
+                                              ? Colors.white
+                                              : Colors.black87),
                                       decoration: InputDecoration(
                                         labelText: 'Catatan',
-                                        labelStyle: const TextStyle(fontSize: 11.0),
+                                        labelStyle:
+                                            const TextStyle(fontSize: 11.0),
                                         isDense: true,
-                                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 10, vertical: 8),
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8.0)),
                                       ),
                                     ),
                                   ),
@@ -1097,13 +1261,22 @@ class HomeScreen extends ConsumerWidget {
                                     child: TextField(
                                       controller: amountController,
                                       keyboardType: TextInputType.number,
-                                      style: TextStyle(fontSize: 12.5, color: isDarkMode ? Colors.white : Colors.black87),
+                                      style: TextStyle(
+                                          fontSize: 12.5,
+                                          color: isDarkMode
+                                              ? Colors.white
+                                              : Colors.black87),
                                       decoration: InputDecoration(
                                         labelText: 'Nominal',
-                                        labelStyle: const TextStyle(fontSize: 11.0),
+                                        labelStyle:
+                                            const TextStyle(fontSize: 11.0),
                                         isDense: true,
-                                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 10, vertical: 8),
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8.0)),
                                       ),
                                     ),
                                   ),
@@ -1127,21 +1300,31 @@ class HomeScreen extends ConsumerWidget {
                                               Icon(
                                                 _getCategoryIcon(c.icon),
                                                 size: 16.0,
-                                                color: isDarkMode ? Colors.white70 : Colors.black54,
+                                                color: isDarkMode
+                                                    ? Colors.white70
+                                                    : Colors.black54,
                                               ),
                                               const SizedBox(width: 8.0),
-                                              Text(c.name, style: const TextStyle(fontSize: 11.5)),
+                                              Text(c.name,
+                                                  style: const TextStyle(
+                                                      fontSize: 11.5)),
                                             ],
                                           ),
                                         );
                                       }).toList(),
-                                      onChanged: (val) => setState(() => selectedCat = val),
+                                      onChanged: (val) =>
+                                          setState(() => selectedCat = val),
                                       decoration: InputDecoration(
                                         labelText: 'Kategori',
-                                        labelStyle: const TextStyle(fontSize: 10.0),
+                                        labelStyle:
+                                            const TextStyle(fontSize: 10.0),
                                         isDense: true,
-                                        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 8, vertical: 6),
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8.0)),
                                       ),
                                     ),
                                   ),
@@ -1161,21 +1344,31 @@ class HomeScreen extends ConsumerWidget {
                                               Icon(
                                                 _getAccountIcon(a.account.icon),
                                                 size: 16.0,
-                                                color: isDarkMode ? Colors.white70 : Colors.black54,
+                                                color: isDarkMode
+                                                    ? Colors.white70
+                                                    : Colors.black54,
                                               ),
                                               const SizedBox(width: 8.0),
-                                              Text(a.account.name, style: const TextStyle(fontSize: 11.5)),
+                                              Text(a.account.name,
+                                                  style: const TextStyle(
+                                                      fontSize: 11.5)),
                                             ],
                                           ),
                                         );
                                       }).toList(),
-                                      onChanged: (val) => setState(() => selectedAccId = val),
+                                      onChanged: (val) =>
+                                          setState(() => selectedAccId = val),
                                       decoration: InputDecoration(
                                         labelText: 'Dompet',
-                                        labelStyle: const TextStyle(fontSize: 10.0),
+                                        labelStyle:
+                                            const TextStyle(fontSize: 10.0),
                                         isDense: true,
-                                        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 8, vertical: 6),
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8.0)),
                                       ),
                                     ),
                                   ),
@@ -1187,7 +1380,8 @@ class HomeScreen extends ConsumerWidget {
                                   Expanded(
                                     child: InkWell(
                                       onTap: () async {
-                                        final selectedDate = await showDatePicker(
+                                        final selectedDate =
+                                            await showDatePicker(
                                           context: context,
                                           initialDate: selectedDateTime,
                                           firstDate: DateTime(2000),
@@ -1206,21 +1400,34 @@ class HomeScreen extends ConsumerWidget {
                                         }
                                       },
                                       child: Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 8),
                                         decoration: BoxDecoration(
                                           border: Border.all(
-                                            color: isDarkMode ? Colors.white24 : Colors.black26,
+                                            color: isDarkMode
+                                                ? Colors.white24
+                                                : Colors.black26,
                                           ),
-                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
                                         ),
                                         child: Row(
                                           children: [
-                                            Icon(Icons.calendar_today_outlined, size: 12, color: isDarkMode ? Colors.white70 : Colors.black54),
+                                            Icon(Icons.calendar_today_outlined,
+                                                size: 12,
+                                                color: isDarkMode
+                                                    ? Colors.white70
+                                                    : Colors.black54),
                                             const SizedBox(width: 6),
                                             Expanded(
                                               child: Text(
-                                                DateFormat('dd MMM yyyy').format(selectedDateTime),
-                                                style: TextStyle(fontSize: 11.0, color: isDarkMode ? Colors.white : Colors.black87),
+                                                DateFormat('dd MMM yyyy')
+                                                    .format(selectedDateTime),
+                                                style: TextStyle(
+                                                    fontSize: 11.0,
+                                                    color: isDarkMode
+                                                        ? Colors.white
+                                                        : Colors.black87),
                                               ),
                                             ),
                                           ],
@@ -1232,9 +1439,11 @@ class HomeScreen extends ConsumerWidget {
                                   Expanded(
                                     child: InkWell(
                                       onTap: () async {
-                                        final selectedTime = await showTimePicker(
+                                        final selectedTime =
+                                            await showTimePicker(
                                           context: context,
-                                          initialTime: TimeOfDay.fromDateTime(selectedDateTime),
+                                          initialTime: TimeOfDay.fromDateTime(
+                                              selectedDateTime),
                                         );
                                         if (selectedTime != null) {
                                           setState(() {
@@ -1249,21 +1458,34 @@ class HomeScreen extends ConsumerWidget {
                                         }
                                       },
                                       child: Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 8),
                                         decoration: BoxDecoration(
                                           border: Border.all(
-                                            color: isDarkMode ? Colors.white24 : Colors.black26,
+                                            color: isDarkMode
+                                                ? Colors.white24
+                                                : Colors.black26,
                                           ),
-                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
                                         ),
                                         child: Row(
                                           children: [
-                                            Icon(Icons.access_time_outlined, size: 12, color: isDarkMode ? Colors.white70 : Colors.black54),
+                                            Icon(Icons.access_time_outlined,
+                                                size: 12,
+                                                color: isDarkMode
+                                                    ? Colors.white70
+                                                    : Colors.black54),
                                             const SizedBox(width: 6),
                                             Expanded(
                                               child: Text(
-                                                DateFormat('HH:mm').format(selectedDateTime),
-                                                style: TextStyle(fontSize: 11.0, color: isDarkMode ? Colors.white : Colors.black87),
+                                                DateFormat('HH:mm')
+                                                    .format(selectedDateTime),
+                                                style: TextStyle(
+                                                    fontSize: 11.0,
+                                                    color: isDarkMode
+                                                        ? Colors.white
+                                                        : Colors.black87),
                                               ),
                                             ),
                                           ],
@@ -1282,7 +1504,9 @@ class HomeScreen extends ConsumerWidget {
                                     child: Text(
                                       'Batal',
                                       style: TextStyle(
-                                        color: isDarkMode ? Colors.white70 : Colors.black54,
+                                        color: isDarkMode
+                                            ? Colors.white70
+                                            : Colors.black54,
                                         fontSize: 13.0,
                                       ),
                                     ),
@@ -1290,31 +1514,45 @@ class HomeScreen extends ConsumerWidget {
                                   const SizedBox(width: 8.0),
                                   ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: isDarkMode ? Colors.white : AppColors.darkModal,
-                                      foregroundColor: isDarkMode ? Colors.black : Colors.white,
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-                                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                      backgroundColor: isDarkMode
+                                          ? Colors.white
+                                          : AppColors.darkModal,
+                                      foregroundColor: isDarkMode
+                                          ? Colors.black
+                                          : Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8.0)),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16.0, vertical: 8.0),
                                       minimumSize: const Size(80, 36),
                                     ),
                                     onPressed: () {
-                                      final amt = double.tryParse(amountController.text) ?? 0.0;
+                                      final amt = double.tryParse(
+                                              amountController.text) ??
+                                          0.0;
                                       if (amt > 0) {
-                                        ref.read(transactionsNotifierProvider.notifier).updateTransaction(
-                                          tx.copyWith(
-                                            amount: amt,
-                                            type: type,
-                                            accountId: selectedAccId,
-                                            categoryId: selectedCat?.id,
-                                            note: noteController.text,
-                                            createdAt: selectedDateTime,
-                                          ),
-                                        );
+                                        ref
+                                            .read(transactionsNotifierProvider
+                                                .notifier)
+                                            .updateTransaction(
+                                              tx.copyWith(
+                                                amount: amt,
+                                                type: type,
+                                                accountId: selectedAccId,
+                                                categoryId: selectedCat?.id,
+                                                note: noteController.text,
+                                                createdAt: selectedDateTime,
+                                              ),
+                                            );
                                         Navigator.pop(context);
                                       }
                                     },
                                     child: const Text(
                                       'Simpan',
-                                      style: TextStyle(fontSize: 13.0, fontWeight: FontWeight.bold),
+                                      style: TextStyle(
+                                          fontSize: 13.0,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 ],
@@ -1333,8 +1571,6 @@ class HomeScreen extends ConsumerWidget {
       },
     );
   }
-
-
 
   Widget _buildTimeframePill(BuildContext context, WidgetRef ref,
       String timeframe, String label, String activeTimeframe) {

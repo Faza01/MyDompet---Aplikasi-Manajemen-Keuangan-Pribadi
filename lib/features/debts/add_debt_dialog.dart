@@ -76,7 +76,8 @@ class _AddDebtDialogState extends ConsumerState<AddDebtDialog> {
       return;
     }
 
-    final double? amount = double.tryParse(_amountController.text.trim().replaceAll('.', ''));
+    final double? amount =
+        double.tryParse(_amountController.text.trim().replaceAll('.', ''));
     if (amount == null || amount <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Nominal tidak valid')),
@@ -90,7 +91,9 @@ class _AddDebtDialogState extends ConsumerState<AddDebtDialog> {
       type: _type,
       dueDate: _dueDate,
       status: 'pending',
-      note: _noteController.text.trim().isEmpty ? null : _noteController.text.trim(),
+      note: _noteController.text.trim().isEmpty
+          ? null
+          : _noteController.text.trim(),
       accountId: _selectedAccountId!,
       createdAt: DateTime.now(),
     );
@@ -143,7 +146,9 @@ class _AddDebtDialogState extends ConsumerState<AddDebtDialog> {
                 Container(
                   padding: const EdgeInsets.all(4.0),
                   decoration: BoxDecoration(
-                    color: isDarkMode ? AppColors.darkCard : const Color(0xFFECEEEE),
+                    color: isDarkMode
+                        ? AppColors.darkCard
+                        : const Color(0xFFECEEEE),
                     borderRadius: BorderRadius.circular(12.0),
                   ),
                   child: Row(
@@ -160,13 +165,16 @@ class _AddDebtDialogState extends ConsumerState<AddDebtDialog> {
                             padding: const EdgeInsets.symmetric(vertical: 10.0),
                             decoration: BoxDecoration(
                               color: _type == 'receivable'
-                                  ? (isDarkMode ? const Color(0xFF2C2C2C) : Colors.white)
+                                  ? (isDarkMode
+                                      ? const Color(0xFF2C2C2C)
+                                      : Colors.white)
                                   : Colors.transparent,
                               borderRadius: BorderRadius.circular(8.0),
                               boxShadow: _type == 'receivable' && !isDarkMode
                                   ? [
                                       BoxShadow(
-                                        color: Colors.black.withValues(alpha: 0.05),
+                                        color: Colors.black
+                                            .withValues(alpha: 0.05),
                                         blurRadius: 4.0,
                                         offset: const Offset(0, 2),
                                       ),
@@ -180,7 +188,9 @@ class _AddDebtDialogState extends ConsumerState<AddDebtDialog> {
                                   fontSize: 13.0,
                                   fontWeight: FontWeight.bold,
                                   color: _type == 'receivable'
-                                      ? (isDarkMode ? Colors.white : Colors.black87)
+                                      ? (isDarkMode
+                                          ? Colors.white
+                                          : Colors.black87)
                                       : Colors.grey,
                                 ),
                               ),
@@ -200,13 +210,16 @@ class _AddDebtDialogState extends ConsumerState<AddDebtDialog> {
                             padding: const EdgeInsets.symmetric(vertical: 10.0),
                             decoration: BoxDecoration(
                               color: _type == 'debt'
-                                  ? (isDarkMode ? const Color(0xFF2C2C2C) : Colors.white)
+                                  ? (isDarkMode
+                                      ? const Color(0xFF2C2C2C)
+                                      : Colors.white)
                                   : Colors.transparent,
                               borderRadius: BorderRadius.circular(8.0),
                               boxShadow: _type == 'debt' && !isDarkMode
                                   ? [
                                       BoxShadow(
-                                        color: Colors.black.withValues(alpha: 0.05),
+                                        color: Colors.black
+                                            .withValues(alpha: 0.05),
                                         blurRadius: 4.0,
                                         offset: const Offset(0, 2),
                                       ),
@@ -220,7 +233,9 @@ class _AddDebtDialogState extends ConsumerState<AddDebtDialog> {
                                   fontSize: 13.0,
                                   fontWeight: FontWeight.bold,
                                   color: _type == 'debt'
-                                      ? (isDarkMode ? Colors.white : Colors.black87)
+                                      ? (isDarkMode
+                                          ? Colors.white
+                                          : Colors.black87)
                                       : Colors.grey,
                                 ),
                               ),
@@ -236,13 +251,16 @@ class _AddDebtDialogState extends ConsumerState<AddDebtDialog> {
                 // TextField Nama Kontak
                 TextFormField(
                   controller: _contactController,
-                  style: TextStyle(color: isDarkMode ? Colors.white : Colors.black87),
+                  style: TextStyle(
+                      color: isDarkMode ? Colors.white : Colors.black87),
                   decoration: InputDecoration(
                     labelText: 'Nama Orang / Kontak',
-                    labelStyle: const TextStyle(color: Colors.grey, fontSize: 13),
+                    labelStyle:
+                        const TextStyle(color: Colors.grey, fontSize: 13),
                     hintText: 'Masukkan nama',
                     hintStyle: const TextStyle(color: Colors.grey),
-                    prefixIcon: const Icon(Icons.person_outline, size: 20, color: Colors.grey),
+                    prefixIcon: const Icon(Icons.person_outline,
+                        size: 20, color: Colors.grey),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.0),
                       borderSide: BorderSide(
@@ -269,13 +287,16 @@ class _AddDebtDialogState extends ConsumerState<AddDebtDialog> {
                 TextFormField(
                   controller: _amountController,
                   keyboardType: TextInputType.number,
-                  style: TextStyle(color: isDarkMode ? Colors.white : Colors.black87),
+                  style: TextStyle(
+                      color: isDarkMode ? Colors.white : Colors.black87),
                   decoration: InputDecoration(
                     labelText: 'Nominal (Rp)',
-                    labelStyle: const TextStyle(color: Colors.grey, fontSize: 13),
+                    labelStyle:
+                        const TextStyle(color: Colors.grey, fontSize: 13),
                     hintText: '100000',
                     hintStyle: const TextStyle(color: Colors.grey),
-                    prefixIcon: const Icon(Icons.money_outlined, size: 20, color: Colors.grey),
+                    prefixIcon: const Icon(Icons.money_outlined,
+                        size: 20, color: Colors.grey),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.0),
                       borderSide: BorderSide(
@@ -306,13 +327,19 @@ class _AddDebtDialogState extends ConsumerState<AddDebtDialog> {
                       _selectedAccountId = accounts.first.account.id;
                     }
                     return DropdownButtonFormField<int>(
-                      value: _selectedAccountId,
-                      dropdownColor: isDarkMode ? AppColors.darkModal : Colors.white,
-                      style: TextStyle(color: isDarkMode ? Colors.white : Colors.black87),
+                      initialValue: _selectedAccountId,
+                      dropdownColor:
+                          isDarkMode ? AppColors.darkModal : Colors.white,
+                      style: TextStyle(
+                          color: isDarkMode ? Colors.white : Colors.black87),
                       decoration: InputDecoration(
-                        labelText: _type == 'debt' ? 'Dompet Penerima Saldo' : 'Dompet Asal Saldo',
-                        labelStyle: const TextStyle(color: Colors.grey, fontSize: 13),
-                        prefixIcon: const Icon(Icons.wallet_outlined, size: 20, color: Colors.grey),
+                        labelText: _type == 'debt'
+                            ? 'Dompet Penerima Saldo'
+                            : 'Dompet Asal Saldo',
+                        labelStyle:
+                            const TextStyle(color: Colors.grey, fontSize: 13),
+                        prefixIcon: const Icon(Icons.wallet_outlined,
+                            size: 20, color: Colors.grey),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.0),
                           borderSide: BorderSide(
@@ -339,7 +366,8 @@ class _AddDebtDialogState extends ConsumerState<AddDebtDialog> {
                       },
                     );
                   },
-                  loading: () => const Center(child: CircularProgressIndicator()),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
                   error: (e, s) => Text('Error: $e'),
                 ),
                 const SizedBox(height: 16.0),
@@ -349,7 +377,8 @@ class _AddDebtDialogState extends ConsumerState<AddDebtDialog> {
                   onTap: () => _selectDueDate(context),
                   borderRadius: BorderRadius.circular(12.0),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 16.0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12.0),
                       border: Border.all(
@@ -361,7 +390,8 @@ class _AddDebtDialogState extends ConsumerState<AddDebtDialog> {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.calendar_today_outlined, size: 18, color: Colors.grey),
+                            const Icon(Icons.calendar_today_outlined,
+                                size: 18, color: Colors.grey),
                             const SizedBox(width: 12),
                             Text(
                               _dueDate == null
@@ -371,7 +401,9 @@ class _AddDebtDialogState extends ConsumerState<AddDebtDialog> {
                                 fontSize: 13.0,
                                 color: _dueDate == null
                                     ? Colors.grey
-                                    : (isDarkMode ? Colors.white : Colors.black87),
+                                    : (isDarkMode
+                                        ? Colors.white
+                                        : Colors.black87),
                               ),
                             ),
                           ],
@@ -386,13 +418,16 @@ class _AddDebtDialogState extends ConsumerState<AddDebtDialog> {
                 // Catatan (Opsional)
                 TextFormField(
                   controller: _noteController,
-                  style: TextStyle(color: isDarkMode ? Colors.white : Colors.black87),
+                  style: TextStyle(
+                      color: isDarkMode ? Colors.white : Colors.black87),
                   decoration: InputDecoration(
                     labelText: 'Catatan (Opsional)',
-                    labelStyle: const TextStyle(color: Colors.grey, fontSize: 13),
+                    labelStyle:
+                        const TextStyle(color: Colors.grey, fontSize: 13),
                     hintText: 'Keterangan tambahan',
                     hintStyle: const TextStyle(color: Colors.grey),
-                    prefixIcon: const Icon(Icons.note_alt_outlined, size: 20, color: Colors.grey),
+                    prefixIcon: const Icon(Icons.note_alt_outlined,
+                        size: 20, color: Colors.grey),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.0),
                       borderSide: BorderSide(
@@ -427,12 +462,15 @@ class _AddDebtDialogState extends ConsumerState<AddDebtDialog> {
                     ElevatedButton(
                       onPressed: _submit,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: isDarkMode ? Colors.white : AppColors.primaryBlack,
-                        foregroundColor: isDarkMode ? Colors.black : Colors.white,
+                        backgroundColor:
+                            isDarkMode ? Colors.white : AppColors.primaryBlack,
+                        foregroundColor:
+                            isDarkMode ? Colors.black : Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12.0),
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24.0, vertical: 12.0),
                       ),
                       child: const Text(
                         'Simpan',

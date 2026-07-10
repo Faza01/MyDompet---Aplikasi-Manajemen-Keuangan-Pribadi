@@ -113,7 +113,8 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
     // Initial greeting message from bot
     _messages.add(
       ChatMessage(
-        text: 'Halo! Saya asisten pencatatan keuangan Anda. Silakan tulis atau ucapkan transaksi Anda (misal: "beli makan 5 rebu beli ayam 20 rebu beli sotong 5k"), dan saya akan bantu mengelompokkannya secara otomatis.',
+        text:
+            'Halo! Saya asisten pencatatan keuangan Anda. Silakan tulis atau ucapkan transaksi Anda (misal: "beli makan 5 rebu beli ayam 20 rebu beli sotong 5k"), dan saya akan bantu mengelompokkannya secara otomatis.',
         isUser: false,
         timestamp: DateTime.now(),
       ),
@@ -235,7 +236,8 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
       (c) => c.name.toLowerCase().contains('lain') && c.type == 'income',
       orElse: () => categories.firstWhere(
         (c) => c.type == 'income',
-        orElse: () => Category(id: 98, name: 'Lain-lain (Masuk)', type: 'income'),
+        orElse: () =>
+            Category(id: 98, name: 'Lain-lain (Masuk)', type: 'income'),
       ),
     );
 
@@ -254,7 +256,8 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
     final List<EditableParsedTransaction> editableTxs = [];
     final activeAccountId = ref.read(selectedAccountIdProvider);
     AccountWithBalance? defaultAccount;
-    final activeAccountList = accounts.where((a) => a.account.id == activeAccountId).toList();
+    final activeAccountList =
+        accounts.where((a) => a.account.id == activeAccountId).toList();
     if (activeAccountList.isNotEmpty) {
       defaultAccount = activeAccountList.first;
     } else if (accounts.isNotEmpty) {
@@ -262,7 +265,8 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
     }
 
     for (final res in parsedResults) {
-      final detectedAccount = _detectAccount(res.rawInput, accounts) ?? defaultAccount;
+      final detectedAccount =
+          _detectAccount(res.rawInput, accounts) ?? defaultAccount;
       editableTxs.add(
         EditableParsedTransaction(
           rawInput: res.rawInput,
@@ -280,14 +284,19 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
 
     // 4. Generate Bot Response
     String botResponseText;
-    if (editableTxs.isEmpty || (editableTxs.length == 1 && editableTxs.first.amountController.text.isEmpty)) {
-      botResponseText = 'Maaf, saya tidak menemukan angka transaksi yang jelas dalam pesan Anda. Silakan tulis nominal transaksi secara jelas seperti: "beli makan 15rb" atau "gaji 3jt".';
+    if (editableTxs.isEmpty ||
+        (editableTxs.length == 1 &&
+            editableTxs.first.amountController.text.isEmpty)) {
+      botResponseText =
+          'Maaf, saya tidak menemukan angka transaksi yang jelas dalam pesan Anda. Silakan tulis nominal transaksi secara jelas seperti: "beli makan 15rb" atau "gaji 3jt".';
     } else {
       final hasDebt = editableTxs.any((tx) => tx.debtType != null);
       if (hasDebt) {
-        botResponseText = 'Berikut adalah transaksi Hutang / Piutang yang berhasil saya analisis. Silakan periksa kembali detailnya di bawah ini sebelum menyimpan:';
+        botResponseText =
+            'Berikut adalah transaksi Hutang / Piutang yang berhasil saya analisis. Silakan periksa kembali detailnya di bawah ini sebelum menyimpan:';
       } else {
-        botResponseText = 'Berikut adalah transaksi yang berhasil saya analisis. Silakan periksa kembali detailnya di bawah ini sebelum menyimpan:';
+        botResponseText =
+            'Berikut adalah transaksi yang berhasil saya analisis. Silakan periksa kembali detailnya di bawah ini sebelum menyimpan:';
       }
     }
 
@@ -295,7 +304,11 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
       text: botResponseText,
       isUser: false,
       timestamp: DateTime.now(),
-      parsedTransactions: (editableTxs.isEmpty || (editableTxs.length == 1 && editableTxs.first.amountController.text.isEmpty)) ? null : editableTxs,
+      parsedTransactions: (editableTxs.isEmpty ||
+              (editableTxs.length == 1 &&
+                  editableTxs.first.amountController.text.isEmpty))
+          ? null
+          : editableTxs,
     );
 
     setState(() {
@@ -308,7 +321,8 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
   void _saveMessageTransactions(ChatMessage message) {
     if (message.parsedTransactions == null || message.isSaved) return;
 
-    final transactionsNotifier = ref.read(transactionsNotifierProvider.notifier);
+    final transactionsNotifier =
+        ref.read(transactionsNotifierProvider.notifier);
     final debtsNotifier = ref.read(debtsNotifierProvider.notifier);
     int savedCount = 0;
 
@@ -335,7 +349,9 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
           amount: tx.amount,
           type: tx.type,
           categoryId: tx.category?.id,
-          note: tx.note.trim().isEmpty ? 'Transaksi Tanpa Catatan' : tx.note.trim(),
+          note: tx.note.trim().isEmpty
+              ? 'Transaksi Tanpa Catatan'
+              : tx.note.trim(),
           rawInput: tx.rawInput,
           inputMethod: 'chat',
           createdAt: tx.dateTime,
@@ -359,14 +375,16 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
     }
   }
 
-  void _toggleType(EditableParsedTransaction tx, String newType, List<Category> categories) {
+  void _toggleType(
+      EditableParsedTransaction tx, String newType, List<Category> categories) {
     if (tx.type == newType) return;
     tx.type = newType;
 
     final filteredCats = categories.where((c) => c.type == newType).toList();
     final defaultCat = filteredCats.firstWhere(
       (c) => c.name.toLowerCase().contains('lain'),
-      orElse: () => filteredCats.isNotEmpty ? filteredCats.first : categories.first,
+      orElse: () =>
+          filteredCats.isNotEmpty ? filteredCats.first : categories.first,
     );
     tx.category = defaultCat;
   }
@@ -393,7 +411,7 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
   bool _canEditLastMessage() {
     final lastUserIdx = _getLastUserMessageIndex();
     if (lastUserIdx == -1) return false;
-    
+
     // Find the next message after lastUserIdx (which should be the bot response)
     if (lastUserIdx + 1 < _messages.length) {
       final nextMsg = _messages[lastUserIdx + 1];
@@ -446,7 +464,8 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
       (c) => c.name.toLowerCase().contains('lain') && c.type == 'income',
       orElse: () => categories.firstWhere(
         (c) => c.type == 'income',
-        orElse: () => Category(id: 98, name: 'Lain-lain (Masuk)', type: 'income'),
+        orElse: () =>
+            Category(id: 98, name: 'Lain-lain (Masuk)', type: 'income'),
       ),
     );
 
@@ -464,7 +483,8 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
     final List<EditableParsedTransaction> editableTxs = [];
     final activeAccountId = ref.read(selectedAccountIdProvider);
     AccountWithBalance? defaultAccount;
-    final activeAccountList = accounts.where((a) => a.account.id == activeAccountId).toList();
+    final activeAccountList =
+        accounts.where((a) => a.account.id == activeAccountId).toList();
     if (activeAccountList.isNotEmpty) {
       defaultAccount = activeAccountList.first;
     } else if (accounts.isNotEmpty) {
@@ -472,7 +492,8 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
     }
 
     for (final res in parsedResults) {
-      final detectedAccount = _detectAccount(res.rawInput, accounts) ?? defaultAccount;
+      final detectedAccount =
+          _detectAccount(res.rawInput, accounts) ?? defaultAccount;
       editableTxs.add(
         EditableParsedTransaction(
           rawInput: res.rawInput,
@@ -489,14 +510,19 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
     }
 
     String botResponseText;
-    if (editableTxs.isEmpty || (editableTxs.length == 1 && editableTxs.first.amountController.text.isEmpty)) {
-      botResponseText = 'Maaf, saya tidak menemukan angka transaksi yang jelas dalam pesan Anda. Silakan tulis nominal transaksi secara jelas seperti: "beli makan 15rb" atau "gaji 3jt".';
+    if (editableTxs.isEmpty ||
+        (editableTxs.length == 1 &&
+            editableTxs.first.amountController.text.isEmpty)) {
+      botResponseText =
+          'Maaf, saya tidak menemukan angka transaksi yang jelas dalam pesan Anda. Silakan tulis nominal transaksi secara jelas seperti: "beli makan 15rb" atau "gaji 3jt".';
     } else {
       final hasDebt = editableTxs.any((tx) => tx.debtType != null);
       if (hasDebt) {
-        botResponseText = 'Berikut adalah transaksi Hutang / Piutang yang berhasil saya analisis. Silakan periksa kembali detailnya di bawah ini sebelum menyimpan:';
+        botResponseText =
+            'Berikut adalah transaksi Hutang / Piutang yang berhasil saya analisis. Silakan periksa kembali detailnya di bawah ini sebelum menyimpan:';
       } else {
-        botResponseText = 'Berikut adalah transaksi yang berhasil saya analisis. Silakan periksa kembali detailnya di bawah ini sebelum menyimpan:';
+        botResponseText =
+            'Berikut adalah transaksi yang berhasil saya analisis. Silakan periksa kembali detailnya di bawah ini sebelum menyimpan:';
       }
     }
 
@@ -504,7 +530,11 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
       text: botResponseText,
       isUser: false,
       timestamp: DateTime.now(),
-      parsedTransactions: (editableTxs.isEmpty || (editableTxs.length == 1 && editableTxs.first.amountController.text.isEmpty)) ? null : editableTxs,
+      parsedTransactions: (editableTxs.isEmpty ||
+              (editableTxs.length == 1 &&
+                  editableTxs.first.amountController.text.isEmpty))
+          ? null
+          : editableTxs,
     );
 
     setState(() {
@@ -516,7 +546,8 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
   }
 
   // Smart Account Detection based on keywords in text
-  AccountWithBalance? _detectAccount(String text, List<AccountWithBalance> accounts) {
+  AccountWithBalance? _detectAccount(
+      String text, List<AccountWithBalance> accounts) {
     final lowerText = text.toLowerCase();
 
     // 1. Specific matches: check if text contains "gopay", "shopeepay", "dana", "ovo"
@@ -528,24 +559,30 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
           orElse: () => accounts.first,
         ),
       );
-      if (found.account.name.toLowerCase().contains('gopay') || found.account.name.toLowerCase().contains('go-pay')) {
+      if (found.account.name.toLowerCase().contains('gopay') ||
+          found.account.name.toLowerCase().contains('go-pay')) {
         return found;
       }
     }
 
     if (lowerText.contains('shopeepay') || lowerText.contains('shopee pay')) {
       final found = accounts.firstWhere(
-        (a) => a.account.name.toLowerCase().contains('shopeepay') || a.account.name.toLowerCase().contains('shopee pay'),
+        (a) =>
+            a.account.name.toLowerCase().contains('shopeepay') ||
+            a.account.name.toLowerCase().contains('shopee pay'),
         orElse: () => accounts.first,
       );
-      if (found.account.name.toLowerCase().contains('shopeepay') || found.account.name.toLowerCase().contains('shopee pay')) {
+      if (found.account.name.toLowerCase().contains('shopeepay') ||
+          found.account.name.toLowerCase().contains('shopee pay')) {
         return found;
       }
     }
 
     if (lowerText.contains('dana')) {
       final found = accounts.firstWhere(
-        (a) => a.account.name.toLowerCase() == 'dana' || a.account.name.toLowerCase().contains('dana'),
+        (a) =>
+            a.account.name.toLowerCase() == 'dana' ||
+            a.account.name.toLowerCase().contains('dana'),
         orElse: () => accounts.first,
       );
       if (found.account.name.toLowerCase().contains('dana')) {
@@ -566,26 +603,33 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
     // 2. Generic "qris" match:
     if (lowerText.contains('qris')) {
       final eWallet = accounts.firstWhere(
-        (a) => a.account.name.toLowerCase().contains('e-wallet') || a.account.name.toLowerCase().contains('ewallet'),
+        (a) =>
+            a.account.name.toLowerCase().contains('e-wallet') ||
+            a.account.name.toLowerCase().contains('ewallet'),
         orElse: () => accounts.first,
       );
-      if (eWallet.account.name.toLowerCase().contains('e-wallet') || eWallet.account.name.toLowerCase().contains('ewallet')) {
+      if (eWallet.account.name.toLowerCase().contains('e-wallet') ||
+          eWallet.account.name.toLowerCase().contains('ewallet')) {
         return eWallet;
       }
 
       final gopay = accounts.firstWhere(
-        (a) => a.account.name.toLowerCase().contains('gopay') || a.account.name.toLowerCase().contains('go-pay'),
+        (a) =>
+            a.account.name.toLowerCase().contains('gopay') ||
+            a.account.name.toLowerCase().contains('go-pay'),
         orElse: () => accounts.first,
       );
-      if (gopay.account.name.toLowerCase().contains('gopay') || gopay.account.name.toLowerCase().contains('go-pay')) {
+      if (gopay.account.name.toLowerCase().contains('gopay') ||
+          gopay.account.name.toLowerCase().contains('go-pay')) {
         return gopay;
       }
 
       final otherWallet = accounts.firstWhere(
-        (a) => a.account.name.toLowerCase().contains('dana') ||
-               a.account.name.toLowerCase().contains('ovo') ||
-               a.account.name.toLowerCase().contains('shopeepay') ||
-               a.account.name.toLowerCase().contains('shopee pay'),
+        (a) =>
+            a.account.name.toLowerCase().contains('dana') ||
+            a.account.name.toLowerCase().contains('ovo') ||
+            a.account.name.toLowerCase().contains('shopeepay') ||
+            a.account.name.toLowerCase().contains('shopee pay'),
         orElse: () => accounts.first,
       );
       if (otherWallet.account.name.toLowerCase().contains('dana') ||
@@ -610,16 +654,14 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
       }
       if (nameLower == 'tunai' &&
           (lowerText.contains('cash') ||
-           lowerText.contains('tunai') ||
-           lowerText.contains('dompet') ||
-           lowerText.contains('kantong'))) {
+              lowerText.contains('tunai') ||
+              lowerText.contains('dompet') ||
+              lowerText.contains('kantong'))) {
         return acc;
       }
     }
     return null;
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -629,10 +671,13 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
 
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    if (categoriesAsync.isLoading || keywordsAsync.isLoading || accountsAsync.isLoading) {
+    if (categoriesAsync.isLoading ||
+        keywordsAsync.isLoading ||
+        accountsAsync.isLoading) {
       return Dialog(
         backgroundColor: isDarkMode ? AppColors.darkModal : Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)),
         child: const Padding(
           padding: EdgeInsets.all(40.0),
           child: Center(
@@ -650,11 +695,14 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24.0),
         side: BorderSide(
-          color: isDarkMode ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.05),
+          color: isDarkMode
+              ? Colors.white.withValues(alpha: 0.08)
+              : Colors.black.withValues(alpha: 0.05),
           width: 1,
         ),
       ),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+      insetPadding:
+          const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
       child: Container(
         constraints: BoxConstraints(
           maxHeight: MediaQuery.of(context).size.height * 0.8,
@@ -663,13 +711,16 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
           children: [
             // Chat Header
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
               child: Row(
                 children: [
                   Container(
                     padding: const EdgeInsets.all(6.0),
                     decoration: BoxDecoration(
-                      color: isDarkMode ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04),
+                      color: isDarkMode
+                          ? Colors.white.withValues(alpha: 0.06)
+                          : Colors.black.withValues(alpha: 0.04),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
@@ -689,13 +740,16 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                   ),
                   const Spacer(),
                   IconButton(
-                    icon: Icon(Icons.close_outlined, size: 20, color: isDarkMode ? Colors.white70 : Colors.black54),
+                    icon: Icon(Icons.close_outlined,
+                        size: 20,
+                        color: isDarkMode ? Colors.white70 : Colors.black54),
                     onPressed: () => Navigator.of(context).pop(),
                   )
                 ],
               ),
             ),
-            Divider(height: 1, color: isDarkMode ? Colors.white10 : Colors.black12),
+            Divider(
+                height: 1, color: isDarkMode ? Colors.white10 : Colors.black12),
 
             // Message Area
             Expanded(
@@ -710,14 +764,22 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12.0),
                     child: Row(
-                      mainAxisAlignment: message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+                      mainAxisAlignment: message.isUser
+                          ? MainAxisAlignment.end
+                          : MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (!message.isUser) ...[
                           CircleAvatar(
                             radius: 14,
-                            backgroundColor: isDarkMode ? AppColors.darkElevated : Colors.grey.shade200,
-                            child: Icon(Icons.smart_toy_outlined, size: 14, color: isDarkMode ? Colors.white70 : Colors.black54),
+                            backgroundColor: isDarkMode
+                                ? AppColors.darkElevated
+                                : Colors.grey.shade200,
+                            child: Icon(Icons.smart_toy_outlined,
+                                size: 14,
+                                color: isDarkMode
+                                    ? Colors.white70
+                                    : Colors.black54),
                           ),
                           const SizedBox(width: 8.0),
                         ],
@@ -726,70 +788,104 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                             padding: const EdgeInsets.all(12.0),
                             decoration: BoxDecoration(
                               color: message.isUser
-                                  ? (isDarkMode ? AppColors.darkElevated : AppColors.primaryBlack)
-                                  : (isDarkMode ? AppColors.darkElevated : Colors.grey.shade50),
+                                  ? (isDarkMode
+                                      ? AppColors.darkElevated
+                                      : AppColors.primaryBlack)
+                                  : (isDarkMode
+                                      ? AppColors.darkElevated
+                                      : Colors.grey.shade50),
                               borderRadius: BorderRadius.only(
                                 topLeft: const Radius.circular(16.0),
                                 topRight: const Radius.circular(16.0),
-                                bottomLeft: message.isUser ? const Radius.circular(16.0) : const Radius.circular(4.0),
-                                bottomRight: message.isUser ? const Radius.circular(4.0) : const Radius.circular(16.0),
+                                bottomLeft: message.isUser
+                                    ? const Radius.circular(16.0)
+                                    : const Radius.circular(4.0),
+                                bottomRight: message.isUser
+                                    ? const Radius.circular(4.0)
+                                    : const Radius.circular(16.0),
                               ),
                               border: Border.all(
-                                color: isDarkMode ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05),
+                                color: isDarkMode
+                                    ? Colors.white.withValues(alpha: 0.05)
+                                    : Colors.black.withValues(alpha: 0.05),
                                 width: 1,
                               ),
                             ),
                             child: isEditingThis
                                 ? Column(
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       TextField(
                                         controller: _editMessageController,
                                         maxLines: null,
-                                        style: const TextStyle(fontSize: 13.0, color: Colors.white),
+                                        style: const TextStyle(
+                                            fontSize: 13.0,
+                                            color: Colors.white),
                                         decoration: const InputDecoration(
                                           isDense: true,
-                                          contentPadding: EdgeInsets.symmetric(vertical: 8),
+                                          contentPadding:
+                                              EdgeInsets.symmetric(vertical: 8),
                                           border: InputBorder.none,
                                         ),
                                       ),
-                                      const Divider(color: Colors.white24, height: 16),
+                                      const Divider(
+                                          color: Colors.white24, height: 16),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
                                         children: [
                                           TextButton(
                                             onPressed: () {
                                               setState(() {
                                                 _editingMessageIndex = null;
-                                                _editMessageController?.dispose();
+                                                _editMessageController
+                                                    ?.dispose();
                                                 _editMessageController = null;
                                               });
                                             },
-                                            child: const Text('Batal', style: TextStyle(color: Colors.white70, fontSize: 12.0)),
+                                            child: const Text('Batal',
+                                                style: TextStyle(
+                                                    color: Colors.white70,
+                                                    fontSize: 12.0)),
                                           ),
                                           const SizedBox(width: 8.0),
                                           ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: Colors.white,
                                               foregroundColor: Colors.black,
-                                              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 12.0,
+                                                      vertical: 4.0),
                                               minimumSize: const Size(60, 28),
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.0)),
                                             ),
-                                            onPressed: () => _saveEditedMessage(index),
-                                            child: const Text('Simpan', style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold)),
+                                            onPressed: () =>
+                                                _saveEditedMessage(index),
+                                            child: const Text('Simpan',
+                                                style: TextStyle(
+                                                    fontSize: 12.0,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
                                           ),
                                         ],
                                       )
                                     ],
                                   )
                                 : Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Flexible(
@@ -799,22 +895,30 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                 fontSize: 13.0,
                                                 color: message.isUser
                                                     ? Colors.white
-                                                    : (isDarkMode ? Colors.white : Colors.black87),
+                                                    : (isDarkMode
+                                                        ? Colors.white
+                                                        : Colors.black87),
                                                 height: 1.4,
                                               ),
                                             ),
                                           ),
-                                          if (message.isUser && index == _getLastUserMessageIndex() && _canEditLastMessage()) ...[
+                                          if (message.isUser &&
+                                              index ==
+                                                  _getLastUserMessageIndex() &&
+                                              _canEditLastMessage()) ...[
                                             const SizedBox(width: 8.0),
                                             GestureDetector(
                                               onTap: () {
                                                 setState(() {
                                                   _editingMessageIndex = index;
-                                                  _editMessageController = TextEditingController(text: message.text);
+                                                  _editMessageController =
+                                                      TextEditingController(
+                                                          text: message.text);
                                                 });
                                               },
                                               child: const Padding(
-                                                padding: EdgeInsets.only(bottom: 2.0),
+                                                padding: EdgeInsets.only(
+                                                    bottom: 2.0),
                                                 child: Icon(
                                                   Icons.edit_outlined,
                                                   size: 14,
@@ -825,91 +929,173 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                           ],
                                         ],
                                       ),
-                                      if (message.parsedTransactions != null) ...[
-                                        ...message.parsedTransactions!.asMap().entries.map((entry) {
+                                      if (message.parsedTransactions !=
+                                          null) ...[
+                                        ...message.parsedTransactions!
+                                            .asMap()
+                                            .entries
+                                            .map((entry) {
                                           final idx = entry.key;
                                           final tx = entry.value;
                                           return IntrinsicHeight(
                                             child: Container(
-                                              margin: const EdgeInsets.only(top: 10.0),
+                                              margin: const EdgeInsets.only(
+                                                  top: 10.0),
                                               clipBehavior: Clip.antiAlias,
                                               decoration: BoxDecoration(
-                                                color: isDarkMode ? const Color(0xFF1E222B) : Colors.white,
-                                                borderRadius: BorderRadius.circular(12.0),
+                                                color: isDarkMode
+                                                    ? const Color(0xFF1E222B)
+                                                    : Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(12.0),
                                                 border: Border.all(
-                                                  color: isDarkMode ? Colors.white10 : Colors.black.withOpacity(0.08),
+                                                  color: isDarkMode
+                                                      ? Colors.white10
+                                                      : Colors.black.withValues(
+                                                          alpha: 0.08),
                                                   width: 1,
                                                 ),
                                               ),
                                               child: Row(
-                                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.stretch,
                                                 children: [
                                                   Container(
                                                     width: 4.0,
                                                     color: tx.debtType != null
-                                                        ? (tx.debtType == 'debt' ? AppColors.accentOrange : Colors.blueAccent)
-                                                        : (tx.type == 'expense' ? Colors.redAccent : const Color(0xFF0D9488)),
+                                                        ? (tx.debtType == 'debt'
+                                                            ? AppColors
+                                                                .accentOrange
+                                                            : Colors.blueAccent)
+                                                        : (tx.type == 'expense'
+                                                            ? Colors.redAccent
+                                                            : const Color(
+                                                                0xFF0D9488)),
                                                   ),
                                                   Expanded(
                                                     child: Padding(
-                                                      padding: const EdgeInsets.all(12.0),
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              12.0),
                                                       child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .stretch,
                                                         children: [
                                                           Row(
-                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
                                                             children: [
                                                               Text(
-                                                                tx.debtType != null
-                                                                    ? (tx.debtType == 'debt' ? 'Hutang #${idx + 1}' : 'Piutang #${idx + 1}')
+                                                                tx.debtType !=
+                                                                        null
+                                                                    ? (tx.debtType ==
+                                                                            'debt'
+                                                                        ? 'Hutang #${idx + 1}'
+                                                                        : 'Piutang #${idx + 1}')
                                                                     : 'Transaksi #${idx + 1}',
-                                                                style: TextStyle(
-                                                                  fontWeight: FontWeight.bold,
-                                                                  fontSize: 12.0,
-                                                                  color: isDarkMode ? Colors.white70 : Colors.black87,
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize:
+                                                                      12.0,
+                                                                  color: isDarkMode
+                                                                      ? Colors
+                                                                          .white70
+                                                                      : Colors
+                                                                          .black87,
                                                                 ),
                                                               ),
-                                                              if (!message.isSaved)
+                                                              if (!message
+                                                                  .isSaved)
                                                                 IconButton(
-                                                                  icon: const Icon(Icons.delete_outline_outlined, size: 16, color: Colors.redAccent),
-                                                                  onPressed: () {
-                                                                    setState(() {
-                                                                      message.parsedTransactions!.removeAt(idx);
-                                                                      if (message.parsedTransactions!.isEmpty) {
-                                                                        message.parsedTransactions = null;
+                                                                  icon: const Icon(
+                                                                      Icons
+                                                                          .delete_outline_outlined,
+                                                                      size: 16,
+                                                                      color: Colors
+                                                                          .redAccent),
+                                                                  onPressed:
+                                                                      () {
+                                                                    setState(
+                                                                        () {
+                                                                      message
+                                                                          .parsedTransactions!
+                                                                          .removeAt(
+                                                                              idx);
+                                                                      if (message
+                                                                          .parsedTransactions!
+                                                                          .isEmpty) {
+                                                                        message.parsedTransactions =
+                                                                            null;
                                                                       }
                                                                     });
                                                                   },
-                                                                  constraints: const BoxConstraints(),
-                                                                  padding: EdgeInsets.zero,
+                                                                  constraints:
+                                                                      const BoxConstraints(),
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .zero,
                                                                 ),
                                                             ],
                                                           ),
-                                                          const SizedBox(height: 8.0),
+                                                          const SizedBox(
+                                                              height: 8.0),
                                                           Container(
-                                                            padding: const EdgeInsets.all(4.0),
-                                                            decoration: BoxDecoration(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(4.0),
+                                                            decoration:
+                                                                BoxDecoration(
                                                               color: isDarkMode
-                                                                  ? AppColors.darkCard
-                                                                  : const Color(0xFFECEEEE),
-                                                              borderRadius: BorderRadius.circular(12.0),
+                                                                  ? AppColors
+                                                                      .darkCard
+                                                                  : const Color(
+                                                                      0xFFECEEEE),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          12.0),
                                                             ),
                                                             child: Stack(
                                                               children: [
                                                                 Positioned.fill(
-                                                                  child: AnimatedAlign(
-                                                                    duration: const Duration(milliseconds: 250),
-                                                                    curve: Curves.easeInOutCubic,
-                                                                    alignment: tx.debtType != null
-                                                                        ? (tx.debtType == 'debt' ? Alignment.centerLeft : Alignment.centerRight)
-                                                                        : (tx.type == 'expense' ? Alignment.centerLeft : Alignment.centerRight),
-                                                                    child: FractionallySizedBox(
-                                                                      widthFactor: 0.5,
-                                                                      heightFactor: 1.0,
-                                                                      child: Container(
-                                                                        decoration: BoxDecoration(
-                                                                          color: const Color(0xFF2C2C2C),
-                                                                          borderRadius: BorderRadius.circular(9.0),
+                                                                  child:
+                                                                      AnimatedAlign(
+                                                                    duration: const Duration(
+                                                                        milliseconds:
+                                                                            250),
+                                                                    curve: Curves
+                                                                        .easeInOutCubic,
+                                                                    alignment: tx.debtType !=
+                                                                            null
+                                                                        ? (tx.debtType ==
+                                                                                'debt'
+                                                                            ? Alignment
+                                                                                .centerLeft
+                                                                            : Alignment
+                                                                                .centerRight)
+                                                                        : (tx.type ==
+                                                                                'expense'
+                                                                            ? Alignment.centerLeft
+                                                                            : Alignment.centerRight),
+                                                                    child:
+                                                                        FractionallySizedBox(
+                                                                      widthFactor:
+                                                                          0.5,
+                                                                      heightFactor:
+                                                                          1.0,
+                                                                      child:
+                                                                          Container(
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          color:
+                                                                              const Color(0xFF2C2C2C),
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(9.0),
                                                                         ),
                                                                       ),
                                                                     ),
@@ -918,10 +1104,13 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                                 Row(
                                                                   children: [
                                                                     Expanded(
-                                                                      child: GestureDetector(
-                                                                        onTap: message.isSaved
+                                                                      child:
+                                                                          GestureDetector(
+                                                                        onTap: message
+                                                                                .isSaved
                                                                             ? null
-                                                                            : () => setState(() {
+                                                                            : () =>
+                                                                                setState(() {
                                                                                   if (tx.debtType != null) {
                                                                                     tx.debtType = 'debt';
                                                                                     tx.type = 'income';
@@ -929,19 +1118,25 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                                                     _toggleType(tx, 'expense', categories);
                                                                                   }
                                                                                 }),
-                                                                        child: Container(
-                                                                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                                                          color: Colors.transparent,
-                                                                          child: AnimatedDefaultTextStyle(
-                                                                            duration: const Duration(milliseconds: 150),
-                                                                            style: TextStyle(
+                                                                        child:
+                                                                            Container(
+                                                                          padding: const EdgeInsets
+                                                                              .symmetric(
+                                                                              vertical: 8.0),
+                                                                          color:
+                                                                              Colors.transparent,
+                                                                          child:
+                                                                              AnimatedDefaultTextStyle(
+                                                                            duration:
+                                                                                const Duration(milliseconds: 150),
+                                                                            style:
+                                                                                TextStyle(
                                                                               fontSize: 12.0,
                                                                               fontWeight: FontWeight.w500,
-                                                                              color: (tx.debtType != null ? tx.debtType == 'debt' : tx.type == 'expense')
-                                                                                  ? Colors.white
-                                                                                  : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
+                                                                              color: (tx.debtType != null ? tx.debtType == 'debt' : tx.type == 'expense') ? Colors.white : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
                                                                             ),
-                                                                            child: Text(
+                                                                            child:
+                                                                                Text(
                                                                               tx.debtType != null ? 'Hutang (Masuk)' : 'Pengeluaran',
                                                                               textAlign: TextAlign.center,
                                                                             ),
@@ -950,10 +1145,13 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                                       ),
                                                                     ),
                                                                     Expanded(
-                                                                      child: GestureDetector(
-                                                                        onTap: message.isSaved
+                                                                      child:
+                                                                          GestureDetector(
+                                                                        onTap: message
+                                                                                .isSaved
                                                                             ? null
-                                                                            : () => setState(() {
+                                                                            : () =>
+                                                                                setState(() {
                                                                                   if (tx.debtType != null) {
                                                                                     tx.debtType = 'receivable';
                                                                                     tx.type = 'expense';
@@ -961,19 +1159,25 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                                                     _toggleType(tx, 'income', categories);
                                                                                   }
                                                                                 }),
-                                                                        child: Container(
-                                                                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                                                          color: Colors.transparent,
-                                                                          child: AnimatedDefaultTextStyle(
-                                                                            duration: const Duration(milliseconds: 150),
-                                                                            style: TextStyle(
+                                                                        child:
+                                                                            Container(
+                                                                          padding: const EdgeInsets
+                                                                              .symmetric(
+                                                                              vertical: 8.0),
+                                                                          color:
+                                                                              Colors.transparent,
+                                                                          child:
+                                                                              AnimatedDefaultTextStyle(
+                                                                            duration:
+                                                                                const Duration(milliseconds: 150),
+                                                                            style:
+                                                                                TextStyle(
                                                                               fontSize: 12.0,
                                                                               fontWeight: FontWeight.w500,
-                                                                              color: (tx.debtType != null ? tx.debtType == 'receivable' : tx.type == 'income')
-                                                                                  ? Colors.white
-                                                                                  : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
+                                                                              color: (tx.debtType != null ? tx.debtType == 'receivable' : tx.type == 'income') ? Colors.white : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
                                                                             ),
-                                                                            child: Text(
+                                                                            child:
+                                                                                Text(
                                                                               tx.debtType != null ? 'Piutang (Keluar)' : 'Pemasukan',
                                                                               textAlign: TextAlign.center,
                                                                             ),
@@ -986,63 +1190,134 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                               ],
                                                             ),
                                                           ),
-                                                          const SizedBox(height: 10.0),
+                                                          const SizedBox(
+                                                              height: 10.0),
                                                           Row(
                                                             children: [
                                                               Expanded(
                                                                 flex: 2,
-                                                                child: TextField(
-                                                                  controller: tx.noteController,
-                                                                  enabled: !message.isSaved,
-                                                                  style: TextStyle(fontSize: 11.5, color: isDarkMode ? Colors.white : Colors.black87),
-                                                                  decoration: InputDecoration(
-                                                                    labelText: 'Catatan',
-                                                                    labelStyle: const TextStyle(fontSize: 10.0),
-                                                                    isDense: true,
-                                                                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                                                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                                                                child:
+                                                                    TextField(
+                                                                  controller: tx
+                                                                      .noteController,
+                                                                  enabled: !message
+                                                                      .isSaved,
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          11.5,
+                                                                      color: isDarkMode
+                                                                          ? Colors
+                                                                              .white
+                                                                          : Colors
+                                                                              .black87),
+                                                                  decoration:
+                                                                      InputDecoration(
+                                                                    labelText:
+                                                                        'Catatan',
+                                                                    labelStyle: const TextStyle(
+                                                                        fontSize:
+                                                                            10.0),
+                                                                    isDense:
+                                                                        true,
+                                                                    contentPadding: const EdgeInsets
+                                                                        .symmetric(
+                                                                        horizontal:
+                                                                            8,
+                                                                        vertical:
+                                                                            6),
+                                                                    border: OutlineInputBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(8.0)),
                                                                   ),
                                                                 ),
                                                               ),
-                                                              const SizedBox(width: 6.0),
+                                                              const SizedBox(
+                                                                  width: 6.0),
                                                               Expanded(
                                                                 flex: 1,
-                                                                child: TextField(
-                                                                  controller: tx.amountController,
-                                                                  enabled: !message.isSaved,
-                                                                  keyboardType: TextInputType.number,
-                                                                  style: TextStyle(fontSize: 11.5, color: isDarkMode ? Colors.white : Colors.black87),
-                                                                  decoration: InputDecoration(
-                                                                    labelText: 'Nominal',
-                                                                    labelStyle: const TextStyle(fontSize: 10.0),
-                                                                    isDense: true,
-                                                                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                                                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                                                                child:
+                                                                    TextField(
+                                                                  controller: tx
+                                                                      .amountController,
+                                                                  enabled: !message
+                                                                      .isSaved,
+                                                                  keyboardType:
+                                                                      TextInputType
+                                                                          .number,
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          11.5,
+                                                                      color: isDarkMode
+                                                                          ? Colors
+                                                                              .white
+                                                                          : Colors
+                                                                              .black87),
+                                                                  decoration:
+                                                                      InputDecoration(
+                                                                    labelText:
+                                                                        'Nominal',
+                                                                    labelStyle: const TextStyle(
+                                                                        fontSize:
+                                                                            10.0),
+                                                                    isDense:
+                                                                        true,
+                                                                    contentPadding: const EdgeInsets
+                                                                        .symmetric(
+                                                                        horizontal:
+                                                                            8,
+                                                                        vertical:
+                                                                            6),
+                                                                    border: OutlineInputBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(8.0)),
                                                                   ),
                                                                 ),
                                                               ),
                                                             ],
                                                           ),
-                                                          const SizedBox(height: 8.0),
+                                                          const SizedBox(
+                                                              height: 8.0),
                                                           Row(
                                                             children: [
                                                               Expanded(
-                                                                child: tx.debtType != null
+                                                                child: tx.debtType !=
+                                                                        null
                                                                     ? TextField(
-                                                                        controller: tx.contactNameController,
-                                                                        enabled: !message.isSaved,
-                                                                        style: TextStyle(fontSize: 11.5, color: isDarkMode ? Colors.white : Colors.black87),
-                                                                        decoration: InputDecoration(
-                                                                          labelText: 'Nama Kontak',
-                                                                          labelStyle: const TextStyle(fontSize: 9.5),
-                                                                          isDense: true,
-                                                                          contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                                                                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                                                                        controller:
+                                                                            tx.contactNameController,
+                                                                        enabled:
+                                                                            !message.isSaved,
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                11.5,
+                                                                            color: isDarkMode
+                                                                                ? Colors.white
+                                                                                : Colors.black87),
+                                                                        decoration:
+                                                                            InputDecoration(
+                                                                          labelText:
+                                                                              'Nama Kontak',
+                                                                          labelStyle:
+                                                                              const TextStyle(fontSize: 9.5),
+                                                                          isDense:
+                                                                              true,
+                                                                          contentPadding: const EdgeInsets
+                                                                              .symmetric(
+                                                                              horizontal: 8,
+                                                                              vertical: 6),
+                                                                          border:
+                                                                              OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                                                                         ),
                                                                       )
-                                                                    : DropdownButtonFormField<Category>(
-                                                                        value: tx.category,
-                                                                        disabledHint: tx.category != null ? Text(tx.category!.name, style: const TextStyle(fontSize: 11.0)) : null,
+                                                                    : DropdownButtonFormField<
+                                                                        Category>(
+                                                                        initialValue:
+                                                                            tx.category,
+                                                                        disabledHint: tx.category !=
+                                                                                null
+                                                                            ? Text(tx.category!.name,
+                                                                                style: const TextStyle(fontSize: 11.0))
+                                                                            : null,
                                                                         items: categories
                                                                             .where((c) => c.type == tx.type)
                                                                             .map((c) => DropdownMenuItem(
@@ -1052,85 +1327,150 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                                             .toList(),
                                                                         onChanged: message.isSaved
                                                                             ? null
-                                                                            : (val) => setState(() => tx.category = val),
-                                                                        decoration: InputDecoration(
-                                                                          labelText: 'Kategori',
-                                                                          labelStyle: const TextStyle(fontSize: 9.5),
-                                                                          isDense: true,
-                                                                          contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                                                                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                                                                            : (val) =>
+                                                                                setState(() => tx.category = val),
+                                                                        decoration:
+                                                                            InputDecoration(
+                                                                          labelText:
+                                                                              'Kategori',
+                                                                          labelStyle:
+                                                                              const TextStyle(fontSize: 9.5),
+                                                                          isDense:
+                                                                              true,
+                                                                          contentPadding: const EdgeInsets
+                                                                              .symmetric(
+                                                                              horizontal: 6,
+                                                                              vertical: 4),
+                                                                          border:
+                                                                              OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                                                                         ),
                                                                       ),
                                                               ),
-                                                              const SizedBox(width: 6.0),
+                                                              const SizedBox(
+                                                                  width: 6.0),
                                                               Expanded(
-                                                                child: DropdownButtonFormField<AccountWithBalance>(
-                                                                  value: accounts.any((a) => a.account.id == tx.account?.account.id)
-                                                                      ? accounts.firstWhere((a) => a.account.id == tx.account?.account.id)
+                                                                child: DropdownButtonFormField<
+                                                                    AccountWithBalance>(
+                                                                  initialValue: accounts.any((a) =>
+                                                                          a.account.id ==
+                                                                          tx.account?.account
+                                                                              .id)
+                                                                      ? accounts.firstWhere((a) =>
+                                                                          a.account
+                                                                              .id ==
+                                                                          tx.account?.account
+                                                                              .id)
                                                                       : null,
-                                                                  disabledHint: tx.account != null ? Text(tx.account!.account.name, style: const TextStyle(fontSize: 11.0)) : null,
+                                                                  disabledHint: tx
+                                                                              .account !=
+                                                                          null
+                                                                      ? Text(
+                                                                          tx.account!.account
+                                                                              .name,
+                                                                          style:
+                                                                              const TextStyle(fontSize: 11.0))
+                                                                      : null,
                                                                   items: accounts
                                                                       .map((a) => DropdownMenuItem(
-                                                                            value: a,
-                                                                            child: Text(a.account.name, style: const TextStyle(fontSize: 11.0)),
+                                                                            value:
+                                                                                a,
+                                                                            child:
+                                                                                Text(a.account.name, style: const TextStyle(fontSize: 11.0)),
                                                                           ))
                                                                       .toList(),
-                                                                  onChanged: message.isSaved
+                                                                  onChanged: message
+                                                                          .isSaved
                                                                       ? null
-                                                                      : (val) => setState(() => tx.account = val),
-                                                                  decoration: InputDecoration(
-                                                                    labelText: 'Dompet',
-                                                                    labelStyle: const TextStyle(fontSize: 9.5),
-                                                                    isDense: true,
-                                                                    contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                                                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                                                                      : (val) =>
+                                                                          setState(() =>
+                                                                              tx.account = val),
+                                                                  decoration:
+                                                                      InputDecoration(
+                                                                    labelText:
+                                                                        'Dompet',
+                                                                    labelStyle: const TextStyle(
+                                                                        fontSize:
+                                                                            9.5),
+                                                                    isDense:
+                                                                        true,
+                                                                    contentPadding: const EdgeInsets
+                                                                        .symmetric(
+                                                                        horizontal:
+                                                                            6,
+                                                                        vertical:
+                                                                            4),
+                                                                    border: OutlineInputBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(8.0)),
                                                                   ),
                                                                 ),
                                                               ),
                                                             ],
                                                           ),
-                                                          if (tx.debtType != null) ...[
-                                                            const SizedBox(height: 8.0),
+                                                          if (tx.debtType !=
+                                                              null) ...[
+                                                            const SizedBox(
+                                                                height: 8.0),
                                                             Row(
                                                               children: [
                                                                 Expanded(
-                                                                  child: InkWell(
-                                                                    onTap: message.isSaved
+                                                                  child:
+                                                                      InkWell(
+                                                                    onTap: message
+                                                                            .isSaved
                                                                         ? null
                                                                         : () async {
-                                                                            final selectedDate = await showDatePicker(
+                                                                            final selectedDate =
+                                                                                await showDatePicker(
                                                                               context: context,
                                                                               initialDate: tx.dueDate ?? DateTime.now(),
                                                                               firstDate: DateTime.now().subtract(const Duration(days: 365)),
                                                                               lastDate: DateTime.now().add(const Duration(days: 3650)),
                                                                             );
-                                                                            if (selectedDate != null) {
+                                                                            if (selectedDate !=
+                                                                                null) {
                                                                               setState(() {
                                                                                 tx.dueDate = selectedDate;
                                                                               });
                                                                             }
                                                                           },
-                                                                    child: Container(
-                                                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                                                                      decoration: BoxDecoration(
-                                                                        border: Border.all(
-                                                                          color: isDarkMode ? Colors.white24 : Colors.black26,
+                                                                    child:
+                                                                        Container(
+                                                                      padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                          horizontal:
+                                                                              8,
+                                                                          vertical:
+                                                                              8),
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        border:
+                                                                            Border.all(
+                                                                          color: isDarkMode
+                                                                              ? Colors.white24
+                                                                              : Colors.black26,
                                                                         ),
-                                                                        borderRadius: BorderRadius.circular(8.0),
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(8.0),
                                                                       ),
-                                                                      child: Row(
+                                                                      child:
+                                                                          Row(
                                                                         children: [
-                                                                          Icon(Icons.event_outlined, size: 12, color: isDarkMode ? Colors.white70 : Colors.black54),
-                                                                          const SizedBox(width: 6),
+                                                                          Icon(
+                                                                              Icons.event_outlined,
+                                                                              size: 12,
+                                                                              color: isDarkMode ? Colors.white70 : Colors.black54),
+                                                                          const SizedBox(
+                                                                              width: 6),
                                                                           Expanded(
-                                                                            child: Text(
-                                                                              tx.dueDate != null
-                                                                                  ? 'Tenggat: ${DateFormat('dd MMM yyyy').format(tx.dueDate!)}'
-                                                                                  : 'Tanpa Tenggat Waktu',
+                                                                            child:
+                                                                                Text(
+                                                                              tx.dueDate != null ? 'Tenggat: ${DateFormat('dd MMM yyyy').format(tx.dueDate!)}' : 'Tanpa Tenggat Waktu',
                                                                               style: TextStyle(fontSize: 11.0, color: isDarkMode ? Colors.white : Colors.black87),
                                                                             ),
                                                                           ),
-                                                                          if (tx.dueDate != null && !message.isSaved)
+                                                                          if (tx.dueDate != null &&
+                                                                              !message.isSaved)
                                                                             GestureDetector(
                                                                               onTap: () => setState(() => tx.dueDate = null),
                                                                               child: const Padding(
@@ -1146,21 +1486,29 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                               ],
                                                             ),
                                                           ],
-                                                          const SizedBox(height: 8.0),
+                                                          const SizedBox(
+                                                              height: 8.0),
                                                           Row(
                                                             children: [
                                                               Expanded(
                                                                 child: InkWell(
-                                                                  onTap: message.isSaved
+                                                                  onTap: message
+                                                                          .isSaved
                                                                       ? null
                                                                       : () async {
-                                                                          final selectedDate = await showDatePicker(
-                                                                            context: context,
-                                                                            initialDate: tx.dateTime,
-                                                                            firstDate: DateTime(2000),
-                                                                            lastDate: DateTime(2100),
+                                                                          final selectedDate =
+                                                                              await showDatePicker(
+                                                                            context:
+                                                                                context,
+                                                                            initialDate:
+                                                                                tx.dateTime,
+                                                                            firstDate:
+                                                                                DateTime(2000),
+                                                                            lastDate:
+                                                                                DateTime(2100),
                                                                           );
-                                                                          if (selectedDate != null) {
+                                                                          if (selectedDate !=
+                                                                              null) {
                                                                             setState(() {
                                                                               tx.dateTime = DateTime(
                                                                                 selectedDate.year,
@@ -1172,22 +1520,46 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                                             });
                                                                           }
                                                                         },
-                                                                  child: Container(
-                                                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                                                                    decoration: BoxDecoration(
-                                                                      border: Border.all(
-                                                                        color: isDarkMode ? Colors.white24 : Colors.black26,
+                                                                  child:
+                                                                      Container(
+                                                                    padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                        horizontal:
+                                                                            8,
+                                                                        vertical:
+                                                                            8),
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      border:
+                                                                          Border
+                                                                              .all(
+                                                                        color: isDarkMode
+                                                                            ? Colors.white24
+                                                                            : Colors.black26,
                                                                       ),
-                                                                      borderRadius: BorderRadius.circular(8.0),
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              8.0),
                                                                     ),
                                                                     child: Row(
                                                                       children: [
-                                                                        Icon(Icons.calendar_today_outlined, size: 12, color: isDarkMode ? Colors.white70 : Colors.black54),
-                                                                        const SizedBox(width: 6),
+                                                                        Icon(
+                                                                            Icons
+                                                                                .calendar_today_outlined,
+                                                                            size:
+                                                                                12,
+                                                                            color: isDarkMode
+                                                                                ? Colors.white70
+                                                                                : Colors.black54),
+                                                                        const SizedBox(
+                                                                            width:
+                                                                                6),
                                                                         Expanded(
-                                                                          child: Text(
+                                                                          child:
+                                                                              Text(
                                                                             DateFormat('dd MMM yyyy').format(tx.dateTime),
-                                                                            style: TextStyle(fontSize: 11.0, color: isDarkMode ? Colors.white : Colors.black87),
+                                                                            style:
+                                                                                TextStyle(fontSize: 11.0, color: isDarkMode ? Colors.white : Colors.black87),
                                                                           ),
                                                                         ),
                                                                       ],
@@ -1195,17 +1567,23 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                                   ),
                                                                 ),
                                                               ),
-                                                              const SizedBox(width: 6.0),
+                                                              const SizedBox(
+                                                                  width: 6.0),
                                                               Expanded(
                                                                 child: InkWell(
-                                                                  onTap: message.isSaved
+                                                                  onTap: message
+                                                                          .isSaved
                                                                       ? null
                                                                       : () async {
-                                                                          final selectedTime = await showTimePicker(
-                                                                            context: context,
-                                                                            initialTime: TimeOfDay.fromDateTime(tx.dateTime),
+                                                                          final selectedTime =
+                                                                              await showTimePicker(
+                                                                            context:
+                                                                                context,
+                                                                            initialTime:
+                                                                                TimeOfDay.fromDateTime(tx.dateTime),
                                                                           );
-                                                                          if (selectedTime != null) {
+                                                                          if (selectedTime !=
+                                                                              null) {
                                                                             setState(() {
                                                                               tx.dateTime = DateTime(
                                                                                 tx.dateTime.year,
@@ -1217,22 +1595,46 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                                                             });
                                                                           }
                                                                         },
-                                                                  child: Container(
-                                                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                                                                    decoration: BoxDecoration(
-                                                                      border: Border.all(
-                                                                        color: isDarkMode ? Colors.white24 : Colors.black26,
+                                                                  child:
+                                                                      Container(
+                                                                    padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                        horizontal:
+                                                                            8,
+                                                                        vertical:
+                                                                            8),
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      border:
+                                                                          Border
+                                                                              .all(
+                                                                        color: isDarkMode
+                                                                            ? Colors.white24
+                                                                            : Colors.black26,
                                                                       ),
-                                                                      borderRadius: BorderRadius.circular(8.0),
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              8.0),
                                                                     ),
                                                                     child: Row(
                                                                       children: [
-                                                                        Icon(Icons.access_time_outlined, size: 12, color: isDarkMode ? Colors.white70 : Colors.black54),
-                                                                        const SizedBox(width: 6),
+                                                                        Icon(
+                                                                            Icons
+                                                                                .access_time_outlined,
+                                                                            size:
+                                                                                12,
+                                                                            color: isDarkMode
+                                                                                ? Colors.white70
+                                                                                : Colors.black54),
+                                                                        const SizedBox(
+                                                                            width:
+                                                                                6),
                                                                         Expanded(
-                                                                          child: Text(
+                                                                          child:
+                                                                              Text(
                                                                             DateFormat('HH:mm').format(tx.dateTime),
-                                                                            style: TextStyle(fontSize: 11.0, color: isDarkMode ? Colors.white : Colors.black87),
+                                                                            style:
+                                                                                TextStyle(fontSize: 11.0, color: isDarkMode ? Colors.white : Colors.black87),
                                                                           ),
                                                                         ),
                                                                       ],
@@ -1255,36 +1657,71 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                                         if (!message.isSaved)
                                           ElevatedButton.icon(
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: isDarkMode ? Colors.white : const Color(0xFF1E222B),
-                                              foregroundColor: isDarkMode ? Colors.black : Colors.white,
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                              padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                              minimumSize: const Size(double.infinity, 32),
+                                              backgroundColor: isDarkMode
+                                                  ? Colors.white
+                                                  : const Color(0xFF1E222B),
+                                              foregroundColor: isDarkMode
+                                                  ? Colors.black
+                                                  : Colors.white,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.0)),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 8.0),
+                                              minimumSize: const Size(
+                                                  double.infinity, 32),
                                             ),
-                                            icon: const Icon(Icons.check_circle_outline_outlined, size: 14),
-                                            label: const Text('Simpan ke Dompet', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold)),
+                                            icon: const Icon(
+                                                Icons
+                                                    .check_circle_outline_outlined,
+                                                size: 14),
+                                            label: const Text(
+                                                'Simpan ke Dompet',
+                                                style: TextStyle(
+                                                    fontSize: 11.5,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
                                             onPressed: () {
-                                              for (final tx in message.parsedTransactions!) {
-                                                final amtText = tx.amountController.text.trim();
-                                                tx.amount = double.tryParse(amtText) ?? 0.0;
-                                                tx.note = tx.noteController.text.trim();
-                                                tx.contactName = tx.contactNameController.text.trim();
+                                              for (final tx in message
+                                                  .parsedTransactions!) {
+                                                final amtText = tx
+                                                    .amountController.text
+                                                    .trim();
+                                                tx.amount =
+                                                    double.tryParse(amtText) ??
+                                                        0.0;
+                                                tx.note = tx.noteController.text
+                                                    .trim();
+                                                tx.contactName = tx
+                                                    .contactNameController.text
+                                                    .trim();
                                               }
                                               _saveMessageTransactions(message);
                                             },
                                           )
                                         else
                                           Container(
-                                            padding: const EdgeInsets.symmetric(vertical: 6.0),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 6.0),
                                             decoration: BoxDecoration(
-                                              color: const Color(0xFF0D9488).withOpacity(0.1),
-                                              borderRadius: BorderRadius.circular(10.0),
-                                              border: Border.all(color: const Color(0xFF0D9488).withOpacity(0.3)),
+                                              color: const Color(0xFF0D9488)
+                                                  .withValues(alpha: 0.1),
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                              border: Border.all(
+                                                  color: const Color(0xFF0D9488)
+                                                      .withValues(alpha: 0.3)),
                                             ),
                                             child: const Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                               children: [
-                                                Icon(Icons.check_circle_outlined, color: Color(0xFF0D9488), size: 14),
+                                                Icon(
+                                                    Icons.check_circle_outlined,
+                                                    color: Color(0xFF0D9488),
+                                                    size: 14),
                                                 SizedBox(width: 6.0),
                                                 Text(
                                                   'Tersimpan ke Dompet',
@@ -1308,20 +1745,26 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                 },
               ),
             ),
-            Divider(height: 1, color: isDarkMode ? Colors.white10 : Colors.black12),
+            Divider(
+                height: 1, color: isDarkMode ? Colors.white10 : Colors.black12),
 
             // Input Panel
             Padding(
-              padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 8.0, bottom: 12.0),
+              padding: const EdgeInsets.only(
+                  left: 12.0, right: 12.0, top: 8.0, bottom: 12.0),
               child: Row(
                 children: [
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: isDarkMode ? AppColors.darkElevated : Colors.grey.shade100,
+                        color: isDarkMode
+                            ? AppColors.darkElevated
+                            : Colors.grey.shade100,
                         borderRadius: BorderRadius.circular(24.0),
                         border: Border.all(
-                          color: isDarkMode ? Colors.white10 : Colors.black.withOpacity(0.08),
+                          color: isDarkMode
+                              ? Colors.white10
+                              : Colors.black.withValues(alpha: 0.08),
                           width: 1,
                         ),
                       ),
@@ -1335,27 +1778,40 @@ class _QuickInputDialogState extends ConsumerState<QuickInputDialog> {
                               onSubmitted: (_) => _sendMessage(),
                               style: TextStyle(
                                 fontSize: 13.0,
-                                color: isDarkMode ? Colors.white : Colors.black87,
+                                color:
+                                    isDarkMode ? Colors.white : Colors.black87,
                               ),
                               decoration: InputDecoration(
-                                hintText: _isListening ? 'Mendengarkan...' : 'Ketik pesan transaksi...',
+                                hintText: _isListening
+                                    ? 'Mendengarkan...'
+                                    : 'Ketik pesan transaksi...',
                                 hintStyle: TextStyle(
                                   fontSize: 13.0,
-                                  color: isDarkMode ? Colors.white30 : Colors.black38,
+                                  color: isDarkMode
+                                      ? Colors.white30
+                                      : Colors.black38,
                                 ),
                                 border: InputBorder.none,
                                 isDense: true,
-                                contentPadding: const EdgeInsets.symmetric(vertical: 10.0),
+                                contentPadding:
+                                    const EdgeInsets.symmetric(vertical: 10.0),
                               ),
                             ),
                           ),
                           IconButton(
                             icon: Icon(
-                              _isListening ? Icons.mic : Icons.mic_none_outlined,
-                              color: _isListening ? Colors.redAccent : (isDarkMode ? Colors.white70 : Colors.black54),
+                              _isListening
+                                  ? Icons.mic
+                                  : Icons.mic_none_outlined,
+                              color: _isListening
+                                  ? Colors.redAccent
+                                  : (isDarkMode
+                                      ? Colors.white70
+                                      : Colors.black54),
                               size: 20,
                             ),
-                            onPressed: _isListening ? _stopListening : _startListening,
+                            onPressed:
+                                _isListening ? _stopListening : _startListening,
                           ),
                         ],
                       ),

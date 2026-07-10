@@ -48,7 +48,8 @@ class _DebtDetailSheetState extends ConsumerState<DebtDetailSheet> {
         final isDark = Theme.of(context).brightness == Brightness.dark;
         return AlertDialog(
           backgroundColor: isDark ? AppColors.darkModal : Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           title: Text(
             'Hapus Catatan',
             style: TextStyle(color: isDark ? Colors.white : Colors.black87),
@@ -64,11 +65,14 @@ class _DebtDetailSheetState extends ConsumerState<DebtDetailSheet> {
             ),
             TextButton(
               onPressed: () {
-                ref.read(debtsNotifierProvider.notifier).deleteDebt(widget.debt.id!);
+                ref
+                    .read(debtsNotifierProvider.notifier)
+                    .deleteDebt(widget.debt.id!);
                 Navigator.of(context).pop(); // pop dialog
                 Navigator.of(context).pop(); // pop sheet
               },
-              child: const Text('Hapus', style: TextStyle(color: AppColors.semanticRed)),
+              child: const Text('Hapus',
+                  style: TextStyle(color: AppColors.semanticRed)),
             ),
           ],
         );
@@ -93,7 +97,9 @@ class _DebtDetailSheetState extends ConsumerState<DebtDetailSheet> {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final colorType = widget.debt.type == 'debt' ? AppColors.semanticRed : AppColors.accentTeal;
+    final colorType = widget.debt.type == 'debt'
+        ? AppColors.semanticRed
+        : AppColors.accentTeal;
     final sisa = widget.debt.amount - widget.debt.paidAmount;
 
     return Container(
@@ -142,7 +148,8 @@ class _DebtDetailSheetState extends ConsumerState<DebtDetailSheet> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
                       color: colorType.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(6),
@@ -167,15 +174,21 @@ class _DebtDetailSheetState extends ConsumerState<DebtDetailSheet> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Total Pinjaman', style: TextStyle(color: Colors.grey, fontSize: 11)),
+                      const Text('Total Pinjaman',
+                          style: TextStyle(color: Colors.grey, fontSize: 11)),
                       const SizedBox(height: 4),
-                      Text(_formatRp(widget.debt.amount), style: TextStyle(fontWeight: FontWeight.bold, color: isDarkMode ? Colors.white : Colors.black87)),
+                      Text(_formatRp(widget.debt.amount),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  isDarkMode ? Colors.white : Colors.black87)),
                     ],
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      const Text('Sisa Belum Bayar', style: TextStyle(color: Colors.grey, fontSize: 11)),
+                      const Text('Sisa Belum Bayar',
+                          style: TextStyle(color: Colors.grey, fontSize: 11)),
                       const SizedBox(height: 4),
                       Text(
                         _formatRp(sisa),
@@ -192,7 +205,8 @@ class _DebtDetailSheetState extends ConsumerState<DebtDetailSheet> {
               // Tanggal Tenggat waktu
               Row(
                 children: [
-                  const Icon(Icons.calendar_today_outlined, size: 16, color: Colors.grey),
+                  const Icon(Icons.calendar_today_outlined,
+                      size: 16, color: Colors.grey),
                   const SizedBox(width: 8),
                   Text(
                     widget.debt.dueDate == null
@@ -212,12 +226,15 @@ class _DebtDetailSheetState extends ConsumerState<DebtDetailSheet> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: isDarkMode ? AppColors.darkCard : const Color(0xFFF5F6F7),
+                    color: isDarkMode
+                        ? AppColors.darkCard
+                        : const Color(0xFFF5F6F7),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.note_alt_outlined, size: 18, color: Colors.grey),
+                      const Icon(Icons.note_alt_outlined,
+                          size: 18, color: Colors.grey),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -251,7 +268,8 @@ class _DebtDetailSheetState extends ConsumerState<DebtDetailSheet> {
                   future: _repaymentsFuture,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: Padding(
+                      return const Center(
+                          child: Padding(
                         padding: EdgeInsets.all(16.0),
                         child: CircularProgressIndicator(),
                       ));
@@ -263,7 +281,10 @@ class _DebtDetailSheetState extends ConsumerState<DebtDetailSheet> {
                         child: Center(
                           child: Text(
                             'Belum ada pembayaran cicilan.',
-                            style: TextStyle(color: Colors.grey, fontSize: 12, fontStyle: FontStyle.italic),
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12,
+                                fontStyle: FontStyle.italic),
                           ),
                         ),
                       );
@@ -280,11 +301,14 @@ class _DebtDetailSheetState extends ConsumerState<DebtDetailSheet> {
                             children: [
                               Row(
                                 children: [
-                                  Icon(Icons.check_circle_outline, size: 16, color: colorType),
+                                  Icon(Icons.check_circle_outline,
+                                      size: 16, color: colorType),
                                   const SizedBox(width: 8),
                                   Text(
-                                    DateFormat('dd MMM yyyy, HH:mm').format(rep.createdAt),
-                                    style: const TextStyle(color: Colors.grey, fontSize: 12),
+                                    DateFormat('dd MMM yyyy, HH:mm')
+                                        .format(rep.createdAt),
+                                    style: const TextStyle(
+                                        color: Colors.grey, fontSize: 12),
                                   ),
                                 ],
                               ),
@@ -293,7 +317,9 @@ class _DebtDetailSheetState extends ConsumerState<DebtDetailSheet> {
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13,
-                                  color: isDarkMode ? Colors.white : Colors.black87,
+                                  color: isDarkMode
+                                      ? Colors.white
+                                      : Colors.black87,
                                 ),
                               ),
                             ],
@@ -313,11 +339,14 @@ class _DebtDetailSheetState extends ConsumerState<DebtDetailSheet> {
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: _confirmDelete,
-                      icon: const Icon(Icons.delete_outline, color: AppColors.semanticRed),
-                      label: const Text('Hapus', style: TextStyle(color: AppColors.semanticRed)),
+                      icon: const Icon(Icons.delete_outline,
+                          color: AppColors.semanticRed),
+                      label: const Text('Hapus',
+                          style: TextStyle(color: AppColors.semanticRed)),
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: AppColors.semanticRed),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                     ),
@@ -332,9 +361,13 @@ class _DebtDetailSheetState extends ConsumerState<DebtDetailSheet> {
                         icon: const Icon(Icons.add_circle_outline),
                         label: const Text('Bayar Cicilan'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: isDarkMode ? Colors.white : AppColors.primaryBlack,
-                          foregroundColor: isDarkMode ? Colors.black : Colors.white,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          backgroundColor: isDarkMode
+                              ? Colors.white
+                              : AppColors.primaryBlack,
+                          foregroundColor:
+                              isDarkMode ? Colors.black : Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
                       ),
@@ -386,7 +419,8 @@ class _RepayDialogState extends ConsumerState<RepayDialog> {
     if (!_formKey.currentState!.validate()) return;
     if (_selectedAccountId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Silakan pilih rekening/dompet pembayaran')),
+        const SnackBar(
+            content: Text('Silakan pilih rekening/dompet pembayaran')),
       );
       return;
     }
@@ -403,7 +437,9 @@ class _RepayDialogState extends ConsumerState<RepayDialog> {
 
     if (amount > remaining) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Nominal cicilan melebihi sisa pinjaman (${NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0).format(remaining)})')),
+        SnackBar(
+            content: Text(
+                'Nominal cicilan melebihi sisa pinjaman (${NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0).format(remaining)})')),
       );
       return;
     }
@@ -452,7 +488,8 @@ class _RepayDialogState extends ConsumerState<RepayDialog> {
               TextFormField(
                 controller: _amountController,
                 keyboardType: TextInputType.number,
-                style: TextStyle(color: isDarkMode ? Colors.white : Colors.black87),
+                style: TextStyle(
+                    color: isDarkMode ? Colors.white : Colors.black87),
                 decoration: InputDecoration(
                   labelText: 'Nominal Cicilan (Rp)',
                   labelStyle: const TextStyle(color: Colors.grey, fontSize: 13),
@@ -485,12 +522,15 @@ class _RepayDialogState extends ConsumerState<RepayDialog> {
                     _selectedAccountId = accounts.first.account.id;
                   }
                   return DropdownButtonFormField<int>(
-                    value: _selectedAccountId,
-                    dropdownColor: isDarkMode ? AppColors.darkModal : Colors.white,
-                    style: TextStyle(color: isDarkMode ? Colors.white : Colors.black87),
+                    initialValue: _selectedAccountId,
+                    dropdownColor:
+                        isDarkMode ? AppColors.darkModal : Colors.white,
+                    style: TextStyle(
+                        color: isDarkMode ? Colors.white : Colors.black87),
                     decoration: InputDecoration(
                       labelText: 'Pilih Dompet / Rekening',
-                      labelStyle: const TextStyle(color: Colors.grey, fontSize: 13),
+                      labelStyle:
+                          const TextStyle(color: Colors.grey, fontSize: 13),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.0),
                         borderSide: BorderSide(
@@ -534,9 +574,11 @@ class _RepayDialogState extends ConsumerState<RepayDialog> {
                   ElevatedButton(
                     onPressed: _submitRepayment,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isDarkMode ? Colors.white : AppColors.primaryBlack,
+                      backgroundColor:
+                          isDarkMode ? Colors.white : AppColors.primaryBlack,
                       foregroundColor: isDarkMode ? Colors.black : Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
                     ),
                     child: const Text('Simpan'),
                   ),

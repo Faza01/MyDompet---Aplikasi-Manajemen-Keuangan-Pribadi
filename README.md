@@ -60,6 +60,7 @@
 - Batas anggaran bulanan per kategori
 - Visualisasi statistik dalam diagram pai dan diagram batang
 - Rentang laporan harian, mingguan, bulanan, hingga tahunan
+- Ekspor laporan mutasi transaksi keuangan ke format PDF
 
 </td>
     <td width="50%" valign="top">
