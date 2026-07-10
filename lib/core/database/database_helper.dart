@@ -278,7 +278,8 @@ class DatabaseHelper {
         'nonton', 'bioskop', 'tiket', 'game', 'hiburan', 'jalanjalan', 'liburan', 'travel', 
         'holiday', 'cinema', 'karaoke', 'topup game', 'steam'
       ],
-      idTransfer: ['transfer ke', 'pindah ke', 'kirim ke', 'tf ke', 'mutasi']
+      idTransfer: ['transfer ke', 'pindah ke', 'kirim ke', 'tf ke', 'mutasi'],
+      idExpenseLain: ['lain-lain', 'miscellaneous', 'lainnya', 'dll', 'dsb', 'keperluan lain'],
     };
 
     for (final entry in keywordMap.entries) {

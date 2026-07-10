@@ -101,7 +101,7 @@ class BudgetingScreen extends ConsumerWidget {
                                 width: 40.0,
                                 height: 40.0,
                                 decoration: BoxDecoration(
-                                  color: catColor.withOpacity(0.15),
+                                  color: catColor.withValues(alpha: 0.15),
                                   borderRadius: BorderRadius.circular(12.0),
                                 ),
                                 child: Icon(
@@ -519,7 +519,8 @@ class _KeywordsListWidget extends ConsumerWidget {
               padding: EdgeInsets.symmetric(vertical: 12.0),
               child: Text(
                 'Belum ada kata kunci kustom untuk kategori ini.',
-                style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
+                style:
+                    TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
                 textAlign: TextAlign.center,
               ),
             ),
