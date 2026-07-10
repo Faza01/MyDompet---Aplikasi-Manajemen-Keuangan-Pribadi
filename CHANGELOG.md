@@ -2,6 +2,11 @@
 
 Semua perubahan penting pada proyek **MyDompet** akan dicatat di file ini.
 
+## [1.4.0] - 2026-07-10
+
+### Ditambahkan
+- **Ekspor Mutasi PDF**: Fitur baru untuk mengunduh laporan mutasi transaksi keuangan langsung dari layar Laporan Keuangan ke format PDF A4 Portrait. Laporan PDF menyertakan header dinamis, summary box (pemasukan/pengeluaran/selisih), zebra-striped table untuk daftar transaksi lengkap, dan integrasi native share sheet untuk pembagian berkas.
+
 ## [1.3.1] - 2026-07-10
 
 ### Diperbaiki
